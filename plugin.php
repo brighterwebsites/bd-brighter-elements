@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Plugin Name: Breakdance Custom Elements
+ * Plugin Name: Brighter BD Elements
  * Plugin URI: https://breakdance.com/
- * Description: Boilerplate plugin to save your custom elements created with Element Studio.
+ * Description: Custom elements created with Element Studio.
  * Author: Breakdance
  * Author URI: https://breakdance.com/
  * License: GPLv2
