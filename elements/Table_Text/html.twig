@@ -1,0 +1,29 @@
+
+
+{% if content.tag.text_tag == 'td' %}
+  <td class="bde-table__text" data-label="{{ content.content.data_label }}">
+{% elseif content.tag.text_tag == 'span' %}
+  <span class="bde-table__text %%SELECTOR%%">
+{% elseif content.tag.text_tag == 'caption' %}
+  <caption class="bde-table__caption %%SELECTOR%%">
+{% elseif content.tag.text_tag == 'th' %}
+  <th class="bde-table__text %%SELECTOR%%" data-label="{{ content.content.data_label }}">
+{% else %}
+  <td class="bde-table__text" data-label="{{ content.content.data_label }}">
+{% endif %}
+
+{{ content.content.text }}
+
+{% if content.tag.text_tag == 'td' %}
+  </td>
+{% elseif content.tag.text_tag == 'span' %}
+  </span>
+{% elseif content.tag.text_tag == 'caption' %}
+  </caption>
+{% elseif content.tag.text_tag == 'th' %}
+  </th>
+{% else %}
+  </td>
+{% endif %}
+
+

@@ -1,0 +1,6 @@
+.breakdance .bde-table__htext {
+  max-width: 100%;
+  margin: 0;
+  weight: 500;
+  color: var(--bde-text-color, var(--bde-body-text-color));
+}
