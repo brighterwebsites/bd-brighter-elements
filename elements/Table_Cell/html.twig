@@ -1,0 +1,19 @@
+{% if content.tag.cell_tag == 'th' %}
+<th class="bde-table__cell {{ additionalClasses }} %%SELECTOR%%"
+  scope="col"
+  {% if content.tag.colspan > 1 %}colspan="{{ content.tag.colspan }}"{% endif %}
+  {% if content.tag.rowspan > 1 %}rowspan="{{ content.tag.rowspan }}"{% endif %}>
+{% else %}
+<td class="bde-table__cell {{ additionalClasses }} %%SELECTOR%%"
+  {% if content.tag.data_label %}data-label="{{ content.tag.data_label }}"{% endif %}
+  {% if content.tag.colspan > 1 %}colspan="{{ content.tag.colspan }}"{% endif %}
+  {% if content.tag.rowspan > 1 %}rowspan="{{ content.tag.rowspan }}"{% endif %}>
+{% endif %}
+
+%%CHILDREN%%
+
+{% if content.tag.cell_tag == 'th' %}
+</th>
+{% else %}
+</td>
+{% endif %}
