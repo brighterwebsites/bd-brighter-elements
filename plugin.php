@@ -16,6 +16,19 @@ namespace BreakdanceCustomElements;
 
 use function Breakdance\Util\getDirectoryPathRelativeToPluginFolder;
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Global Styles: CSS design tokens + selector seeding
+// ─────────────────────────────────────────────────────────────────────────────
+require_once __DIR__ . '/includes/class-global-styles.php';
+
+// Register tokens and seeded selectors before WordPress fires init/wp_head.
+require_once __DIR__ . '/includes/config/global-styles-config.php';
+
+// Boot the hooks.
+GlobalStyles::init();
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 add_action('breakdance_loaded', function () {
     \Breakdance\ElementStudio\registerSaveLocation(
         getDirectoryPathRelativeToPluginFolder(__DIR__) . '/elements',
