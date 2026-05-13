@@ -16,6 +16,23 @@ namespace BreakdanceCustomElements;
 
 use function Breakdance\Util\getDirectoryPathRelativeToPluginFolder;
 
+// CPT Form Submission action + admin settings
+add_action('init', function () {
+    if (!function_exists('\Breakdance\Forms\Actions\registerAction')) {
+        return;
+    }
+    require_once __DIR__ . '/form-actions/CptSubmissionAction.php';
+    \Breakdance\Forms\Actions\registerAction(new \BrighterElements\FormActions\CptSubmissionAction());
+});
+
+add_action('init', function () {
+    if (!is_admin()) {
+        return;
+    }
+    require_once __DIR__ . '/form-actions/CptSubmissionAdmin.php';
+    (new \BrighterElements\FormActions\CptSubmissionAdmin())->init();
+});
+
 add_action('breakdance_loaded', function () {
     \Breakdance\ElementStudio\registerSaveLocation(
         getDirectoryPathRelativeToPluginFolder(__DIR__) . '/elements',

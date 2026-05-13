@@ -1,0 +1,65 @@
+.brighter-cpt-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    align-items: start;
+}
+
+.brighter-cpt-form-wrap,
+.brighter-cpt-list {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 3px;
+    padding: 1.5rem;
+}
+
+.brighter-cpt-admin h2 {
+    margin-top: 0;
+    padding-top: 0;
+    font-size: 1.1rem;
+}
+
+.brighter-cpt-admin h3 {
+    margin-top: 1.5rem;
+    font-size: 1rem;
+    border-bottom: 1px solid #f0f0f1;
+    padding-bottom: 0.4rem;
+}
+
+.brighter-cpt-admin code {
+    background: #f0f0f1;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.brighter-meta-table {
+    margin-bottom: 0;
+}
+
+.brighter-meta-table th {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.brighter-meta-table td,
+.brighter-meta-table th {
+    padding: 6px 8px;
+}
+
+.brighter-meta-table input[type="text"] {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.brighter-cpt-list table td,
+.brighter-cpt-list table th {
+    vertical-align: middle;
+}
+
+@media (max-width: 1200px) {
+    .brighter-cpt-layout {
+        grid-template-columns: 1fr;
+    }
+}
