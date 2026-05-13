@@ -4,15 +4,15 @@ namespace BrighterElements\FormActions;
 
 class CptSubmissionAction extends \Breakdance\Forms\Actions\Action {
 
-    public function name(): string {
+    public static function name(): string {
         return 'Submit to Post';
     }
 
-    public function slug(): string {
+    public static function slug(): string {
         return 'brighter_cpt_submission';
     }
 
-    public function run($form, $settings, $extra): array {
+    public static function run($form, $settings, $extra): array {
         $form_id = $extra['formId'] ?? '';
 
         if (empty($form_id)) {
@@ -29,7 +29,7 @@ class CptSubmissionAction extends \Breakdance\Forms\Actions\Action {
             ];
         }
 
-        $submitted = $this->extractFieldValues($form, $extra);
+        $submitted = self::extractFieldValues($form, $extra);
 
         $post_data = [
             'post_type'   => sanitize_key($config['post_type']),
@@ -76,7 +76,7 @@ class CptSubmissionAction extends \Breakdance\Forms\Actions\Action {
         return ['type' => 'success', 'message' => 'Post created successfully (ID: ' . $post_id . ')'];
     }
 
-    private function extractFieldValues($form, $extra): array {
+    private static function extractFieldValues($form, $extra): array {
         // $extra['fields'] is typically an array of field objects: [['name' => ..., 'value' => ...], ...]
         if (!empty($extra['fields']) && is_array($extra['fields'])) {
             $values = [];
