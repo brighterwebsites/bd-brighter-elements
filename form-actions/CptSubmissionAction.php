@@ -12,6 +12,20 @@ class CptSubmissionAction extends \Breakdance\Forms\Actions\Action {
         return 'brighter_cpt_submission';
     }
 
+    public static function settings(): array {
+        return [
+            \Breakdance\Elements\c(
+                'post_type',
+                'Post Type',
+                [],
+                ['type' => 'text', 'layout' => 'inline'],
+                false,
+                false,
+                []
+            ),
+        ];
+    }
+
     public function run($form, $settings, $extra): array {
         $form_id = $extra['formId'] ?? '';
 
