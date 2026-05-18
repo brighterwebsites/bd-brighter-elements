@@ -1,29 +1,41 @@
-{% if content.the_table_tags.table_outer_tags == 'figure' %}
-<figure class="bde-table__table {{ additionalClasses }} %%SELECTOR%%">
-{% elseif content.the_table_tags.table_outer_tags == 'table' %}
-<table class="bde-table__table  {{ additionalClasses }} %%SELECTOR%%">
+{% if content.the_table_tags.table_outer_tags == 'table' %}
+<table class="bde-table__table {{ additionalClasses }} %%SELECTOR%%">
 {% elseif content.the_table_tags.table_outer_tags == 'thead' %}
-<thead class="bde-table__table  {{ additionalClasses }} %%SELECTOR%%">
+<thead class="bde-table__table {{ additionalClasses }} %%SELECTOR%%">
 {% elseif content.the_table_tags.table_outer_tags == 'tbody' %}
-<tbody class="bde-table__table  {{ additionalClasses }} %%SELECTOR%%">
+<tbody class="bde-table__table {{ additionalClasses }} %%SELECTOR%%">
+{% elseif content.the_table_tags.table_outer_tags == 'tfoot' %}
+<tfoot class="bde-table__table {{ additionalClasses }} %%SELECTOR%%">
 {% elseif content.the_table_tags.table_outer_tags == 'tr' %}
-<tr class="bde-table__table  {{ additionalClasses }} %%SELECTOR%%">
+<tr class="bde-table__table {{ additionalClasses }} %%SELECTOR%%">
+{% elseif content.the_table_tags.table_outer_tags == 'td' %}
+<td class="bde-table__table {{ additionalClasses }} %%SELECTOR%%">
+{% elseif content.the_table_tags.table_outer_tags == 'th' %}
+<th class="bde-table__table {{ additionalClasses }} %%SELECTOR%%" scope="col">
+{% elseif content.the_table_tags.table_outer_tags == 'figure' %}
+<figure class="bde-table__table {{ additionalClasses }} %%SELECTOR%%">
 {% else %}
-<table class="bde-table__table  {{ additionalClasses }} %%SELECTOR%%">
+<table class="bde-table__table {{ additionalClasses }} %%SELECTOR%%">
 {% endif %}
 
 %%CHILDREN%%
 
-{% if content.the_table_tags.table_outer_tags == 'figure' %}
-</figure>
-{% elseif content.the_table_tags.table_outer_tags == 'table' %}
+{% if content.the_table_tags.table_outer_tags == 'table' %}
 </table>
 {% elseif content.the_table_tags.table_outer_tags == 'thead' %}
 </thead>
 {% elseif content.the_table_tags.table_outer_tags == 'tbody' %}
 </tbody>
+{% elseif content.the_table_tags.table_outer_tags == 'tfoot' %}
+</tfoot>
 {% elseif content.the_table_tags.table_outer_tags == 'tr' %}
 </tr>
+{% elseif content.the_table_tags.table_outer_tags == 'td' %}
+</td>
+{% elseif content.the_table_tags.table_outer_tags == 'th' %}
+</th>
+{% elseif content.the_table_tags.table_outer_tags == 'figure' %}
+</figure>
 {% else %}
 </table>
 {% endif %}

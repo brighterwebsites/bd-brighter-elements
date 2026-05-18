@@ -200,7 +200,7 @@ class Tablerows extends \Breakdance\Elements\Element
         "table_outer_tags",
         "Table Outer Tags",
         [],
-        ['type' => 'dropdown', 'layout' => 'vertical', 'items' => [['value' => 'figure', 'text' => 'Figure'], ['text' => 'Table', 'value' => 'table'], ['text' => 'Table Header', 'value' => 'thead'], ['value' => 'tbody', 'text' => 'Table Body'], ['value' => 'tr', 'text' => 'Table Row']]],
+        ['type' => 'dropdown', 'layout' => 'vertical', 'items' => [['text' => 'Table', 'value' => 'table'], ['text' => 'Table Head (thead)', 'value' => 'thead'], ['value' => 'tbody', 'text' => 'Table Body (tbody)'], ['value' => 'tfoot', 'text' => 'Table Foot (tfoot)'], ['value' => 'tr', 'text' => 'Table Row (tr)'], ['value' => 'td', 'text' => 'Table Cell (td)'], ['value' => 'th', 'text' => 'Header Cell (th)'], ['value' => 'figure', 'text' => 'Figure']]],
         false,
         false,
         [],

@@ -1,0 +1,9 @@
+%%SELECTOR%% {
+  width: {{ design.size.width.style }};
+  {{ macros.spacing_padding_all(design.padding) }}
+  {{ macros.borders(design.borders) }}
+  {{ macros.typography(design.typography, globalSettings) }}
+  {{ macros.spacing_margin_y(design.spacing) }}
+}
+
+{{ macros.fancyBackgroundCss('%%SELECTOR%%', design.background, breakpoint, false, true) }}
