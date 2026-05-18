@@ -8,3 +8,8 @@ elements/Rich_Text/
 elements/Stats_Grid/
 elements/Text_Table_Header/
 elements/test.md
+
+# Local reference / OS
+schemadance-free-latest/
+Thumbs.db
+.DS_Store
