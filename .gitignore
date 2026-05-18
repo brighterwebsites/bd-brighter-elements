@@ -13,3 +13,6 @@ elements/test.md
 schemadance-free-latest/
 Thumbs.db
 .DS_Store
+
+# Deploy secrets (copy from scripts/deploy.env.example)
+scripts/deploy.env

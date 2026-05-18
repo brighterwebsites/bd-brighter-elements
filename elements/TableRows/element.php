@@ -35,7 +35,7 @@ class Tablerows extends \Breakdance\Elements\Element
 
     static function name()
     {
-        return 'TableRows';
+        return 'Table Outers';
     }
 
     static function className()
