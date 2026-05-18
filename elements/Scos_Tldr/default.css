@@ -1,0 +1,11 @@
+.bde-scos-tldr {
+  width: 100%;
+}
+
+.bde-scos-tldr .tldr-summary {
+  margin: 0;
+}
+
+.bde-scos-tldr .tldr-summary .tldr-content p:last-child {
+  margin-bottom: 0;
+}
