@@ -1,5 +1,5 @@
 # Deploy via PuTTY plink + pscp + .ppk
-# v1.1 | 2026-05-19
+# v1.2 | 2026-05-19
 #
 # Tip: Run Pageant, load your .ppk once per Windows session - then no repeated passphrase prompts.
 #
@@ -99,6 +99,9 @@ $remoteParts += "mkdir -p '$Remote'"
 $remoteParts += "if [ -d '$Remote/elements' ]; then find '$Remote/elements' -mindepth 1 -maxdepth 1 -exec rm -rf {} +; fi"
 $remoteParts += "tar -xf '$RemoteTar' -C '$Remote'"
 $remoteParts += "rm -f '$RemoteTar'"
+# Deploy runs as root; PHP/LiteSpeed must own the plugin or Element Studio cannot mkdir/save.
+$remoteParts += "publicHtml=`$(dirname `$(dirname `$(dirname '$Remote')))"
+$remoteParts += "if [ -d '$Remote' ]; then chown -R `$(stat -c '%U:%G' `"`$publicHtml`") '$Remote'; fi"
 $remoteParts += "echo DEPLOY_OK"
 $remoteCmd = $remoteParts -join "; "
 
