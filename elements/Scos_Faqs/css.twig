@@ -1,0 +1,32 @@
+%%SELECTOR%% {
+  {{ macros.simpleLayout(design.layout, breakpoint) }}
+  {{ macros.spacing_margin_y(design.spacing) }}
+}
+
+{{ macros.layoutV2(design.layout_v2, breakpoint, isBaseBreakpoint, '%%SELECTOR%%') }}
+
+{{ macros.fancyBackgroundCss('%%SELECTOR%%', design.background, breakpoint, false, true) }}
+
+%%SELECTOR%% {
+  width: {{ design.container.width.style }};
+  {{ macros.spacing_padding_all(design.container.padding) }}
+  {{ macros.borders(design.container.borders) }}
+}
+
+%%SELECTOR%% .bw-faq-question,
+%%SELECTOR%% .bw-faq-answer,
+%%SELECTOR%% .bw-faq-item {
+  {{ macros.typography(design.typography, globalSettings) }}
+}
+
+{% if design.typography_colors.question_color %}
+  %%SELECTOR%% .bw-faq-question {
+    color: {{ design.typography_colors.question_color }};
+  }
+{% endif %}
+
+{% if design.typography_colors.answer_color %}
+  %%SELECTOR%% .bw-faq-answer {
+    color: {{ design.typography_colors.answer_color }};
+  }
+{% endif %}

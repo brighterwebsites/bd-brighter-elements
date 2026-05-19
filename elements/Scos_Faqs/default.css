@@ -1,0 +1,10 @@
+.bde-scos-faqs {
+  width: 100%;
+}
+
+.bde-scos-faqs__placeholder {
+  padding: 1rem;
+  border: 1px dashed currentColor;
+  opacity: 0.6;
+  font-style: italic;
+}
