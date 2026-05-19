@@ -22,6 +22,29 @@
 
 **Lesson:** Any element removed from git must either wipe `elements/` on deploy or run a one-time server cleanup; otherwise Breakdance keeps loading orphaned `element.php` files.
 
+---
+
+## 2026-05-19 — SCOS Review Card element (v0.3.0)
+
+**Task:** Preconfigured review card for `bw_reviews` CPT with 4 layout presets, field toggles, and related project display.
+
+**Approach:**
+- MCP-first: `Review_Card_Renderer` class in `site-essentials/Modules/CustomPosts/` owns all HTML. `[bw_review_card]` shortcode is the SSOT — usable from code blocks, WP-CLI, or the BDE element.
+- BDE element (`ssr.php`) maps Breakdance content props → shortcode atts. Same pattern as SCOS FAQs.
+- `propertyPathsToSsrElementWhenValueChanges()` returns all content paths so editor preview rerenders on every toggle/layout change.
+
+**Layout presets (all via CSS layout classes — same HTML):**
+- `stacked`: column, all fields below each other
+- `horizontal`: project image in left sidebar (flex row)
+- `quote`: large excerpt first, stars below — using CSS `order`
+- `hero`: project image full-width 16:9 at top (`order: -1`)
+
+**Field toggles (defaults):** Stars ✓, Excerpt ✓, Outcome ✓, Name ✓, Detail ✓, Date ✓, Platform ✓, Verify ✓ | Full text ✗, Featured badge ✗
+
+**Project fields:** Only rendered when `bw_related_project` ACF field is set; graceful no-op if Projects CPT not present.
+
+**Key lesson:** Use `%%CURRENTPATH%%` not hardcoded path in content control conditions. Conditions on nested controls use `%%CURRENTPATH%%.fieldname` to reference siblings within the same section object.
+
 ## 2026-05-19 — Scos_Faqs element + cross-plugin schema collection
 
 **Task:** Build a Breakdance FAQ element that mirrors the Gutenberg `brighter/faq-selector` block and contributes to the same unified FAQPage JSON-LD on the site graph.

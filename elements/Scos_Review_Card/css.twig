@@ -1,0 +1,66 @@
+%%SELECTOR%% {
+    {{ macros.spacing_padding_all(design.container.padding) }}
+    {{ macros.borders(design.container.borders) }}
+    {{ macros.backgroundColor(design.container.background) }}
+    {{ macros.spacing_margin_y(design.spacing) }}
+    gap: {{ design.container.gap.style }};
+}
+
+{{ macros.fancyBackgroundCss('%%SELECTOR%%', design.background, breakpoint, false, true) }}
+
+{% if design.stars.color_filled %}
+%%SELECTOR%% .bde-review-card__star--filled .bde-review-card__star-svg {
+    fill: {{ design.stars.color_filled }};
+}
+{% endif %}
+
+{% if design.stars.color_empty %}
+%%SELECTOR%% .bde-review-card__star--empty .bde-review-card__star-svg {
+    fill: {{ design.stars.color_empty }};
+}
+{% endif %}
+
+{% if design.stars.size %}
+%%SELECTOR%% .bde-review-card__stars {
+    font-size: {{ design.stars.size.style }};
+}
+{% endif %}
+
+{% if design.typography.quote %}
+{{ macros.typography('%%SELECTOR%% .bde-review-card__quote', design.typography.quote, breakpoint) }}
+{% endif %}
+
+{% if design.typography.meta %}
+{{ macros.typography('%%SELECTOR%% .bde-review-card__footer', design.typography.meta, breakpoint) }}
+{% endif %}
+
+{% if design.colors.quote_text %}
+%%SELECTOR%% .bde-review-card__quote {
+    color: {{ design.colors.quote_text }};
+}
+{% endif %}
+
+{% if design.colors.meta_text %}
+%%SELECTOR%% .bde-review-card__footer {
+    color: {{ design.colors.meta_text }};
+}
+{% endif %}
+
+{% if design.colors.outcome_text %}
+%%SELECTOR%% .bde-review-card__outcome {
+    color: {{ design.colors.outcome_text }};
+}
+{% endif %}
+
+{% if design.colors.link %}
+%%SELECTOR%% .bde-review-card__verify,
+%%SELECTOR%% .bde-review-card__project-link {
+    color: {{ design.colors.link }};
+}
+{% endif %}
+
+{% if design.project_image.width %}
+%%SELECTOR%% .bde-review-card--layout-horizontal .bde-review-card__media {
+    width: {{ design.project_image.width.style }};
+}
+{% endif %}
