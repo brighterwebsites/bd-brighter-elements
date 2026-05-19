@@ -1,5 +1,5 @@
 <?php
-// v1.0 | 2026-05-19
+// v1.1 | 2026-05-19
 //
 // SCOS FAQs — Breakdance element that renders FAQs from the Site Essentials
 // FAQ submodule. Delegates rendering to the `[faqs]` shortcode (so the same
@@ -10,11 +10,20 @@
 //   - selector: editor picks specific FAQs by post ID via a repeater.
 //   - topic:    editor enters a scos_topic slug; every FAQ tagged with it renders.
 //
+// Property path layout (must match contentControls section nesting):
+//   content.faq_source.mode
+//   content.faq_source.selected_faqs[].id
+//   content.faq_source.topic_slug
+//   content.display.format
+//   content.display.heading
+//   content.display.schema_enabled
+//
 // Schema is contributed to the unified site `@graph` by
 // site-essentials/Modules/CustomPosts/FAQ/FAQ_Schema_Graph.php — that class
 // walks `_breakdance_data` looking for nodes of type
-// `BreakdanceCustomElements\ScosFaqs`. The slug string MUST stay in sync
-// with FAQ_Schema_Graph::BD_ELEMENT_TYPE on the MU plugin side.
+// `BreakdanceCustomElements\ScosFaqs`. The slug string and property paths
+// here MUST stay in sync with FAQ_Schema_Graph::walk_bd_tree() on the MU
+// plugin side, plus Content_Analysis::bd_tree_has_scos_faqs().
 
 namespace BreakdanceCustomElements;
 
@@ -87,12 +96,19 @@ class ScosFaqs extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
+        // Section IDs in contentControls (`faq_source`, `display`) become
+        // segments in the property path — defaults MUST mirror that nesting
+        // or BD will silently ignore them.
         return [
             'content' => [
-                'mode'           => 'selector',
-                'format'         => 'accordion',
-                'heading'        => 'h3',
-                'schema_enabled' => true,
+                'faq_source' => [
+                    'mode' => 'selector',
+                ],
+                'display' => [
+                    'format'         => 'accordion',
+                    'heading'        => 'h3',
+                    'schema_enabled' => true,
+                ],
             ],
         ];
     }
@@ -427,8 +443,17 @@ class ScosFaqs extends \Breakdance\Elements\Element
 
     static function propertyPathsToSsrElementWhenValueChanges()
     {
-        // Any change to the content tree (mode, selection, topic, display) must
-        // re-fire ssr.php so the editor preview stays in sync with the props.
-        return ['content'];
+        // List specific leaf paths (matches Scos_Review_Card's pattern). A
+        // top-level `'content'` here causes BD to re-fire SSR on transient
+        // sub-state changes too, which previously triggered AJAX wrapper
+        // errors when the SSR echoed placeholder text.
+        return [
+            'content.faq_source.mode',
+            'content.faq_source.selected_faqs',
+            'content.faq_source.topic_slug',
+            'content.display.format',
+            'content.display.heading',
+            'content.display.schema_enabled',
+        ];
     }
 }

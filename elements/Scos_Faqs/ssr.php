@@ -6,10 +6,21 @@
  * (FAQ_Module::shortcode). That shortcode owns:
  *   - the HTML output (accordion / plain)
  *   - the FAQPage schema contribution to the unified site graph
+ *   - the empty-state fallback (`<p>No FAQs selected.</p>`)
  *
  * This SSR file just translates Breakdance content props → shortcode atts.
- * Schema is collected separately by FAQ_Schema_Graph which walks
- * `_breakdance_data` looking for our element class name.
+ * It deliberately does NOT echo placeholder text on empty selection — BD's
+ * AJAX wrapper rejects unexpected output during certain editor lifecycle
+ * calls, so we let the shortcode render a tiny "No FAQs selected." message
+ * instead.
+ *
+ * Property paths (must mirror element.php contentControls section nesting):
+ *   content.faq_source.mode
+ *   content.faq_source.selected_faqs[].id
+ *   content.faq_source.topic_slug
+ *   content.display.format
+ *   content.display.heading
+ *   content.display.schema_enabled
  *
  * @var array $propertiesData
  */
@@ -18,17 +29,30 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+if ( ! shortcode_exists( 'faqs' ) ) {
+    // Editor-only hint; never echoes on the front end. Matches Scos_Review_Card pattern.
+    if ( defined( 'BREAKDANCE_BUILDER' ) && BREAKDANCE_BUILDER ) {
+        echo '<div class="bde-scos-faqs__placeholder">'
+            . esc_html__( 'The [faqs] shortcode is not registered. Activate the Site Essentials FAQ submodule.', 'site-essentials' )
+            . '</div>';
+    }
+    return;
+}
+
 $content = isset( $propertiesData['content'] ) && is_array( $propertiesData['content'] )
     ? $propertiesData['content']
     : [];
 
-$mode    = isset( $content['mode'] )    ? (string) $content['mode']    : 'selector';
-$format  = isset( $content['format'] )  ? (string) $content['format']  : 'accordion';
-$heading = isset( $content['heading'] ) ? (string) $content['heading'] : 'h3';
+$source  = isset( $content['faq_source'] ) && is_array( $content['faq_source'] ) ? $content['faq_source'] : [];
+$display = isset( $content['display'] )    && is_array( $content['display'] )    ? $content['display']    : [];
 
-// `schema_enabled` defaults true; treat null/missing as on.
-$schema_enabled = array_key_exists( 'schema_enabled', $content )
-    ? (bool) $content['schema_enabled']
+$mode    = isset( $source['mode'] )      ? (string) $source['mode']      : 'selector';
+$format  = isset( $display['format'] )   ? (string) $display['format']   : 'accordion';
+$heading = isset( $display['heading'] )  ? (string) $display['heading']  : 'h3';
+
+// schema_enabled defaults true; missing/null → on.
+$schema_enabled = array_key_exists( 'schema_enabled', $display )
+    ? (bool) $display['schema_enabled']
     : true;
 
 $atts = [
@@ -38,19 +62,16 @@ $atts = [
 ];
 
 if ( 'topic' === $mode ) {
-    $topic_slug = isset( $content['topic_slug'] ) ? sanitize_title( (string) $content['topic_slug'] ) : '';
-    if ( '' === $topic_slug ) {
-        // Editor placeholder so the canvas doesn't render silent emptiness.
-        echo '<div class="bde-scos-faqs__placeholder">'
-            . esc_html__( 'Enter a scos_topic slug in the element sidebar to render FAQs by topic.', 'site-essentials' )
-            . '</div>';
-        return;
+    $topic_slug = isset( $source['topic_slug'] ) ? sanitize_title( (string) $source['topic_slug'] ) : '';
+    if ( '' !== $topic_slug ) {
+        $atts['topic'] = $topic_slug;
     }
-    $atts['topic'] = $topic_slug;
+    // Empty topic falls through with no `topic`/`ids` att → shortcode renders
+    // its own "No FAQs selected." message. No echo from this file.
 } else {
     // Selector mode — pull post IDs out of the repeater rows.
-    $rows = isset( $content['selected_faqs'] ) && is_array( $content['selected_faqs'] )
-        ? $content['selected_faqs']
+    $rows = isset( $source['selected_faqs'] ) && is_array( $source['selected_faqs'] )
+        ? $source['selected_faqs']
         : [];
 
     $ids = [];
@@ -65,25 +86,11 @@ if ( 'topic' === $mode ) {
         }
     }
 
-    if ( empty( $ids ) ) {
-        echo '<div class="bde-scos-faqs__placeholder">'
-            . esc_html__( 'Add one or more FAQ IDs in the element sidebar.', 'site-essentials' )
-            . '</div>';
-        return;
+    if ( ! empty( $ids ) ) {
+        $atts['ids'] = implode( ',', $ids );
     }
-
-    $atts['ids'] = implode( ',', $ids );
-}
-
-if ( ! shortcode_exists( 'faqs' ) ) {
-    // Fail loudly in the editor but quietly on the front end. Without the
-    // shortcode there's nothing this element can render.
-    if ( defined( 'BREAKDANCE_BUILDER' ) && BREAKDANCE_BUILDER ) {
-        echo '<div class="bde-scos-faqs__placeholder">'
-            . esc_html__( 'The [faqs] shortcode is not registered. Activate the Site Essentials FAQ submodule.', 'site-essentials' )
-            . '</div>';
-    }
-    return;
+    // Empty IDs falls through with no `ids` att → shortcode renders its own
+    // "No FAQs selected." message. No echo from this file.
 }
 
 $att_string = '';
