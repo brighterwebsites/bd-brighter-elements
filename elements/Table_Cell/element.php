@@ -45,7 +45,7 @@ class TableCell extends \Breakdance\Elements\Element
 
     static function category()
     {
-        return 'Site Essentials';
+        return 'other';
     }
 
     static function badge()

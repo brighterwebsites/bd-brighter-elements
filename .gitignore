@@ -14,7 +14,10 @@ elements/test.md
 schemadance-free-latest/
 Thumbs.db
 .DS_Store
+
+# BDE Element Studio dev notes (local skill-builder capture — never commit)
 bde-studio-skill-builder-notes.md
+.cursor/bde-elements-dev-notes.md
 # Deploy tooling stays in repo but never ships to WordPress (see .gitattributes export-ignore)
 # Deploy secrets (copy from scripts/deploy.env.example)
 scripts/deploy.env

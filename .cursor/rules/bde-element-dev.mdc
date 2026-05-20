@@ -62,4 +62,4 @@ Each entry includes:
 
 ## File Location
 
-`.bde-studio-skill-builder-notes.md'
+`.cursor/bde-elements-dev-notes.md` (gitignored; see `.gitignore`)

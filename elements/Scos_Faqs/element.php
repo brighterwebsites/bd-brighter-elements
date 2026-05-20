@@ -1,5 +1,5 @@
 <?php
-// v1.1 | 2026-05-19
+// v1.2 | 2026-05-21
 //
 // SCOS FAQs — Breakdance element that renders FAQs from the Site Essentials
 // FAQ submodule. Delegates rendering to the `[faqs]` shortcode (so the same
@@ -7,7 +7,7 @@
 // Gutenberg block uses applies here too).
 //
 // Two modes:
-//   - selector: editor picks specific FAQs by post ID via a repeater.
+//   - selector: editor picks specific FAQs from a dropdown repeater.
 //   - topic:    editor enters a scos_topic slug; every FAQ tagged with it renders.
 //
 // Property path layout (must match contentControls section nesting):
@@ -27,6 +27,7 @@
 
 namespace BreakdanceCustomElements;
 
+use BrighterElements\Faq_Picker_Options;
 use function Breakdance\Elements\c;
 use function Breakdance\Elements\PresetSections\getPresetSection;
 
@@ -69,9 +70,7 @@ class ScosFaqs extends \Breakdance\Elements\Element
 
     static function category()
     {
-        // Custom categories don't render in the sidebar Add panel — Scos_Tldr
-        // and Scos_Breadcrumbs use 'basic' for the same reason.
-        return 'Site Essentials';
+        return 'other';
     }
 
     static function badge()
@@ -253,12 +252,13 @@ class ScosFaqs extends \Breakdance\Elements\Element
                         [
                             c(
                                 'id',
-                                'FAQ ID',
+                                'FAQ',
                                 [],
                                 [
-                                    'type'        => 'number',
+                                    'type'        => 'dropdown',
                                     'layout'      => 'vertical',
-                                    'description' => 'Enter the FAQ post ID. You can find IDs in the FAQs admin list URL.',
+                                    'items'       => Faq_Picker_Options::dropdown_items(),
+                                    'description' => 'Choose a published FAQ. List refreshes when you reload the Breakdance builder.',
                                 ],
                                 false,
                                 false,
