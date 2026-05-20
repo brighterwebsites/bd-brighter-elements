@@ -45,7 +45,7 @@ class ScosBreadcrumbs extends \Breakdance\Elements\Element
 
     static function category()
     {
-        return 'basic';
+        return 'Site Essentials';
     }
 
     static function badge()

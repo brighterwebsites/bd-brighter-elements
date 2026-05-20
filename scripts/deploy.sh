@@ -80,7 +80,7 @@ if ! git rev-parse --verify --quiet "${REF}" >/dev/null; then
   exit 1
 fi
 
-echo "==> Deploying tracked files (git archive) — excludes .git, local-only paths..."
+echo "==> Deploying tracked files (git archive) — excludes .git, export-ignore paths (see .gitattributes)..."
 
 if [[ "${REMOTE_BACKUP}" == "1" ]]; then
   STAMP="$(date +%Y%m%d-%H%M%S)"
@@ -93,14 +93,14 @@ echo "==> Ensuring remote plugin directory exists..."
 remote "mkdir -p '${REMOTE_PLUGIN_PATH}'"
 
 # Extract archive on server (replaces plugin files; keeps nothing extra from old deploys).
-ARCHIVE_CMD="git -C '${REPO_ROOT}' archive '${REF}' | ssh ${SSH_OPTS[*]} '${SSH_TARGET}' \"tar -xf - -C '${REMOTE_PLUGIN_PATH}'\""
+ARCHIVE_CMD="git -C '${REPO_ROOT}' archive --worktree-attributes '${REF}' | ssh ${SSH_OPTS[*]} '${SSH_TARGET}' \"tar -xf - -C '${REMOTE_PLUGIN_PATH}'\""
 
 if [[ "${DRY_RUN}" == "1" ]]; then
   echo "[dry-run] ${ARCHIVE_CMD}"
   exit 0
 fi
 
-git archive "${REF}" | ssh "${SSH_OPTS[@]}" "${SSH_TARGET}" "tar -xf - -C '${REMOTE_PLUGIN_PATH}'"
+git archive --worktree-attributes "${REF}" | ssh "${SSH_OPTS[@]}" "${SSH_TARGET}" "tar -xf - -C '${REMOTE_PLUGIN_PATH}'"
 
 echo "==> Done. Plugin deployed to ${REMOTE_PLUGIN_PATH}"
 echo "    Tip: reload Breakdance → Settings if elements do not appear."

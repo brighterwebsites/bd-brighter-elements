@@ -71,7 +71,7 @@ class ScosFaqs extends \Breakdance\Elements\Element
     {
         // Custom categories don't render in the sidebar Add panel — Scos_Tldr
         // and Scos_Breadcrumbs use 'basic' for the same reason.
-        return 'basic';
+        return 'Site Essentials';
     }
 
     static function badge()

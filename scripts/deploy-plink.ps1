@@ -72,7 +72,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 if ($DryRun) {
-    Write-Host "[dry-run] git archive $Ref -> $LocalTar"
+    Write-Host "[dry-run] git archive --worktree-attributes $Ref -> $LocalTar"
     Write-Host "[dry-run] pscp -> ${Target}:${RemoteTar}"
     Write-Host "[dry-run] plink: backup, mkdir, tar -xf into $Remote"
     exit 0
@@ -80,7 +80,7 @@ if ($DryRun) {
 
 Write-Host "==> Creating archive..."
 if (Test-Path $LocalTar) { Remove-Item $LocalTar -Force }
-git archive --format=tar -o $LocalTar $Ref
+git archive --worktree-attributes --format=tar -o $LocalTar $Ref
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 Write-Host "==> Uploading to server (pscp)..."

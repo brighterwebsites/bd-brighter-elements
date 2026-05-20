@@ -14,6 +14,7 @@ elements/test.md
 schemadance-free-latest/
 Thumbs.db
 .DS_Store
-
+bde-studio-skill-builder-notes.md
+# Deploy tooling stays in repo but never ships to WordPress (see .gitattributes export-ignore)
 # Deploy secrets (copy from scripts/deploy.env.example)
 scripts/deploy.env
