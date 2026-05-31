@@ -1,5 +1,5 @@
 <?php
-// v1.2 | 2026-06-01
+// v1.3 | 2026-06-01
 //
 // SCOS Review Card — preconfigured review card for bw_reviews CPT.
 //
@@ -111,6 +111,25 @@ class ScosReviewCard extends \Breakdance\Elements\Element {
 
     static function designControls() {
         return [
+            getPresetSection(
+                'EssentialElements\\simpleLayout',
+                'Layout',
+                'layout',
+                [
+                    'condition' => [ [ [ 'path' => 'design.layout', 'operand' => 'is set', 'value' => '' ] ] ],
+                    'type'      => 'popout',
+                ],
+            ),
+            getPresetSection(
+                'EssentialElements\\LayoutV2',
+                'Layout',
+                'layout_v2',
+                [
+                    'condition' => [ [ [ 'path' => 'design.layout', 'operand' => 'is not set', 'value' => '' ] ] ],
+                    'type'      => 'popout',
+                ],
+            ),
+            getPresetSection( 'EssentialElements\\LessFancyBackground', 'Background', 'background', [ 'type' => 'popout' ] ),
             c(
                 'container',
                 'Container',
@@ -126,7 +145,6 @@ class ScosReviewCard extends \Breakdance\Elements\Element {
                     ),
                     getPresetSection( 'EssentialElements\\spacing_padding_all', 'Padding', 'padding', [ 'type' => 'popout' ] ),
                     getPresetSection( 'EssentialElements\\borders', 'Borders', 'borders', [ 'type' => 'popout' ] ),
-                    getPresetSection( 'EssentialElements\\LessFancyBackground', 'Background', 'background', [ 'type' => 'popout' ] ),
                 ],
                 [ 'type' => 'section' ],
                 false,

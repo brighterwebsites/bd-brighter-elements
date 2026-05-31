@@ -1,11 +1,12 @@
 %%SELECTOR%% {
+    {{ macros.simpleLayout(design.layout, breakpoint) }}
+    {{ macros.spacing_margin_y(design.spacing) }}
     {{ macros.spacing_padding_all(design.container.padding) }}
     {{ macros.borders(design.container.borders) }}
-    {{ macros.backgroundColor(design.container.background) }}
-    {{ macros.spacing_margin_y(design.spacing) }}
     gap: {{ design.container.gap.style }};
 }
 
+{{ macros.layoutV2(design.layout_v2, breakpoint, isBaseBreakpoint, '%%SELECTOR%%') }}
 {{ macros.fancyBackgroundCss('%%SELECTOR%%', design.background, breakpoint, false, true) }}
 
 {% if design.stars.color_filled %}
