@@ -1,3 +1,4 @@
+/* v1.0 | 2026-06-01 */
 /* SCOS Review Card — base styles */
 /* Layout is controlled by layout modifier classes. Star/meta colours via css.twig. */
 
@@ -7,6 +8,18 @@
     gap: 1rem;
     position: relative;
     max-width: 100%;
+}
+
+/* ── Platform icon ──────────────────────────────────────────────────── */
+
+.breakdance .bde-review-card__platform-icon {
+    display: block;
+}
+
+.breakdance .bde-review-card__platform-icon-img {
+    display: block;
+    width: 80px;
+    height: auto;
 }
 
 /* ── Shared element styles ─────────────────────────────────────────── */

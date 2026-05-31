@@ -27,6 +27,13 @@
 }
 {% endif %}
 
+{% if design.platform_icon.size %}
+%%SELECTOR%% .bde-review-card__platform-icon-img {
+    width: {{ design.platform_icon.size.style }};
+    height: auto;
+}
+{% endif %}
+
 {% if design.typography.quote %}
 {{ macros.typography('%%SELECTOR%% .bde-review-card__quote', design.typography.quote, breakpoint) }}
 {% endif %}

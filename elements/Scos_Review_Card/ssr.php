@@ -55,6 +55,7 @@ $atts = [
     'show_platform'      => $bool( $fields['show_platform']      ?? null ),
     'show_verify'        => $bool( $fields['show_verify']        ?? null ),
     'show_featured'      => $bool( $fields['show_featured']      ?? null, false ),
+    'show_platform_icon' => $bool( $fields['show_platform_icon'] ?? null ),
     'show_project_image' => $bool( $project['show_image']        ?? null ),
     'show_project_name'  => $bool( $project['show_name']         ?? null ),
     'show_project_link'  => $bool( $project['show_link']         ?? null ),

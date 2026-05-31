@@ -1,5 +1,5 @@
 <?php
-// v1.3 | 2026-06-01
+// v1.4 | 2026-06-01
 //
 // SCOS Review Card — preconfigured review card for bw_reviews CPT.
 //
@@ -86,7 +86,8 @@ class ScosReviewCard extends \Breakdance\Elements\Element {
                     'show_date'      => true,
                     'show_platform'  => true,
                     'show_verify'    => true,
-                    'show_featured'  => false,
+                    'show_featured'       => false,
+                    'show_platform_icon'  => true,
                 ],
                 'project' => [
                     'show_image' => true,
@@ -179,6 +180,25 @@ class ScosReviewCard extends \Breakdance\Elements\Element {
                         [],
                         [ 'type' => 'color', 'layout' => 'inline' ],
                         false,
+                        false,
+                        [],
+                    ),
+                ],
+                [ 'type' => 'section' ],
+                false,
+                false,
+                [],
+            ),
+            c(
+                'platform_icon',
+                'Platform Icon',
+                [
+                    c(
+                        'size',
+                        'Width',
+                        [],
+                        [ 'type' => 'unit', 'layout' => 'inline', 'unitOptions' => [ 'types' => [ 'px', 'rem', 'em' ], 'defaultType' => 'px' ] ],
+                        true,
                         false,
                         [],
                     ),
@@ -337,7 +357,8 @@ class ScosReviewCard extends \Breakdance\Elements\Element {
                     c( 'show_date',      'Date',             [], [ 'type' => 'toggle', 'layout' => 'inline' ], false, false, [] ),
                     c( 'show_platform',  'Platform',         [], [ 'type' => 'toggle', 'layout' => 'inline' ], false, false, [] ),
                     c( 'show_verify',    'Verify link',      [], [ 'type' => 'toggle', 'layout' => 'inline' ], false, false, [] ),
-                    c( 'show_featured',  'Featured badge',   [], [ 'type' => 'toggle', 'layout' => 'inline' ], false, false, [] ),
+                    c( 'show_featured',      'Featured badge',    [], [ 'type' => 'toggle', 'layout' => 'inline' ], false, false, [] ),
+                    c( 'show_platform_icon', 'Platform icon',     [], [ 'type' => 'toggle', 'layout' => 'inline', 'description' => 'Logo image set on the platform taxonomy term.' ], false, false, [] ),
                 ],
                 [ 'type' => 'section', 'layout' => 'vertical' ],
                 false,
@@ -438,6 +459,7 @@ class ScosReviewCard extends \Breakdance\Elements\Element {
             'content.fields.show_platform',
             'content.fields.show_verify',
             'content.fields.show_featured',
+            'content.fields.show_platform_icon',
             'content.project.show_image',
             'content.project.show_name',
             'content.project.show_link',
