@@ -40,8 +40,9 @@ $bool = function ( $val, bool $default = true ): string {
     return $val ? '1' : '0';
 };
 
-$fields  = isset( $content['fields'] ) && is_array( $content['fields'] ) ? $content['fields'] : [];
+$fields  = isset( $content['fields'] )  && is_array( $content['fields'] )  ? $content['fields']  : [];
 $project = isset( $content['project'] ) && is_array( $content['project'] ) ? $content['project'] : [];
+$schema  = isset( $content['schema'] )  && is_array( $content['schema'] )  ? $content['schema']  : [];
 
 $atts = [
     'layout'             => $layout,
@@ -59,6 +60,11 @@ $atts = [
     'show_project_image' => $bool( $project['show_image']        ?? null ),
     'show_project_name'  => $bool( $project['show_name']         ?? null ),
     'show_project_link'  => $bool( $project['show_link']         ?? null ),
+    // Schema
+    'show_item_reviewed'  => $bool( $schema['show_item_reviewed'] ?? null ),
+    'item_reviewed_type'  => in_array( $schema['item_reviewed_type'] ?? 'Service', [ 'Service', 'Product' ], true )
+        ? ( $schema['item_reviewed_type'] ?? 'Service' )
+        : 'Service',
 ];
 
 // Add review ID only in specific mode

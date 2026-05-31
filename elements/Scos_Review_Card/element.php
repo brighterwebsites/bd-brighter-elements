@@ -1,5 +1,5 @@
 <?php
-// v1.4 | 2026-06-01
+// v1.5 | 2026-06-01
 //
 // SCOS Review Card — preconfigured review card for bw_reviews CPT.
 //
@@ -93,6 +93,10 @@ class ScosReviewCard extends \Breakdance\Elements\Element {
                     'show_image' => true,
                     'show_name'  => true,
                     'show_link'  => true,
+                ],
+                'schema' => [
+                    'show_item_reviewed' => true,
+                    'item_reviewed_type' => 'Service',
                 ],
             ],
         ];
@@ -378,6 +382,46 @@ class ScosReviewCard extends \Breakdance\Elements\Element {
                 false,
                 [],
             ),
+            c(
+                'schema',
+                'Schema',
+                [
+                    c(
+                        'show_item_reviewed',
+                        'Item Reviewed',
+                        [],
+                        [
+                            'type'        => 'toggle',
+                            'layout'      => 'inline',
+                            'description' => 'Adds hidden itemReviewed markup required by Google Search Console for valid Review schema.',
+                        ],
+                        false,
+                        false,
+                        [],
+                    ),
+                    c(
+                        'item_reviewed_type',
+                        'Reviewed Type',
+                        [],
+                        [
+                            'type'      => 'dropdown',
+                            'layout'    => 'vertical',
+                            'items'     => [
+                                [ 'text' => 'Service', 'value' => 'Service' ],
+                                [ 'text' => 'Product', 'value' => 'Product' ],
+                            ],
+                            'condition' => [ [ [ 'path' => '%%CURRENTPATH%%.show_item_reviewed', 'operand' => 'equals', 'value' => true ] ] ],
+                        ],
+                        false,
+                        false,
+                        [],
+                    ),
+                ],
+                [ 'type' => 'section', 'layout' => 'vertical' ],
+                false,
+                false,
+                [],
+            ),
         ];
     }
 
@@ -463,6 +507,8 @@ class ScosReviewCard extends \Breakdance\Elements\Element {
             'content.project.show_image',
             'content.project.show_name',
             'content.project.show_link',
+            'content.schema.show_item_reviewed',
+            'content.schema.item_reviewed_type',
         ];
     }
 }
