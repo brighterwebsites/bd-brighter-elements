@@ -1,5 +1,5 @@
 <?php
-// v1.1 | 2026-06-01
+// v1.2 | 2026-06-01
 //
 // SCOS Review Card — preconfigured review card for bw_reviews CPT.
 //
@@ -73,7 +73,9 @@ class ScosReviewCard extends \Breakdance\Elements\Element {
                 'source' => [
                     'mode' => 'loop',
                 ],
-                'layout' => 'stacked',
+                'display' => [
+                    'layout' => 'stacked',
+                ],
                 'fields' => [
                     'show_rating'    => true,
                     'show_excerpt'   => true,
@@ -276,20 +278,30 @@ class ScosReviewCard extends \Breakdance\Elements\Element {
                 [],
             ),
             c(
-                'layout',
-                'Layout',
-                [],
+                'display',
+                'Display',
                 [
-                    'type'        => 'dropdown',
-                    'layout'      => 'vertical',
-                    'description' => 'Stacked: column card. Horizontal: project image in sidebar. Quote: large centred quote. Hero: project image full-width at top.',
-                    'items'       => [
-                        [ 'text' => 'Stacked',    'value' => 'stacked' ],
-                        [ 'text' => 'Horizontal', 'value' => 'horizontal' ],
-                        [ 'text' => 'Quote',      'value' => 'quote' ],
-                        [ 'text' => 'Hero',       'value' => 'hero' ],
-                    ],
+                    c(
+                        'layout',
+                        'Layout',
+                        [],
+                        [
+                            'type'        => 'dropdown',
+                            'layout'      => 'vertical',
+                            'description' => 'Stacked: column card. Horizontal: project image in sidebar. Quote: large centred quote. Hero: project image full-width at top.',
+                            'items'       => [
+                                [ 'text' => 'Stacked',    'value' => 'stacked' ],
+                                [ 'text' => 'Horizontal', 'value' => 'horizontal' ],
+                                [ 'text' => 'Quote',      'value' => 'quote' ],
+                                [ 'text' => 'Hero',       'value' => 'hero' ],
+                            ],
+                        ],
+                        false,
+                        false,
+                        [],
+                    ),
                 ],
+                [ 'type' => 'section', 'layout' => 'vertical' ],
                 false,
                 false,
                 [],
@@ -397,7 +409,7 @@ class ScosReviewCard extends \Breakdance\Elements\Element {
         return [
             'content.source.mode',
             'content.source.review_id',
-            'content.layout',
+            'content.display.layout',
             'content.fields.show_rating',
             'content.fields.show_excerpt',
             'content.fields.show_full_text',

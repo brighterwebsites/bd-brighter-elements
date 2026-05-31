@@ -30,7 +30,7 @@ $mode      = isset( $content['source']['mode'] ) ? (string) $content['source']['
 $review_id = isset( $content['source']['review_id'] ) ? absint( $content['source']['review_id'] ) : 0;
 
 // Layout
-$layout = isset( $content['layout'] ) ? (string) $content['layout'] : 'stacked';
+$layout = isset( $content['display']['layout'] ) ? (string) $content['display']['layout'] : 'stacked';
 
 // Field toggles — 1/0 strings for shortcode
 $bool = function ( $val, bool $default = true ): string {
