@@ -1,5 +1,5 @@
 <?php
-// v1.0 | 2026-05-19
+// v1.1 | 2026-06-01
 //
 // SCOS Review Card — preconfigured review card for bw_reviews CPT.
 //
@@ -14,6 +14,7 @@ namespace BreakdanceCustomElements;
 
 use function Breakdance\Elements\c;
 use function Breakdance\Elements\PresetSections\getPresetSection;
+use BrighterElements\Review_Picker_Options;
 
 \Breakdance\ElementStudio\registerElementForEditing(
     'BreakdanceCustomElements\\ScosReviewCard',
@@ -255,12 +256,13 @@ class ScosReviewCard extends \Breakdance\Elements\Element {
                     ),
                     c(
                         'review_id',
-                        'Review ID',
+                        'Review',
                         [],
                         [
-                            'type'        => 'number',
+                            'type'        => 'dropdown',
                             'layout'      => 'vertical',
-                            'description' => 'Enter the bw_reviews post ID. Find it in Reviews › All Reviews — the ID is in the edit URL (?post=42).',
+                            'items'       => Review_Picker_Options::dropdown_items(),
+                            'description' => 'Choose a published review. List refreshes when you reload the Breakdance builder.',
                             'condition'   => [ [ [ 'path' => '%%CURRENTPATH%%.mode', 'operand' => 'equals', 'value' => 'specific' ] ] ],
                         ],
                         false,
