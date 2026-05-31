@@ -1,5 +1,5 @@
 <?php
-// v0.3.2 | 2026-06-01
+// v0.3.3 | 2026-06-01
 
 /**
  * Plugin Name: Brighter BD Elements
@@ -10,7 +10,7 @@
  * License: GPLv2
  * Text Domain: breakdance
  * Domain Path: /languages/
- * Version: 0.3.2
+ * Version: 0.3.3
  */
 
 namespace BreakdanceCustomElements;
@@ -19,6 +19,7 @@ use function Breakdance\Util\getDirectoryPathRelativeToPluginFolder;
 
 require_once __DIR__ . '/includes/class-faq-picker-options.php';
 require_once __DIR__ . '/includes/class-review-picker-options.php';
+require_once __DIR__ . '/includes/class-platform-picker-options.php';
 
 // CPT Form Submission action + admin settings
 add_action('init', function () {
