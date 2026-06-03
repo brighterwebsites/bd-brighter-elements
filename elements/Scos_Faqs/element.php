@@ -1,5 +1,5 @@
 <?php
-// v2.0 | 2026-06-03
+// v2.1 | 2026-06-04
 //
 // SCOS FAQs — Breakdance element that renders FAQs from the Site Essentials
 // FAQ submodule using the bde-faq__* HTML structure and BreakdanceFaq JS,
@@ -558,8 +558,19 @@ class ScosFaqs extends \Breakdance\Elements\Element
     {
         return [
             '0' => [
-                'scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/breakdance-faq@1/faq.js'],
+                'scripts' => [ '%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/breakdance-faq@1/faq.js' ],
                 'title'   => 'FAQ.js',
+            ],
+            '1' => [
+                'title'          => 'FAQ Frontend',
+                'inlineScripts'  => [
+                    '(function() {
+  if ({{ content.display.format|json_encode }} !== \'accordion\') return;
+  new BreakdanceFaq(\'%%SELECTOR%%\', { accordion: true, openFirst: {{ content.display.first_item_opened|json_encode }} });
+})();',
+                ],
+                'builderCondition'  => 'return false;',
+                'frontendCondition' => 'return true;',
             ],
         ];
     }
