@@ -2,100 +2,161 @@
 /**
  * Server-side render for SCOS FAQs.
  *
- * Delegates to the [faqs] shortcode in the Site Essentials MU plugin
- * (FAQ_Module::shortcode). That shortcode owns:
- *   - the HTML output (accordion / plain)
- *   - the FAQPage schema contribution to the unified site graph
- *   - the empty-state fallback (`<p>No FAQs selected.</p>`)
+ * Calls FAQ_Module::get_by_ids() / get_ids_by_topic() directly and renders
+ * bde-faq__* HTML compatible with the BreakdanceFaq JS accordion and the
+ * Frequently_Asked_Questions element CSS system.
  *
- * This SSR file just translates Breakdance content props → shortcode atts.
- * It deliberately does NOT echo placeholder text on empty selection — BD's
- * AJAX wrapper rejects unexpected output during certain editor lifecycle
- * calls, so we let the shortcode render a tiny "No FAQs selected." message
- * instead.
- *
- * Property paths (must mirror element.php contentControls section nesting):
+ * Property paths (must mirror element.php section nesting):
  *   content.faq_source.mode
  *   content.faq_source.selected_faqs[].id
  *   content.faq_source.topic_slug
  *   content.display.format
- *   content.display.heading
+ *   content.display.first_item_opened
  *   content.display.schema_enabled
+ *   design.typography.title_tag  (heading tag for question; default h3)
+ *   design.item.icon.icon.svgCode
+ *   design.item.icon.active_icon.svgCode
  *
  * @var array $propertiesData
  */
 
+use SiteEssentials\Modules\CustomPosts\FAQ\FAQ_Module;
+
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 }
 
-if ( ! shortcode_exists( 'faqs' ) ) {
-    // Editor-only hint; never echoes on the front end. Matches Scos_Review_Card pattern.
-    if ( defined( 'BREAKDANCE_BUILDER' ) && BREAKDANCE_BUILDER ) {
-        echo '<div class="bde-scos-faqs__placeholder">'
-            . esc_html__( 'The [faqs] shortcode is not registered. Activate the Site Essentials FAQ submodule.', 'site-essentials' )
-            . '</div>';
-    }
-    return;
+if ( ! class_exists( 'SiteEssentials\\Modules\\CustomPosts\\FAQ\\FAQ_Module' ) ) {
+	if ( defined( 'BREAKDANCE_BUILDER' ) && BREAKDANCE_BUILDER ) {
+		echo '<div class="bde-scos-faqs__placeholder">'
+			. esc_html__( 'Site Essentials FAQ module is not active.', 'site-essentials' )
+			. '</div>';
+	}
+	return;
 }
 
 $content = isset( $propertiesData['content'] ) && is_array( $propertiesData['content'] )
-    ? $propertiesData['content']
-    : [];
+	? $propertiesData['content']
+	: [];
+$design  = isset( $propertiesData['design'] ) && is_array( $propertiesData['design'] )
+	? $propertiesData['design']
+	: [];
 
 $source  = isset( $content['faq_source'] ) && is_array( $content['faq_source'] ) ? $content['faq_source'] : [];
 $display = isset( $content['display'] )    && is_array( $content['display'] )    ? $content['display']    : [];
 
-$mode    = isset( $source['mode'] )      ? (string) $source['mode']      : 'selector';
-$format  = isset( $display['format'] )   ? (string) $display['format']   : 'accordion';
-$heading = isset( $display['heading'] )  ? (string) $display['heading']  : 'h3';
+$mode         = isset( $source['mode'] )              ? (string) $source['mode']              : 'selector';
+$format       = isset( $display['format'] )           ? (string) $display['format']           : 'accordion';
+$first_opened = ! empty( $display['first_item_opened'] );
 
-// schema_enabled defaults true; missing/null → on.
-$schema_enabled = array_key_exists( 'schema_enabled', $display )
-    ? (bool) $display['schema_enabled']
-    : true;
+$allowed_tags  = [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p' ];
+$heading_level = 'h3';
+if ( isset( $design['typography']['title_tag'] ) && in_array( $design['typography']['title_tag'], $allowed_tags, true ) ) {
+	$heading_level = $design['typography']['title_tag'];
+}
 
-$atts = [
-    'format'  => $format,
-    'heading' => $heading,
-    'schema'  => $schema_enabled ? 'true' : 'false',
-];
-
+// Resolve FAQ IDs from selector or topic mode.
+$faq_ids = [];
 if ( 'topic' === $mode ) {
-    $topic_slug = isset( $source['topic_slug'] ) ? sanitize_title( (string) $source['topic_slug'] ) : '';
-    if ( '' !== $topic_slug ) {
-        $atts['topic'] = $topic_slug;
-    }
-    // Empty topic falls through with no `topic`/`ids` att → shortcode renders
-    // its own "No FAQs selected." message. No echo from this file.
+	$topic_slug = isset( $source['topic_slug'] ) ? sanitize_title( (string) $source['topic_slug'] ) : '';
+	if ( '' !== $topic_slug ) {
+		$faq_ids = FAQ_Module::get_ids_by_topic( $topic_slug );
+	}
 } else {
-    // Selector mode — pull post IDs out of the repeater rows.
-    $rows = isset( $source['selected_faqs'] ) && is_array( $source['selected_faqs'] )
-        ? $source['selected_faqs']
-        : [];
-
-    $ids = [];
-    foreach ( $rows as $row ) {
-        if ( is_array( $row ) && isset( $row['id'] ) && is_numeric( $row['id'] ) ) {
-            $id = (int) $row['id'];
-            if ( $id > 0 ) {
-                $ids[] = $id;
-            }
-        } elseif ( is_numeric( $row ) ) {
-            $ids[] = (int) $row;
-        }
-    }
-
-    if ( ! empty( $ids ) ) {
-        $atts['ids'] = implode( ',', $ids );
-    }
-    // Empty IDs falls through with no `ids` att → shortcode renders its own
-    // "No FAQs selected." message. No echo from this file.
+	$rows = isset( $source['selected_faqs'] ) && is_array( $source['selected_faqs'] ) ? $source['selected_faqs'] : [];
+	foreach ( $rows as $row ) {
+		if ( is_array( $row ) && isset( $row['id'] ) && is_numeric( $row['id'] ) ) {
+			$id = (int) $row['id'];
+			if ( $id > 0 ) {
+				$faq_ids[] = $id;
+			}
+		} elseif ( is_numeric( $row ) ) {
+			$faq_ids[] = (int) $row;
+		}
+	}
 }
 
-$att_string = '';
-foreach ( $atts as $k => $v ) {
-    $att_string .= ' ' . $k . '="' . esc_attr( (string) $v ) . '"';
+if ( empty( $faq_ids ) ) {
+	echo '<p>' . esc_html__( 'No FAQs selected.', 'site-essentials' ) . '</p>';
+	return;
 }
 
-echo do_shortcode( '[faqs' . $att_string . ']' );
+$faqs = FAQ_Module::get_by_ids( array_values( $faq_ids ) );
+
+if ( empty( $faqs ) ) {
+	echo '<p>' . esc_html__( 'No FAQs found.', 'site-essentials' ) . '</p>';
+	return;
+}
+
+// Icon SVGs from design properties (set by Breakdance icon picker — admin-only).
+$icon_svg        = isset( $design['item']['icon']['icon']['svgCode'] )        ? $design['item']['icon']['icon']['svgCode']        : '';
+$active_icon_svg = isset( $design['item']['icon']['active_icon']['svgCode'] ) ? $design['item']['icon']['active_icon']['svgCode'] : '';
+
+// Default chevron — matches Frequently_Asked_Questions fallback.
+$default_icon = '<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 12"><path d="M.59 10.59 5.17 6 .59 1.41 2 0l6 6-6 6-1.41-1.41Z" /></svg>';
+
+$prefix = wp_unique_id( 'scos-faq-' );
+
+foreach ( $faqs as $index => $faq ) {
+	$open       = $first_opened && ( 0 === $index );
+	$btn_id     = esc_attr( $prefix . '-btn-' . $index );
+	$panel_id   = esc_attr( $prefix . '-panel-' . $index );
+	$item_class = 'bde-faq__item' . ( $open ? ' is-active' : '' );
+
+	echo '<div class="' . esc_attr( $item_class ) . '">';
+
+	if ( 'accordion' === $format ) {
+		echo '<' . esc_attr( $heading_level ) . ' class="bde-faq__title-tag">';
+		echo '<button type="button"'
+			. ' id="' . $btn_id . '"'
+			. ' aria-controls="' . $panel_id . '"'
+			. ' aria-expanded="' . ( $open ? 'true' : 'false' ) . '"'
+			. ' class="bde-faq__question js-faq-item">';
+		echo '<span class="bde-faq__title">' . esc_html( get_the_title( $faq->ID ) ) . '</span>';
+
+		// Icon slot — mirrors Frequently_Asked_Questions/html.twig logic.
+		if ( '' === $icon_svg && '' === $active_icon_svg ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo '<div aria-hidden="true" class="bde-faq__icon bde-faq__icon--rotate">' . $default_icon . '</div>';
+		} elseif ( '' !== $icon_svg && '' === $active_icon_svg ) {
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo '<div aria-hidden="true" class="bde-faq__icon bde-faq__icon--rotate">' . $icon_svg . '</div>';
+		} else {
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo '<div aria-hidden="true" class="bde-faq__icon bde-faq__icon--inactive">' . $icon_svg . '</div>';
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo '<div aria-hidden="true" class="bde-faq__icon bde-faq__icon--active">' . $active_icon_svg . '</div>';
+		}
+
+		echo '</button>';
+		echo '</' . esc_attr( $heading_level ) . '>';
+
+		echo '<div role="region"'
+			. ' aria-labelledby="' . $btn_id . '"'
+			. ' id="' . $panel_id . '"'
+			. ' class="bde-faq__answer">';
+		echo '<div class="bde-faq__answer-content">';
+		echo '<div class="breakdance-rich-text-styles">';
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo apply_filters( 'the_content', $faq->post_content );
+		echo '</div>';
+		echo '</div>';
+		echo '</div>';
+
+	} else {
+		// Plain format: semantic heading + answer, no accordion behavior.
+		echo '<' . esc_attr( $heading_level ) . ' class="bde-faq__title-tag bde-faq__question">'
+			. esc_html( get_the_title( $faq->ID ) )
+			. '</' . esc_attr( $heading_level ) . '>';
+		echo '<div class="bde-faq__answer">';
+		echo '<div class="bde-faq__answer-content">';
+		echo '<div class="breakdance-rich-text-styles">';
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo apply_filters( 'the_content', $faq->post_content );
+		echo '</div>';
+		echo '</div>';
+		echo '</div>';
+	}
+
+	echo '</div>';
+}

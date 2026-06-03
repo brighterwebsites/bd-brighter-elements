@@ -1,29 +1,27 @@
 <?php
-// v1.2 | 2026-05-21
+// v2.0 | 2026-06-03
 //
 // SCOS FAQs — Breakdance element that renders FAQs from the Site Essentials
-// FAQ submodule. Delegates rendering to the `[faqs]` shortcode (so the same
-// markup, accordion behaviour, and FAQPage schema graph integration that the
-// Gutenberg block uses applies here too).
+// FAQ submodule using the bde-faq__* HTML structure and BreakdanceFaq JS,
+// matching the design system of the Frequently Asked Questions element.
 //
-// Two modes:
+// Two source modes:
 //   - selector: editor picks specific FAQs from a dropdown repeater.
 //   - topic:    editor enters a scos_topic slug; every FAQ tagged with it renders.
 //
-// Property path layout (must match contentControls section nesting):
-//   content.faq_source.mode
-//   content.faq_source.selected_faqs[].id
-//   content.faq_source.topic_slug
-//   content.display.format
-//   content.display.heading
-//   content.display.schema_enabled
+// v2.0 changes:
+//   - Replaced shortcode delegation with direct FAQ_Module calls in ssr.php
+//   - Replaced details/summary HTML with bde-faq__* accordion structure
+//   - Full design controls: wrapper, item, typography, borders, spacing
+//   - Added BreakdanceFaq JS initialization via dependencies() and actions()
+//   - Added first_item_opened content toggle
+//   - heading level moved to design.typography.title_tag
 //
-// Schema is contributed to the unified site `@graph` by
+// Schema is contributed to the unified site @graph by
 // site-essentials/Modules/CustomPosts/FAQ/FAQ_Schema_Graph.php — that class
-// walks `_breakdance_data` looking for nodes of type
-// `BreakdanceCustomElements\ScosFaqs`. The slug string and property paths
-// here MUST stay in sync with FAQ_Schema_Graph::walk_bd_tree() on the MU
-// plugin side, plus Content_Analysis::bd_tree_has_scos_faqs().
+// walks `_breakdance_data` for nodes of type BreakdanceCustomElements\ScosFaqs.
+// The slug and property paths here MUST stay in sync with FAQ_Schema_Graph and
+// Content_Analysis::bd_tree_has_scos_faqs() in the MU plugin.
 
 namespace BreakdanceCustomElements;
 
@@ -95,18 +93,52 @@ class ScosFaqs extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        // Section IDs in contentControls (`faq_source`, `display`) become
-        // segments in the property path — defaults MUST mirror that nesting
-        // or BD will silently ignore them.
         return [
             'content' => [
                 'faq_source' => [
                     'mode' => 'selector',
                 ],
                 'display' => [
-                    'format'         => 'accordion',
-                    'heading'        => 'h3',
-                    'schema_enabled' => true,
+                    'format'             => 'accordion',
+                    'first_item_opened'  => false,
+                    'schema_enabled'     => true,
+                ],
+            ],
+            'design' => [
+                'borders' => [
+                    'border_width' => [
+                        'number'         => 2,
+                        'unit'           => 'px',
+                        'style'          => '2px',
+                        'breakpoint_base' => ['number' => 2, 'unit' => 'px', 'style' => '2px'],
+                    ],
+                    'border_color' => '#1B1B1BFF',
+                ],
+                'item' => [
+                    'horizontal_padding' => [
+                        'number'         => 16,
+                        'unit'           => 'px',
+                        'style'          => '16px',
+                        'breakpoint_base' => ['number' => 16, 'unit' => 'px', 'style' => '16px'],
+                    ],
+                    'vertical_padding' => [
+                        'number'         => 16,
+                        'unit'           => 'px',
+                        'style'          => '16px',
+                        'breakpoint_base' => ['number' => 16, 'unit' => 'px', 'style' => '16px'],
+                    ],
+                    'icon' => [
+                        'icon' => [
+                            'slug'    => 'icon-plus',
+                            'name'    => 'plus',
+                            'svgCode' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M31 12h-11v-11c0-0.552-0.448-1-1-1h-6c-0.552 0-1 0.448-1 1v11h-11c-0.552 0-1 0.448-1 1v6c0 0.552 0.448 1 1 1h11v11c0 0.552 0.448 1 1 1h6c0.552 0 1-0.448 1-1v-11h11c0.552 0 1-0.448 1-1v-6c0-0.552-0.448-1-1-1z"/></svg>',
+                        ],
+                        'active_icon' => [
+                            'slug'    => 'icon-minus.',
+                            'name'    => 'minus',
+                            'svgCode' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M416 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"/></svg>',
+                        ],
+                    ],
                 ],
             ],
         ];
@@ -125,33 +157,9 @@ class ScosFaqs extends \Breakdance\Elements\Element
     static function designControls()
     {
         return [
-            getPresetSection(
-                'EssentialElements\\simpleLayout',
-                'Layout',
-                'layout',
-                [
-                    'condition' => [[['path' => 'design.layout', 'operand' => 'is set', 'value' => '']]],
-                    'type'      => 'popout',
-                ],
-            ),
-            getPresetSection(
-                'EssentialElements\\LayoutV2',
-                'Layout',
-                'layout_v2',
-                [
-                    'condition' => [[['path' => 'design.layout', 'operand' => 'is not set', 'value' => '']]],
-                    'type'      => 'popout',
-                ],
-            ),
-            getPresetSection(
-                'EssentialElements\\LessFancyBackground',
-                'Background',
-                'background',
-                ['type' => 'popout'],
-            ),
             c(
-                'container',
-                'Container',
+                'wrapper',
+                'Wrapper',
                 [
                     c(
                         'width',
@@ -162,37 +170,101 @@ class ScosFaqs extends \Breakdance\Elements\Element
                         false,
                         [],
                     ),
-                    getPresetSection(
-                        'EssentialElements\\spacing_padding_all',
-                        'Padding',
-                        'padding',
-                        ['type' => 'popout'],
-                    ),
-                    getPresetSection(
-                        'EssentialElements\\borders',
-                        'Borders',
-                        'borders',
-                        ['type' => 'popout'],
+                    c(
+                        'background',
+                        'Background',
+                        [],
+                        ['type' => 'color', 'layout' => 'inline'],
+                        false,
+                        false,
+                        [],
                     ),
                 ],
-                ['type' => 'section'],
+                ['type' => 'section', 'layout' => 'vertical'],
                 false,
                 false,
                 [],
             ),
-            getPresetSection(
-                'EssentialElements\\typography_with_effects_and_align',
-                'Typography',
-                'typography',
-                ['type' => 'popout'],
-            ),
             c(
-                'typography_colors',
-                'Typography Colors',
+                'item',
+                'Item',
                 [
                     c(
-                        'question_color',
-                        'Question Color',
+                        'horizontal_padding',
+                        'Horizontal Padding',
+                        [],
+                        ['type' => 'unit', 'layout' => 'inline'],
+                        true,
+                        false,
+                        [],
+                    ),
+                    c(
+                        'vertical_padding',
+                        'Vertical Padding',
+                        [],
+                        ['type' => 'unit', 'layout' => 'inline'],
+                        true,
+                        false,
+                        [],
+                    ),
+                    c(
+                        'icon',
+                        'Icon',
+                        [
+                            c(
+                                'icon',
+                                'Icon',
+                                [],
+                                ['type' => 'icon', 'layout' => 'vertical'],
+                                false,
+                                false,
+                                [],
+                            ),
+                            c(
+                                'active_icon',
+                                'Active Icon',
+                                [],
+                                ['type' => 'icon', 'layout' => 'vertical'],
+                                false,
+                                false,
+                                [],
+                            ),
+                            c(
+                                'size',
+                                'Size',
+                                [],
+                                ['type' => 'unit', 'layout' => 'inline', 'rangeOptions' => ['min' => 4, 'max' => 100, 'step' => 1], 'unitOptions' => ['types' => ['px']]],
+                                true,
+                                false,
+                                [],
+                            ),
+                            c(
+                                'color',
+                                'Color',
+                                [],
+                                ['type' => 'color', 'layout' => 'inline'],
+                                false,
+                                false,
+                                [],
+                            ),
+                            c(
+                                'active_color',
+                                'Active Color',
+                                [],
+                                ['type' => 'color', 'layout' => 'inline'],
+                                false,
+                                false,
+                                [],
+                            ),
+                        ],
+                        ['type' => 'section', 'sectionOptions' => ['type' => 'popout']],
+                        false,
+                        false,
+                        [],
+                    ),
+                    c(
+                        'background',
+                        'Background',
                         [],
                         ['type' => 'color', 'layout' => 'inline'],
                         false,
@@ -200,16 +272,144 @@ class ScosFaqs extends \Breakdance\Elements\Element
                         [],
                     ),
                     c(
-                        'answer_color',
-                        'Answer Color',
+                        'active_background',
+                        'Active Background',
                         [],
                         ['type' => 'color', 'layout' => 'inline'],
+                        false,
+                        false,
+                        [],
+                    ),
+                    c(
+                        'below_title',
+                        'Below Title',
+                        [],
+                        ['type' => 'unit', 'layout' => 'inline'],
+                        true,
+                        false,
+                        [],
+                    ),
+                    c(
+                        'after_item',
+                        'After Item',
+                        [],
+                        ['type' => 'unit', 'layout' => 'inline'],
+                        true,
+                        false,
+                        [],
+                    ),
+                    c(
+                        'transition_duration',
+                        'Transition Duration',
+                        [],
+                        ['type' => 'unit', 'layout' => 'inline', 'unitOptions' => ['types' => ['s', 'ms']]],
                         false,
                         false,
                         [],
                     ),
                 ],
-                ['type' => 'section'],
+                ['type' => 'section', 'layout' => 'vertical'],
+                false,
+                false,
+                [],
+            ),
+            c(
+                'typography',
+                'Typography',
+                [
+                    c(
+                        'title_tag',
+                        'Title Tag',
+                        [],
+                        [
+                            'type'   => 'dropdown',
+                            'layout' => 'inline',
+                            'items'  => [
+                                ['value' => 'h1', 'text' => 'H1'],
+                                ['value' => 'h2', 'text' => 'H2'],
+                                ['value' => 'h3', 'text' => 'H3'],
+                                ['value' => 'h4', 'text' => 'H4'],
+                                ['value' => 'h5', 'text' => 'H5'],
+                                ['value' => 'h6', 'text' => 'H6'],
+                            ],
+                        ],
+                        false,
+                        false,
+                        [],
+                    ),
+                    getPresetSection(
+                        'EssentialElements\\typography_with_align',
+                        'Title',
+                        'title',
+                        ['type' => 'popout'],
+                    ),
+                    c(
+                        'active_title',
+                        'Active Title',
+                        [],
+                        ['type' => 'color', 'layout' => 'inline'],
+                        false,
+                        false,
+                        [],
+                    ),
+                    getPresetSection(
+                        'EssentialElements\\typography_with_align',
+                        'Content',
+                        'content',
+                        ['type' => 'popout'],
+                    ),
+                ],
+                ['type' => 'section', 'layout' => 'vertical'],
+                false,
+                false,
+                [],
+            ),
+            c(
+                'borders',
+                'Borders',
+                [
+                    c(
+                        'below_only',
+                        'Below Only',
+                        [],
+                        ['type' => 'toggle', 'layout' => 'inline'],
+                        false,
+                        false,
+                        [],
+                    ),
+                    c(
+                        'border_color',
+                        'Border Color',
+                        [],
+                        ['type' => 'color', 'layout' => 'inline'],
+                        false,
+                        false,
+                        [],
+                    ),
+                    c(
+                        'border_width',
+                        'Border Width',
+                        [],
+                        ['type' => 'unit', 'layout' => 'inline'],
+                        true,
+                        false,
+                        [],
+                    ),
+                    c(
+                        'border_radius',
+                        'Border Radius',
+                        [],
+                        [
+                            'type'      => 'unit',
+                            'layout'    => 'inline',
+                            'condition' => ['path' => 'design.borders.below_only', 'operand' => 'is not set', 'value' => ''],
+                        ],
+                        false,
+                        false,
+                        [],
+                    ),
+                ],
+                ['type' => 'section', 'layout' => 'vertical'],
                 false,
                 false,
                 [],
@@ -315,19 +515,13 @@ class ScosFaqs extends \Breakdance\Elements\Element
                         [],
                     ),
                     c(
-                        'heading',
-                        'Heading Level',
+                        'first_item_opened',
+                        'First item opened',
                         [],
                         [
-                            'type'      => 'dropdown',
+                            'type'      => 'toggle',
                             'layout'    => 'inline',
-                            'items'     => [
-                                ['text' => 'H2', 'value' => 'h2'],
-                                ['text' => 'H3', 'value' => 'h3'],
-                                ['text' => 'H4', 'value' => 'h4'],
-                                ['text' => 'P',  'value' => 'p'],
-                            ],
-                            'condition' => [[['path' => '%%CURRENTPATH%%.format', 'operand' => 'equals', 'value' => 'plain']]],
+                            'condition' => [[['path' => '%%CURRENTPATH%%.format', 'operand' => 'equals', 'value' => 'accordion']]],
                         ],
                         false,
                         false,
@@ -362,7 +556,12 @@ class ScosFaqs extends \Breakdance\Elements\Element
 
     static function dependencies()
     {
-        return false;
+        return [
+            '0' => [
+                'scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/breakdance-faq@1/faq.js'],
+                'title'   => 'FAQ.js',
+            ],
+        ];
     }
 
     static function settings()
@@ -377,7 +576,42 @@ class ScosFaqs extends \Breakdance\Elements\Element
 
     static public function actions()
     {
-        return false;
+        return [
+
+'onMountedElement' => [['script' => '(function() {
+  if (!window.breakdanceFaqInstances) window.breakdanceFaqInstances = {};
+
+  if (window.breakdanceFaqInstances[%%ID%%]) {
+    window.breakdanceFaqInstances[%%ID%%].destroy();
+  }
+
+  if ({{ content.display.format|json_encode }} === \'accordion\') {
+    window.breakdanceFaqInstances[%%ID%%] = new BreakdanceFaq(\'%%SELECTOR%%\', { accordion: true, openFirst: {{ content.display.first_item_opened|json_encode }} });
+  }
+}());',
+]],
+
+'onPropertyChange' => [['script' => '(function() {
+  if (window.breakdanceFaqInstances && window.breakdanceFaqInstances[%%ID%%]) {
+    window.breakdanceFaqInstances[%%ID%%].destroy();
+    delete window.breakdanceFaqInstances[%%ID%%];
+  }
+
+  if ({{ content.display.format|json_encode }} === \'accordion\') {
+    window.breakdanceFaqInstances[%%ID%%] = new BreakdanceFaq(\'%%SELECTOR%%\', { accordion: true, openFirst: {{ content.display.first_item_opened|json_encode }} });
+  }
+}());',
+]],
+
+'onBeforeDeletingElement' => [['script' => '(function() {
+  if (window.breakdanceFaqInstances && window.breakdanceFaqInstances[%%ID%%]) {
+    window.breakdanceFaqInstances[%%ID%%].destroy();
+    delete window.breakdanceFaqInstances[%%ID%%];
+  }
+}());',
+]],
+
+        ];
     }
 
     static function nestingRule()
@@ -443,17 +677,16 @@ class ScosFaqs extends \Breakdance\Elements\Element
 
     static function propertyPathsToSsrElementWhenValueChanges()
     {
-        // List specific leaf paths (matches Scos_Review_Card's pattern). A
-        // top-level `'content'` here causes BD to re-fire SSR on transient
-        // sub-state changes too, which previously triggered AJAX wrapper
-        // errors when the SSR echoed placeholder text.
         return [
             'content.faq_source.mode',
             'content.faq_source.selected_faqs',
             'content.faq_source.topic_slug',
             'content.display.format',
-            'content.display.heading',
+            'content.display.first_item_opened',
             'content.display.schema_enabled',
+            'design.typography.title_tag',
+            'design.item.icon.icon',
+            'design.item.icon.active_icon',
         ];
     }
 }
