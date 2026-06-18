@@ -1,0 +1,48 @@
+%%SELECTOR%% {
+    {{ macros.simpleLayout(design.layout, breakpoint) }}
+    {{ macros.spacing_margin_y(design.spacing) }}
+    {{ macros.spacing_padding_all(design.container.padding) }}
+    {{ macros.borders(design.container.borders) }}
+}
+
+{{ macros.layoutV2(design.layout_v2, breakpoint, isBaseBreakpoint, '%%SELECTOR%%') }}
+{{ macros.fancyBackgroundCss('%%SELECTOR%%', design.background, breakpoint, false, true) }}
+
+{% if design.platform_icon.size %}
+%%SELECTOR%% .bde-aggregate-review__icon-img {
+    width: {{ design.platform_icon.size.style }};
+    height: auto;
+}
+{% endif %}
+
+{% if design.stars.size %}
+%%SELECTOR%% .bde-aggregate-review__stars {
+    font-size: {{ design.stars.size.style }};
+}
+{% endif %}
+
+{% if design.stars.color_filled %}
+%%SELECTOR%% .bde-aggregate-review__star--filled .bde-aggregate-review__star-svg {
+    fill: {{ design.stars.color_filled }};
+}
+{% endif %}
+
+{% if design.text.typography %}
+{{ macros.typography('%%SELECTOR%%', design.text.typography, breakpoint) }}
+{% endif %}
+
+{% if design.text.color %}
+%%SELECTOR%% .bde-aggregate-review__score,
+%%SELECTOR%% .bde-aggregate-review__from,
+%%SELECTOR%% .bde-aggregate-review__count,
+%%SELECTOR%% .bde-aggregate-review__label,
+%%SELECTOR%% .bde-aggregate-review__business {
+    color: {{ design.text.color }};
+}
+{% endif %}
+
+{% if design.text.link_color %}
+%%SELECTOR%% .bde-aggregate-review__link {
+    color: {{ design.text.link_color }};
+}
+{% endif %}

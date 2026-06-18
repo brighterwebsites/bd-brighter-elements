@@ -1,0 +1,3 @@
+# Excluded from `git archive` (deploy.sh / deploy-plink.ps1) but remain in the repo.
+scripts/ export-ignore
+.cursor/ export-ignore

@@ -1,0 +1,65 @@
+---
+description: Capture BDE Elements development insights, debugging notes, and successful patterns for skill-creator integration
+globs: ["**/*.php", "**/*.js", "**/*.css"]
+alwaysApply: true
+---
+
+# BDE Elements Development Notes Capture
+
+**Purpose:** Document technical decisions, debugging insights, mistakes, and successful patterns while developing Breakdance custom elements. This knowledge base feeds into the skill-creator skill to build a reusable  skill for Cursor or Claude in the BDE element development workspace.
+
+---
+
+## Capture Workflow
+
+Before each replying review the previous exchange and the new prompt and determine if the previous pass was a 
+
+> **Success or fail?**
+> - Success = Moving forward / confirming it works
+> - fail = Didn't work as expected / broken / needs debug
+
+Based on the exchange status synthesize insights into **`.cursor/bde-elements-dev-notes.md`**.
+
+---
+
+## What Gets Captured on SUCCESS ✅
+
+- What setting/config/approach **made it work**
+- Non-obvious steps or order-of-operations
+- Clever or counterintuitive solutions
+- Why that approach was chosen
+- Dependencies or prerequisites
+- Any design patterns that proved effective
+
+## What Gets Captured on FAIL + DEBUG ❌
+
+- What we **expected** vs. what **actually happened**
+- Why the initial approach didn't work (reasoning and context, not just "it broke")
+- Workarounds and alternative approaches tested
+- What **actually fixed it** and the underlying reason
+- Edge cases or conditions that triggered the failure
+- Time spent / complexity involved
+
+---
+
+## Note Structure (Emerges Organically)
+
+Sections grow around:
+- **Core Concepts** — how BDE elements actually work
+- **Setup & Configuration** — order of operations, prerequisites, initial config
+- **Common Patterns** — repeatable successful approaches
+- **Gotchas & Failures** — what breaks, how to recover, conditions that cause issues
+- **Advanced/Clever Solutions** — non-obvious but effective techniques
+
+Each entry includes:
+- What was the task/goal?
+- What did we try?
+- Result (success/failure)
+- Key insight or lesson
+- Why this matters (context for future Claude instances)
+
+---
+
+## File Location
+
+`.cursor/bde-elements-dev-notes.md` (gitignored; see `.gitignore`)

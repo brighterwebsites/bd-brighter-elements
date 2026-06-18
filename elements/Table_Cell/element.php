@@ -7,15 +7,15 @@ use function Breakdance\Elements\PresetSections\getPresetSection;
 
 
 \Breakdance\ElementStudio\registerElementForEditing(
-    "BreakdanceCustomElements\\TextTableHeader",
+    "BreakdanceCustomElements\\TableCell",
     \Breakdance\Util\getdirectoryPathRelativeToPluginFolder(__DIR__)
 );
 
-class TextTableHeader extends \Breakdance\Elements\Element
+class TableCell extends \Breakdance\Elements\Element
 {
     static function uiIcon()
     {
-        return 'TextIcon';
+        return 'SquareIcon';
     }
 
     static function tag()
@@ -30,27 +30,27 @@ class TextTableHeader extends \Breakdance\Elements\Element
 
     static function tagControlPath()
     {
-        return false;
+        return "content.tag.cell_tag";
     }
 
     static function name()
     {
-        return 'Text Table Header';
+        return 'Table Cell';
     }
 
     static function className()
     {
-        return 'bde-table__htext';
+        return 'bde-table__cell';
     }
 
     static function category()
     {
-        return 'basic';
+        return 'other';
     }
 
     static function badge()
     {
-        return false;
+        return ['backgroundColor' => 'var(--black)', 'textColor' => 'var(--white)', 'label' => 'cell'];
     }
 
     static function slug()
@@ -70,7 +70,7 @@ class TextTableHeader extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        return ['content' => ['content' => ['text' => 'This is a basic text element.']]];
+        return ['content' => ['tag' => ['cell_tag' => 'td']]];
     }
 
     static function defaultChildren()
@@ -97,14 +97,29 @@ class TextTableHeader extends \Breakdance\Elements\Element
         true,
         false,
         [],
-        
+
       )],
         ['type' => 'section'],
         false,
         false,
         [],
-        
+
       ), getPresetSection(
+      "EssentialElements\\spacing_padding_all",
+      "Padding",
+      "padding",
+       ['type' => 'popout']
+     ), getPresetSection(
+      "EssentialElements\\borders",
+      "Borders",
+      "borders",
+       ['type' => 'popout']
+     ), getPresetSection(
+      "EssentialElements\\LessFancyBackground",
+      "Background",
+      "background",
+       ['type' => 'popout']
+     ), getPresetSection(
       "EssentialElements\\typography_with_effects_and_align",
       "Typography",
       "typography",
@@ -120,23 +135,50 @@ class TextTableHeader extends \Breakdance\Elements\Element
     static function contentControls()
     {
         return [c(
-        "content",
-        "Content",
+        "tag",
+        "Tag",
         [c(
-        "text",
-        "Text",
+        "cell_tag",
+        "Cell Tag",
         [],
-        ['type' => 'text', 'layout' => 'vertical', 'textOptions' => ['multiline' => true]],
+        ['type' => 'dropdown', 'layout' => 'vertical', 'items' => [['text' => 'td  (data cell)', 'value' => 'td'], ['text' => 'th  (header cell)', 'value' => 'th']]],
         false,
         false,
         [],
-        ['accepts' => 'string']
+
+      ), c(
+        "data_label",
+        "Data Label",
+        [],
+        ['type' => 'text', 'layout' => 'inline', 'textOptions' => ['format' => 'plain'], 'placeholder' => 'Column name (for responsive)'],
+        false,
+        false,
+        [],
+
+      ), c(
+        "colspan",
+        "Colspan",
+        [],
+        ['type' => 'number', 'layout' => 'inline', 'numberOptions' => ['min' => 1, 'max' => 20]],
+        false,
+        false,
+        [],
+
+      ), c(
+        "rowspan",
+        "Rowspan",
+        [],
+        ['type' => 'number', 'layout' => 'inline', 'numberOptions' => ['min' => 1, 'max' => 20]],
+        false,
+        false,
+        [],
+
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
-        
+
       )];
     }
 
@@ -167,7 +209,7 @@ class TextTableHeader extends \Breakdance\Elements\Element
 
     static function nestingRule()
     {
-        return ['type' => 'final'];
+        return ['type' => 'container'];
     }
 
     static function spacingBars()
@@ -177,7 +219,7 @@ class TextTableHeader extends \Breakdance\Elements\Element
 
     static function attributes()
     {
-        return [['template' => 'content.content.text', 'name' => 'data-content-editable-property-path']];
+        return [['name' => 'data-bde-lazy-bg', 'template' => '{{ design.background.lazy_load ? \'waiting\' }}']];
     }
 
     static function experimental()
@@ -190,10 +232,9 @@ class TextTableHeader extends \Breakdance\Elements\Element
         return ['breakdance'];
     }
 
-
     static function order()
     {
-        return 74;
+        return 76;
     }
 
     static function dynamicPropertyPaths()
@@ -213,7 +254,7 @@ class TextTableHeader extends \Breakdance\Elements\Element
 
     static function propertyPathsToWhitelistInFlatProps()
     {
-        return false;
+        return ['design.background.type', 'design.background.image', 'design.background.overlay.image', 'design.background.image_settings.unset_image_at', 'design.background.image_settings.size', 'design.background.image_settings.height', 'design.background.image_settings.repeat', 'design.background.image_settings.position', 'design.background.image_settings.left', 'design.background.image_settings.top', 'design.background.image_settings.attachment', 'design.background.image_settings.custom_position', 'design.background.image_settings.width', 'design.background.overlay.type'];
     }
 
     static function propertyPathsToSsrElementWhenValueChanges()

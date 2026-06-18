@@ -1,0 +1,26 @@
+# Breakdance built-in element copies — kept locally for reference only
+elements/Accordion_Content/
+elements/Advanced_Accordion/
+elements/Atom_V1_Button/
+elements/Atom_V1_Custom_Button_Design/
+elements/Div/
+elements/Frequently_Asked_Questions/
+elements/Icon_List/
+elements/Post_Loop_Builder/
+elements/Pricing_Table/
+elements/Rich_Text/
+elements/Stats_Grid/
+elements/Text_Table_Header/
+elements/test.md
+
+# Local reference / OS
+schemadance-free-latest/
+Thumbs.db
+.DS_Store
+
+# BDE Element Studio dev notes (local skill-builder capture — never commit)
+bde-studio-skill-builder-notes.md
+.cursor/bde-elements-dev-notes.md
+# Deploy tooling stays in repo but never ships to WordPress (see .gitattributes export-ignore)
+# Deploy secrets (copy from scripts/deploy.env.example)
+scripts/deploy.env

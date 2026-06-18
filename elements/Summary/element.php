@@ -45,7 +45,7 @@ class Summary extends \Breakdance\Elements\Element
 
     static function category()
     {
-        return 'basic';
+        return 'other';
     }
 
     static function badge()

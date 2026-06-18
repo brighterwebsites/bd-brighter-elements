@@ -1,0 +1,32 @@
+%%SELECTOR%% {
+  {{ macros.simpleLayout(design.layout, breakpoint) }}
+  {{ macros.spacing_margin_y(design.spacing) }}
+}
+
+{{ macros.layoutV2(design.layout_v2, breakpoint, isBaseBreakpoint, '%%SELECTOR%%') }}
+
+{{ macros.fancyBackgroundCss('%%SELECTOR%%', design.background, breakpoint, false, true) }}
+
+%%SELECTOR%% .tldr-summary {
+  width: {{ design.container.width.style }};
+  min-height: {{ design.container.min_height.style }};
+  {{ macros.backgroundColor(design.container.background) }}
+  {{ macros.spacing_padding_all(design.container.padding) }}
+  {{ macros.borders(design.container.borders) }}
+}
+
+%%SELECTOR%% .tldr-summary {
+  {{ macros.typography(design.typography, globalSettings) }}
+}
+
+{% if design.typography_colors.heading_color %}
+  %%SELECTOR%% .tldr-summary .tldr-heading {
+    color: {{ design.typography_colors.heading_color }};
+  }
+{% endif %}
+
+{% if design.typography_colors.content_color %}
+  %%SELECTOR%% .tldr-summary .tldr-content {
+    color: {{ design.typography_colors.content_color }};
+  }
+{% endif %}

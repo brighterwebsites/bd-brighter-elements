@@ -1,0 +1,28 @@
+.bde-scos-breadcrumbs {
+  width: 100%;
+}
+
+.bde-scos-breadcrumbs .bw-breadcrumbs-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Dark theme: dark text on light backgrounds (default) */
+.bde-scos-breadcrumbs--theme-dark .bw-breadcrumbs-wrap.is-overflowing::after {
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.35) 100%
+  );
+}
+
+/* Light theme: light text on dark backgrounds */
+.bde-scos-breadcrumbs--theme-light .bw-breadcrumbs-wrap.is-overflowing::after {
+  background: linear-gradient(
+    to right,
+    #00000000 0%,
+    rgb(0 0 0 / 15%) 50%,
+    rgb(0 0 0 / 35%) 100%
+  );
+}

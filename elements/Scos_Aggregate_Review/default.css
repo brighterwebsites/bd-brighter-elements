@@ -1,0 +1,85 @@
+/* v1.0 | 2026-06-01 */
+/* SCOS Aggregate Review — base styles */
+/* Layout variants controlled by modifier classes. Colors and sizes via css.twig. */
+
+/* ── Stars ──────────────────────────────────────────────────────────── */
+
+.breakdance .bde-aggregate-review__stars-inner {
+    display: inline-flex;
+    gap: 2px;
+    align-items: center;
+}
+
+.breakdance .bde-aggregate-review__star {
+    display: inline-flex;
+}
+
+.breakdance .bde-aggregate-review__star-svg {
+    width: 1em;
+    height: 1em;
+    display: block;
+}
+
+.breakdance .bde-aggregate-review__star--filled .bde-aggregate-review__star-svg {
+    fill: #f5a623;
+}
+
+.breakdance .bde-aggregate-review__star--empty .bde-aggregate-review__star-svg {
+    fill: #d8d8d8;
+}
+
+/* ── Platform icon ──────────────────────────────────────────────────── */
+
+.breakdance .bde-aggregate-review__icon {
+    display: block;
+    flex-shrink: 0;
+}
+
+.breakdance .bde-aggregate-review__icon-img {
+    display: block;
+    width: 60px;
+    height: auto;
+}
+
+/* ── Link ───────────────────────────────────────────────────────────── */
+
+.breakdance .bde-aggregate-review__link {
+    font-size: 0.875em;
+    text-decoration: underline;
+}
+
+/* ── Layout: Simple ─────────────────────────────────────────────────── */
+
+.breakdance .bde-aggregate-review--layout-simple {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.25em;
+}
+
+/* ── Layout: Google Simple ──────────────────────────────────────────── */
+
+.breakdance .bde-aggregate-review--layout-google-simple {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ── Layout: Google Full ────────────────────────────────────────────── */
+
+.breakdance .bde-aggregate-review--layout-google-full {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+}
+
+.breakdance .bde-aggregate-review__top {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.breakdance .bde-aggregate-review__business {
+    font-size: 0.875em;
+}

@@ -1,20 +1,25 @@
 <?php
+// v0.3.3 | 2026-06-01
 
 /**
  * Plugin Name: Brighter BD Elements
- * Plugin URI: https://breakdance.com/
- * Description: Custom elements created with Element Studio.
- * Author: Breakdance
- * Author URI: https://breakdance.com/
+ * Plugin URI: https://brighterwebsites.com.au/
+ * Description: Custom Breakdance elements for Brighter Websites (SCOS, tables, definitions).
+ * Author: Brighter Websites
+ * Author URI: https://brighterwebsites.com.au/
  * License: GPLv2
  * Text Domain: breakdance
  * Domain Path: /languages/
- * Version: 0.0.1
+ * Version: 0.3.3
  */
 
 namespace BreakdanceCustomElements;
 
 use function Breakdance\Util\getDirectoryPathRelativeToPluginFolder;
+
+require_once __DIR__ . '/includes/class-faq-picker-options.php';
+require_once __DIR__ . '/includes/class-review-picker-options.php';
+require_once __DIR__ . '/includes/class-platform-picker-options.php';
 
 // CPT Form Submission action + admin settings
 add_action('init', function () {
@@ -31,6 +36,11 @@ add_action('init', function () {
     }
     require_once __DIR__ . '/form-actions/CptSubmissionAdmin.php';
     (new \BrighterElements\FormActions\CptSubmissionAdmin())->init();
+});
+
+add_filter('breakdance_element_categories', function (array $categories) {
+    $categories['site_essentials'] = 'Site Essentials';
+    return $categories;
 });
 
 add_action('breakdance_loaded', function () {

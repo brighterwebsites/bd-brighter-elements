@@ -4,11 +4,11 @@ namespace BrighterElements\FormActions;
 
 class CptSubmissionAction extends \Breakdance\Forms\Actions\Action {
 
-    public function name(): string {
+    public static function name(): string {
         return 'Submit to Post';
     }
 
-    public function slug(): string {
+    public static function slug(): string {
         return 'brighter_cpt_submission';
     }
 
