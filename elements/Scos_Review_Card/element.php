@@ -1,11 +1,13 @@
 <?php
-// v1.6 | 2026-06-01
+// v1.7 | 2026-06-18
 //
 // SCOS Review Card — preconfigured review card for bw_reviews CPT.
 //
 // Modes:
-//   loop     — drop inside a Breakdance loop querying bw_reviews; uses get_the_ID()
-//   specific — pick a review by post ID; drop anywhere on the page
+//   loop      — drop inside a Breakdance loop querying bw_reviews; uses get_the_ID()
+//   specific  — pick a review by post ID; drop anywhere on the page
+//   connected — drop on a project single template; renders every bw_reviews post
+//               whose bw_related_project meta equals the current project ID
 //
 // Layout presets: stacked | horizontal | quote | hero
 // All rendering delegated to [bw_review_card] → Review_Card_Renderer (site-essentials).
@@ -284,10 +286,11 @@ class ScosReviewCard extends \Breakdance\Elements\Element {
                         [
                             'type'        => 'dropdown',
                             'layout'      => 'vertical',
-                            'description' => 'Post loop: drop inside a Breakdance loop querying bw_reviews. Specific: display one review anywhere.',
+                            'description' => 'Post loop: drop inside a Breakdance loop querying bw_reviews. Specific: display one review anywhere. Connected: drop on a project single template to show every review linked to that project.',
                             'items'       => [
-                                [ 'text' => 'Post loop (dynamic)', 'value' => 'loop' ],
-                                [ 'text' => 'Specific review',    'value' => 'specific' ],
+                                [ 'text' => 'Post loop (dynamic)',           'value' => 'loop' ],
+                                [ 'text' => 'Specific review',               'value' => 'specific' ],
+                                [ 'text' => 'Connected to current project',  'value' => 'connected' ],
                             ],
                         ],
                         false,

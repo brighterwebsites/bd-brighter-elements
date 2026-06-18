@@ -61,7 +61,55 @@ $atts = [
     'show_project_link'  => $bool( $project['show_link']         ?? null ),
 ];
 
-// Add review ID only in specific mode
+// Helper: render one review by explicit ID via the [bw_review_card] shortcode.
+$render_with_id = function ( int $id ) use ( $atts ): string {
+    $atts['id'] = $id;
+    $att_string = '';
+    foreach ( $atts as $k => $v ) {
+        $att_string .= ' ' . $k . '="' . esc_attr( (string) $v ) . '"';
+    }
+    return do_shortcode( '[bw_review_card' . $att_string . ']' );
+};
+
+// Connected: every review linked to the current project (project single template).
+if ( 'connected' === $mode ) {
+    $project_id = (int) get_the_ID();
+
+    if ( ! $project_id ) {
+        return;
+    }
+
+    $reviews_query = new WP_Query( [
+        'post_type'           => 'bw_reviews',
+        'post_status'         => 'publish',
+        'posts_per_page'      => -1,
+        'no_found_rows'       => true,
+        'ignore_sticky_posts' => true,
+        'meta_query'          => [ [
+            'key'     => 'bw_related_project',
+            'value'   => $project_id,
+            'compare' => '=',
+            'type'    => 'NUMERIC',
+        ] ],
+    ] );
+
+    if ( $reviews_query->have_posts() ) {
+        // Prime meta cache for all connected reviews in one query.
+        update_meta_cache( 'post', wp_list_pluck( $reviews_query->posts, 'ID' ) );
+        foreach ( $reviews_query->posts as $review_post ) {
+            echo $render_with_id( (int) $review_post->ID );
+        }
+    } elseif ( defined( 'BREAKDANCE_BUILDER' ) && BREAKDANCE_BUILDER ) {
+        echo '<div class="bde-scos-review-card__placeholder">'
+            . esc_html__( 'No reviews are linked to this project yet.', 'site-essentials' )
+            . '</div>';
+    }
+
+    wp_reset_postdata();
+    return;
+}
+
+// Specific: one review chosen by ID, drop anywhere.
 if ( 'specific' === $mode ) {
     if ( ! $review_id ) {
         echo '<div class="bde-scos-review-card__placeholder">'
@@ -69,10 +117,12 @@ if ( 'specific' === $mode ) {
             . '</div>';
         return;
     }
-    $atts['id'] = $review_id;
+    echo $render_with_id( $review_id );
+    return;
 }
 
-// Build shortcode attribute string
+// Loop (default): render the current post inside a Breakdance loop. No explicit
+// id — the shortcode resolves the current bw_reviews post in the loop context.
 $att_string = '';
 foreach ( $atts as $k => $v ) {
     $att_string .= ' ' . $k . '="' . esc_attr( (string) $v ) . '"';
