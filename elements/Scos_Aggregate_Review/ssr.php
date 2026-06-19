@@ -2,9 +2,12 @@
 /**
  * Server-side render: SCOS Aggregate Review
  *
- * Renders via Aggregate_Review_Renderer DIRECTLY (no do_shortcode), mirroring
- * the working FAQ element pattern so the output stays inside Breakdance's SSR
- * capture buffer instead of leaking ("Unexpected output during AJAX request").
+ * Renders via Aggregate_Review_Renderer::echo_card() — emitted straight into
+ * Breakdance's SSR capture buffer, exactly like the working FAQ element. The
+ * string-returning render() builds output inside a nested ob_start()/
+ * ob_get_clean(); on LiteSpeed that nested buffer let the widget escape
+ * Breakdance's capture ("Unexpected output during AJAX request", rendered after
+ * <body>). echo_card() writes directly to the buffer Breakdance opened here.
  *
  * @var array $propertiesData
  */
@@ -53,4 +56,4 @@ $atts = [
 
 $renderer = new \SiteEssentials\Modules\CustomPosts\Aggregate_Review_Renderer();
 
-echo $renderer->render( $atts ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+$renderer->echo_card( $atts );

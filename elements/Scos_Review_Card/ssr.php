@@ -2,13 +2,15 @@
 /**
  * Server-side render: SCOS Review Card
  *
- * Renders bw_reviews via Review_Card_Renderer DIRECTLY (no do_shortcode).
+ * Renders bw_reviews via Review_Card_Renderer::echo_card() — emitted straight
+ * into Breakdance's SSR capture buffer, exactly like the working FAQ element.
  *
- * Routing through do_shortcode() made the rendered card escape Breakdance's
- * SSR capture buffer (output leaked after <body>, rendered twice, and tripped
- * "Unexpected output during AJAX request"). Calling the renderer directly and
- * echoing mirrors the working FAQ element pattern and keeps all output inside
- * Breakdance's capture.
+ * Earlier versions routed through do_shortcode() (escaped capture, double
+ * render) and then through render() which returns a string built inside a
+ * nested ob_start()/ob_get_clean(). On LiteSpeed that nested buffer let the
+ * card escape Breakdance's capture: it rendered after <body> and tripped
+ * "Unexpected output during AJAX request". echo_card() writes directly to the
+ * buffer Breakdance opened around this include — no nested buffer, no escape.
  *
  * @var array $propertiesData
  */
@@ -68,9 +70,9 @@ $atts = [
 
 $renderer = new \SiteEssentials\Modules\CustomPosts\Review_Card_Renderer();
 
-// Helper: render one review by explicit ID via the renderer (returns a string).
-$render_with_id = function ( int $id ) use ( $renderer, $atts ): string {
-    return $renderer->render( $id, $atts );
+// Helper: render one review by explicit ID directly into Breakdance's buffer.
+$render_with_id = function ( int $id ) use ( $renderer, $atts ): void {
+    $renderer->echo_card( $id, $atts );
 };
 
 // Connected: every review linked to the current project (project single template).
@@ -99,7 +101,7 @@ if ( 'connected' === $mode ) {
         // Prime meta cache for all connected reviews in one query.
         update_meta_cache( 'post', wp_list_pluck( $reviews_query->posts, 'ID' ) );
         foreach ( $reviews_query->posts as $review_post ) {
-            echo $render_with_id( (int) $review_post->ID ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            $render_with_id( (int) $review_post->ID );
         }
     } elseif ( defined( 'BREAKDANCE_BUILDER' ) && BREAKDANCE_BUILDER ) {
         echo '<div class="bde-scos-review-card__placeholder">'
@@ -119,9 +121,9 @@ if ( 'specific' === $mode ) {
             . '</div>';
         return;
     }
-    echo $render_with_id( $review_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+    $render_with_id( $review_id );
     return;
 }
 
 // Loop (default): current bw_reviews post inside a Breakdance loop.
-echo $render_with_id( (int) get_the_ID() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+$render_with_id( (int) get_the_ID() );
