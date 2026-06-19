@@ -2,8 +2,9 @@
 /**
  * Server-side render: SCOS Aggregate Review
  *
- * Maps Breakdance element content props → [bw_aggregate_review] shortcode attributes.
- * Aggregate_Review_Renderer in site-essentials owns all HTML and data logic.
+ * Renders via Aggregate_Review_Renderer DIRECTLY (no do_shortcode), mirroring
+ * the working FAQ element pattern so the output stays inside Breakdance's SSR
+ * capture buffer instead of leaking ("Unexpected output during AJAX request").
  *
  * @var array $propertiesData
  */
@@ -12,10 +13,10 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if ( ! shortcode_exists( 'bw_aggregate_review' ) ) {
+if ( ! class_exists( 'SiteEssentials\\Modules\\CustomPosts\\Aggregate_Review_Renderer' ) ) {
     if ( defined( 'BREAKDANCE_BUILDER' ) && BREAKDANCE_BUILDER ) {
         echo '<div class="bde-scos-aggregate-review__placeholder">'
-            . esc_html__( '[bw_aggregate_review] shortcode not found. Ensure Site Essentials Reviews CPT submodule is active.', 'site-essentials' )
+            . esc_html__( 'Site Essentials Reviews module is not active.', 'site-essentials' )
             . '</div>';
     }
     return;
@@ -50,9 +51,6 @@ $atts = [
     'show_link'   => $bool( $show['link']  ?? null ),
 ];
 
-$att_string = '';
-foreach ( $atts as $k => $v ) {
-    $att_string .= ' ' . $k . '="' . esc_attr( (string) $v ) . '"';
-}
+$renderer = new \SiteEssentials\Modules\CustomPosts\Aggregate_Review_Renderer();
 
-echo do_shortcode( '[bw_aggregate_review' . $att_string . ']' );
+echo $renderer->render( $atts ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped

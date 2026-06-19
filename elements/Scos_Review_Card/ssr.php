@@ -2,8 +2,13 @@
 /**
  * Server-side render: SCOS Review Card
  *
- * Maps Breakdance element content props → [bw_review_card] shortcode attributes.
- * The Review_Card_Renderer in site-essentials owns all HTML/logic.
+ * Renders bw_reviews via Review_Card_Renderer DIRECTLY (no do_shortcode).
+ *
+ * Routing through do_shortcode() made the rendered card escape Breakdance's
+ * SSR capture buffer (output leaked after <body>, rendered twice, and tripped
+ * "Unexpected output during AJAX request"). Calling the renderer directly and
+ * echoing mirrors the working FAQ element pattern and keeps all output inside
+ * Breakdance's capture.
  *
  * @var array $propertiesData
  */
@@ -12,10 +17,10 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if ( ! shortcode_exists( 'bw_review_card' ) ) {
+if ( ! class_exists( 'SiteEssentials\\Modules\\CustomPosts\\Review_Card_Renderer' ) ) {
     if ( defined( 'BREAKDANCE_BUILDER' ) && BREAKDANCE_BUILDER ) {
         echo '<div class="bde-scos-review-card__placeholder">'
-            . esc_html__( '[bw_review_card] shortcode not found. Ensure Site Essentials Reviews CPT submodule is active.', 'site-essentials' )
+            . esc_html__( 'Site Essentials Reviews module is not active.', 'site-essentials' )
             . '</div>';
     }
     return;
@@ -32,7 +37,7 @@ $review_id = isset( $content['source']['review_id'] ) ? absint( $content['source
 // Layout
 $layout = isset( $content['display']['layout'] ) ? (string) $content['display']['layout'] : 'stacked';
 
-// Field toggles — 1/0 strings for shortcode
+// Field toggles — 1/0 strings, matching Review_Card_Renderer's show_* atts.
 $bool = function ( $val, bool $default = true ): string {
     if ( $val === null || $val === '' ) {
         return $default ? '1' : '0';
@@ -61,14 +66,11 @@ $atts = [
     'show_project_link'  => $bool( $project['show_link']         ?? null ),
 ];
 
-// Helper: render one review by explicit ID via the [bw_review_card] shortcode.
-$render_with_id = function ( int $id ) use ( $atts ): string {
-    $atts['id'] = $id;
-    $att_string = '';
-    foreach ( $atts as $k => $v ) {
-        $att_string .= ' ' . $k . '="' . esc_attr( (string) $v ) . '"';
-    }
-    return do_shortcode( '[bw_review_card' . $att_string . ']' );
+$renderer = new \SiteEssentials\Modules\CustomPosts\Review_Card_Renderer();
+
+// Helper: render one review by explicit ID via the renderer (returns a string).
+$render_with_id = function ( int $id ) use ( $renderer, $atts ): string {
+    return $renderer->render( $id, $atts );
 };
 
 // Connected: every review linked to the current project (project single template).
@@ -97,7 +99,7 @@ if ( 'connected' === $mode ) {
         // Prime meta cache for all connected reviews in one query.
         update_meta_cache( 'post', wp_list_pluck( $reviews_query->posts, 'ID' ) );
         foreach ( $reviews_query->posts as $review_post ) {
-            echo $render_with_id( (int) $review_post->ID );
+            echo $render_with_id( (int) $review_post->ID ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         }
     } elseif ( defined( 'BREAKDANCE_BUILDER' ) && BREAKDANCE_BUILDER ) {
         echo '<div class="bde-scos-review-card__placeholder">'
@@ -117,15 +119,9 @@ if ( 'specific' === $mode ) {
             . '</div>';
         return;
     }
-    echo $render_with_id( $review_id );
+    echo $render_with_id( $review_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     return;
 }
 
-// Loop (default): render the current post inside a Breakdance loop. No explicit
-// id — the shortcode resolves the current bw_reviews post in the loop context.
-$att_string = '';
-foreach ( $atts as $k => $v ) {
-    $att_string .= ' ' . $k . '="' . esc_attr( (string) $v ) . '"';
-}
-
-echo do_shortcode( '[bw_review_card' . $att_string . ']' );
+// Loop (default): current bw_reviews post inside a Breakdance loop.
+echo $render_with_id( (int) get_the_ID() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
