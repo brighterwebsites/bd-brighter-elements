@@ -97,6 +97,29 @@ $default_icon = '<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 
 
 $prefix = wp_unique_id( 'scos-faq-' );
 
+/**
+ * Format a FAQ answer body WITHOUT the full the_content filter chain.
+ *
+ * Breakdance hooks the_content to render a post's element tree. A FAQ post that
+ * was opened in Breakdance therefore re-renders ITSELF when passed through
+ * apply_filters( 'the_content', ... ) from inside this element, which trips
+ * Breakdance's infinite-render-loop guard ("post X renders post X …"). Running
+ * the safe WordPress formatting steps manually reproduces normal the_content
+ * output (blocks, paragraphs, shortcodes, embeds) without re-entering Breakdance.
+ */
+$render_answer = static function ( string $html ): string {
+	global $wp_embed;
+	if ( $wp_embed instanceof WP_Embed ) {
+		$html = $wp_embed->run_shortcode( $html ); // [embed] shortcodes
+		$html = $wp_embed->autoembed( $html );      // bare-URL embeds
+	}
+	$html = do_blocks( $html );
+	$html = wptexturize( $html );
+	$html = wpautop( $html );
+	$html = do_shortcode( $html );
+	return $html;
+};
+
 foreach ( $faqs as $index => $faq ) {
 	$open       = $first_opened && ( 0 === $index );
 	$btn_id     = esc_attr( $prefix . '-btn-' . $index );
@@ -138,7 +161,7 @@ foreach ( $faqs as $index => $faq ) {
 		echo '<div class="bde-faq__answer-content">';
 		echo '<div class="breakdance-rich-text-styles">';
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo apply_filters( 'the_content', $faq->post_content );
+		echo $render_answer( $faq->post_content );
 		echo '</div>';
 		echo '</div>';
 		echo '</div>';
@@ -152,7 +175,7 @@ foreach ( $faqs as $index => $faq ) {
 		echo '<div class="bde-faq__answer-content">';
 		echo '<div class="breakdance-rich-text-styles">';
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo apply_filters( 'the_content', $faq->post_content );
+		echo $render_answer( $faq->post_content );
 		echo '</div>';
 		echo '</div>';
 		echo '</div>';
