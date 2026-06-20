@@ -224,35 +224,13 @@ $render_card = static function ( int $id ) use ( $show, $layout, $render_stars, 
 
 // ─── Mode dispatch ────────────────────────────────────────────────────────────
 
+// DISABLED: connected mode temporarily removed for SSR isolation testing.
+// Suspected cause of AJAX output leak — WP_Query in a global block renders
+// on every page load, including during Breakdance SSR AJAX requests for
+// other elements. Will be re-enabled or moved to a separate element once
+// specific/loop modes are confirmed clean.
 if ( 'connected' === $mode ) {
-	$project_id = (int) get_the_ID();
-	if ( ! $project_id ) {
-		echo '<div class="bde-scos-review-card__placeholder">' . esc_html__( 'Open on a Project post to see connected reviews.', 'site-essentials' ) . '</div>';
-		return;
-	}
-	$reviews_query = new WP_Query( [
-		'post_type'           => 'bw_reviews',
-		'post_status'         => 'publish',
-		'posts_per_page'      => -1,
-		'no_found_rows'       => true,
-		'ignore_sticky_posts' => true,
-		'meta_query'          => [ [
-			'key'     => 'bw_related_project',
-			'value'   => $project_id,
-			'compare' => '=',
-			'type'    => 'NUMERIC',
-		] ],
-	] );
-	if ( $reviews_query->have_posts() ) {
-		update_meta_cache( 'post', wp_list_pluck( $reviews_query->posts, 'ID' ) );
-		foreach ( $reviews_query->posts as $review_post ) {
-			// Top-level echo: $render_card() returns a string via its own ob_start.
-			echo $render_card( (int) $review_post->ID ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		}
-	} else {
-		echo '<div class="bde-scos-review-card__placeholder">' . esc_html__( 'No reviews linked to this project yet.', 'site-essentials' ) . '</div>';
-	}
-	wp_reset_postdata();
+	echo '<div class="bde-scos-review-card__placeholder">' . esc_html__( '[Connected mode temporarily disabled — use Specific mode.]', 'site-essentials' ) . '</div>';
 	return;
 }
 
