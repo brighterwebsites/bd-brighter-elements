@@ -237,7 +237,7 @@ if ( 'connected' === $mode ) {
 		foreach ( $reviews_query->posts as $review_post ) {
 			$render_card( (int) $review_post->ID );
 		}
-	} elseif ( defined( 'BREAKDANCE_BUILDER' ) && BREAKDANCE_BUILDER ) {
+	} else {
 		echo '<div class="bde-scos-review-card__placeholder">' . esc_html__( 'No reviews linked to this project yet.', 'site-essentials' ) . '</div>';
 	}
 	wp_reset_postdata();
@@ -246,9 +246,7 @@ if ( 'connected' === $mode ) {
 
 if ( 'specific' === $mode ) {
 	if ( ! $review_id ) {
-		if ( defined( 'BREAKDANCE_BUILDER' ) && BREAKDANCE_BUILDER ) {
-			echo '<div class="bde-scos-review-card__placeholder">' . esc_html__( 'Select a review in the element sidebar.', 'site-essentials' ) . '</div>';
-		}
+		echo '<div class="bde-scos-review-card__placeholder">' . esc_html__( 'Select a review in the sidebar.', 'site-essentials' ) . '</div>';
 		return;
 	}
 	$render_card( $review_id );
