@@ -299,7 +299,7 @@ class ScosAggregateReview extends \Breakdance\Elements\Element {
     }
 
     static function dependencies() {
-        return [];
+        return false;
     }
 
     static function settings() {
@@ -311,7 +311,7 @@ class ScosAggregateReview extends \Breakdance\Elements\Element {
     }
 
     static public function actions() {
-        return [];
+        return false;
     }
 
     static function nestingRule() {
