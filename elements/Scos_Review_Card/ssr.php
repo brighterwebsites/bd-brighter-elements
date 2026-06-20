@@ -2,12 +2,13 @@
 /**
  * Server-side render: SCOS Review Card
  *
- * All rendering is inline with echo statements only — no external class
- * delegation, no PHP template-mode ?>...<?php output. Directly mirrors the
- * working ScosFaqs element pattern to avoid the LiteSpeed LSAPI output buffer
- * bypass: on LiteSpeed, PHP template mode (?>...<?php) exits past PHP's
- * ob_start(), so Breakdance's SSR capture buffer doesn't catch the output.
- * Pure echo stays inside whatever ob layer is active.
+ * $render_card() builds HTML via its own ob_start/ob_get_clean and returns a
+ * string. The dispatch section then echoes that string at the TOP LEVEL of
+ * ssr.php. This mirrors the pattern used by the old working do_shortcode path
+ * (render() → ob_start → ob_get_clean → return → top-level echo) and ensures
+ * Breakdance's SSR ob_start capture layer receives a simple top-level echo
+ * rather than output originating from deep inside a closure call stack, which
+ * LiteSpeed PHP 8.0 does not reliably buffer.
  *
  * @var array $propertiesData
  */
@@ -88,12 +89,14 @@ $format_date = static function ( string $raw, string $precision ): string {
 	}
 };
 
-// ─── Single card — all output via echo, no PHP template mode ─────────────────
+// ─── Single card — builds and returns HTML string (never echoes directly) ────
+// Top-level echo in the dispatch section ensures output hits Breakdance's ob
+// capture layer rather than being lost inside a closure call stack.
 
-$render_card = static function ( int $id ) use ( $show, $layout, $render_stars, $format_date ): void {
+$render_card = static function ( int $id ) use ( $show, $layout, $render_stars, $format_date ): string {
 	$post = get_post( $id );
 	if ( ! $post || $post->post_type !== 'bw_reviews' ) {
-		return;
+		return '';
 	}
 
 	// Data — get_post_meta only, no ACF get_field() to avoid side effects
@@ -125,6 +128,11 @@ $render_card = static function ( int $id ) use ( $show, $layout, $render_stars, 
 	$project_thumb_id = $project_id ? (int) get_post_thumbnail_id( $project_id ) : 0;
 	$has_project      = $project_id && $project_title && ( $show['proj_image'] || $show['proj_name'] );
 	$has_proj_image   = $has_project && $show['proj_image'] && $project_thumb_id;
+
+	// Capture all output into a buffer and return as string.
+	// The caller (dispatch) is responsible for echoing the return value at the
+	// top level of ssr.php — this is what Breakdance's ob_start layer captures.
+	ob_start();
 
 	echo '<div class="bde-review-card bde-review-card--layout-' . esc_attr( $layout ) . '">';
 
@@ -210,6 +218,8 @@ $render_card = static function ( int $id ) use ( $show, $layout, $render_stars, 
 	}
 
 	echo '</div>';
+
+	return (string) ob_get_clean();
 };
 
 // ─── Mode dispatch ────────────────────────────────────────────────────────────
@@ -217,6 +227,7 @@ $render_card = static function ( int $id ) use ( $show, $layout, $render_stars, 
 if ( 'connected' === $mode ) {
 	$project_id = (int) get_the_ID();
 	if ( ! $project_id ) {
+		echo '<div class="bde-scos-review-card__placeholder">' . esc_html__( 'Open on a Project post to see connected reviews.', 'site-essentials' ) . '</div>';
 		return;
 	}
 	$reviews_query = new WP_Query( [
@@ -235,7 +246,8 @@ if ( 'connected' === $mode ) {
 	if ( $reviews_query->have_posts() ) {
 		update_meta_cache( 'post', wp_list_pluck( $reviews_query->posts, 'ID' ) );
 		foreach ( $reviews_query->posts as $review_post ) {
-			$render_card( (int) $review_post->ID );
+			// Top-level echo: $render_card() returns a string via its own ob_start.
+			echo $render_card( (int) $review_post->ID ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 	} else {
 		echo '<div class="bde-scos-review-card__placeholder">' . esc_html__( 'No reviews linked to this project yet.', 'site-essentials' ) . '</div>';
@@ -249,15 +261,9 @@ if ( 'specific' === $mode ) {
 		echo '<div class="bde-scos-review-card__placeholder">' . esc_html__( 'Select a review in the sidebar.', 'site-essentials' ) . '</div>';
 		return;
 	}
-	try {
-		$render_card( $review_id );
-	} catch ( \Throwable $e ) {
-		echo '<pre style="background:#fee;padding:1em;font-size:11px;white-space:pre-wrap">'
-			. esc_html( $e->getMessage() . "\n" . $e->getFile() . ':' . $e->getLine() . "\n" . $e->getTraceAsString() )
-			. '</pre>';
-	}
+	echo $render_card( $review_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	return;
 }
 
 // Loop mode (default): current bw_reviews post in a Breakdance loop.
-$render_card( (int) get_the_ID() );
+echo $render_card( (int) get_the_ID() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
