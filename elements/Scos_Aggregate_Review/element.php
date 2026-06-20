@@ -1,5 +1,5 @@
 <?php
-// v1.0 | 2026-06-01
+// v1.1 | 2026-06-20
 //
 // SCOS Aggregate Review — displays aggregate rating widget for bw_reviews.
 //
@@ -299,7 +299,7 @@ class ScosAggregateReview extends \Breakdance\Elements\Element {
     }
 
     static function dependencies() {
-        return false;
+        return [];
     }
 
     static function settings() {
@@ -311,7 +311,7 @@ class ScosAggregateReview extends \Breakdance\Elements\Element {
     }
 
     static public function actions() {
-        return false;
+        return [];
     }
 
     static function nestingRule() {

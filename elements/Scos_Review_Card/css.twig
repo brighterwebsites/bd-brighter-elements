@@ -1,12 +1,10 @@
 %%SELECTOR%% {
-    {{ macros.simpleLayout(design.layout, breakpoint) }}
     {{ macros.spacing_margin_y(design.spacing) }}
     {{ macros.spacing_padding_all(design.container.padding) }}
     {{ macros.borders(design.container.borders) }}
-    gap: {{ design.container.gap.style }};
+    {% if design.container.gap.style is defined and design.container.gap.style %}gap: {{ design.container.gap.style }};{% endif %}
 }
 
-{{ macros.layoutV2(design.layout_v2, breakpoint, isBaseBreakpoint, '%%SELECTOR%%') }}
 {{ macros.fancyBackgroundCss('%%SELECTOR%%', design.background, breakpoint, false, true) }}
 
 {% if design.stars.color_filled %}
@@ -21,13 +19,13 @@
 }
 {% endif %}
 
-{% if design.stars.size %}
+{% if design.stars.size.style is defined %}
 %%SELECTOR%% .bde-review-card__stars {
     font-size: {{ design.stars.size.style }};
 }
 {% endif %}
 
-{% if design.platform_icon.size %}
+{% if design.platform_icon.size.style is defined %}
 %%SELECTOR%% .bde-review-card__platform-icon-img {
     width: {{ design.platform_icon.size.style }};
     height: auto;
@@ -39,18 +37,12 @@
 {% endif %}
 
 {% if design.typography.meta %}
-{{ macros.typography('%%SELECTOR%% .bde-review-card__footer', design.typography.meta, breakpoint) }}
+{{ macros.typography('%%SELECTOR%% .bde-review-card__meta', design.typography.meta, breakpoint) }}
 {% endif %}
 
 {% if design.colors.quote_text %}
 %%SELECTOR%% .bde-review-card__quote {
     color: {{ design.colors.quote_text }};
-}
-{% endif %}
-
-{% if design.colors.meta_text %}
-%%SELECTOR%% .bde-review-card__footer {
-    color: {{ design.colors.meta_text }};
 }
 {% endif %}
 
@@ -60,15 +52,21 @@
 }
 {% endif %}
 
+{% if design.colors.name_text %}
+%%SELECTOR%% .bde-review-card__name {
+    color: {{ design.colors.name_text }};
+}
+{% endif %}
+
+{% if design.colors.meta_text %}
+%%SELECTOR%% .bde-review-card__meta {
+    color: {{ design.colors.meta_text }};
+}
+{% endif %}
+
 {% if design.colors.link %}
 %%SELECTOR%% .bde-review-card__verify,
 %%SELECTOR%% .bde-review-card__project-link {
     color: {{ design.colors.link }};
-}
-{% endif %}
-
-{% if design.project_image.width %}
-%%SELECTOR%% .bde-review-card--layout-horizontal .bde-review-card__media {
-    width: {{ design.project_image.width.style }};
 }
 {% endif %}

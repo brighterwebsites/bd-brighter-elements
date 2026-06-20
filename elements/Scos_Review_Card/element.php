@@ -1,5 +1,5 @@
 <?php
-// v1.7 | 2026-06-18
+// v1.9 | 2026-06-20
 //
 // SCOS Review Card — preconfigured review card for bw_reviews CPT.
 //
@@ -114,25 +114,6 @@ class ScosReviewCard extends \Breakdance\Elements\Element {
 
     static function designControls() {
         return [
-            getPresetSection(
-                'EssentialElements\\simpleLayout',
-                'Layout',
-                'layout',
-                [
-                    'condition' => [ [ [ 'path' => 'design.layout', 'operand' => 'is set', 'value' => '' ] ] ],
-                    'type'      => 'popout',
-                ],
-            ),
-            getPresetSection(
-                'EssentialElements\\LayoutV2',
-                'Layout',
-                'layout_v2',
-                [
-                    'condition' => [ [ [ 'path' => 'design.layout', 'operand' => 'is not set', 'value' => '' ] ] ],
-                    'type'      => 'popout',
-                ],
-            ),
-            getPresetSection( 'EssentialElements\\LessFancyBackground', 'Background', 'background', [ 'type' => 'popout' ] ),
             c(
                 'container',
                 'Container',
@@ -147,6 +128,7 @@ class ScosReviewCard extends \Breakdance\Elements\Element {
                         [],
                     ),
                     getPresetSection( 'EssentialElements\\spacing_padding_all', 'Padding', 'padding', [ 'type' => 'popout' ] ),
+                    getPresetSection( 'EssentialElements\\LessFancyBackground', 'Background', 'background', [ 'type' => 'popout' ] ),
                     getPresetSection( 'EssentialElements\\borders', 'Borders', 'borders', [ 'type' => 'popout' ] ),
                 ],
                 [ 'type' => 'section' ],
@@ -216,6 +198,7 @@ class ScosReviewCard extends \Breakdance\Elements\Element {
                 [
                     c( 'quote_text',   'Quote Text',   [], [ 'type' => 'color', 'layout' => 'inline' ], false, false, [] ),
                     c( 'outcome_text', 'Outcome Text', [], [ 'type' => 'color', 'layout' => 'inline' ], false, false, [] ),
+                    c( 'name_text',    'Name Text',    [], [ 'type' => 'color', 'layout' => 'inline' ], false, false, [] ),
                     c( 'meta_text',    'Meta Text',    [], [ 'type' => 'color', 'layout' => 'inline' ], false, false, [] ),
                     c( 'link',         'Links',        [], [ 'type' => 'color', 'layout' => 'inline' ], false, false, [] ),
                 ],
@@ -239,25 +222,6 @@ class ScosReviewCard extends \Breakdance\Elements\Element {
                         'Meta',
                         'meta',
                         [ 'type' => 'popout' ],
-                    ),
-                ],
-                [ 'type' => 'section' ],
-                false,
-                false,
-                [],
-            ),
-            c(
-                'project_image',
-                'Project Image',
-                [
-                    c(
-                        'width',
-                        'Sidebar Width (Horizontal layout)',
-                        [],
-                        [ 'type' => 'unit', 'layout' => 'inline', 'unitOptions' => [ 'types' => [ 'px', '%', 'rem' ], 'defaultType' => 'px' ] ],
-                        true,
-                        false,
-                        [],
                     ),
                 ],
                 [ 'type' => 'section' ],
@@ -389,7 +353,7 @@ class ScosReviewCard extends \Breakdance\Elements\Element {
     }
 
     static function dependencies() {
-        return false;
+        return [];
     }
 
     static function settings() {
@@ -401,7 +365,7 @@ class ScosReviewCard extends \Breakdance\Elements\Element {
     }
 
     static public function actions() {
-        return false;
+        return [];
     }
 
     static function nestingRule() {
