@@ -249,7 +249,13 @@ if ( 'specific' === $mode ) {
 		echo '<div class="bde-scos-review-card__placeholder">' . esc_html__( 'Select a review in the sidebar.', 'site-essentials' ) . '</div>';
 		return;
 	}
-	$render_card( $review_id );
+	try {
+		$render_card( $review_id );
+	} catch ( \Throwable $e ) {
+		echo '<pre style="background:#fee;padding:1em;font-size:11px;white-space:pre-wrap">'
+			. esc_html( $e->getMessage() . "\n" . $e->getFile() . ':' . $e->getLine() . "\n" . $e->getTraceAsString() )
+			. '</pre>';
+	}
 	return;
 }
 
