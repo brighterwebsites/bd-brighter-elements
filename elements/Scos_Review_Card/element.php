@@ -1,5 +1,5 @@
 <?php
-// v1.9 | 2026-06-20
+// v2.0 | 2026-06-22
 //
 // SCOS Review Card — preconfigured review card for bw_reviews CPT.
 //
@@ -193,21 +193,6 @@ class ScosReviewCard extends \Breakdance\Elements\Element {
                 [],
             ),
             c(
-                'colors',
-                'Colors',
-                [
-                    c( 'quote_text',   'Quote Text',   [], [ 'type' => 'color', 'layout' => 'inline' ], false, false, [] ),
-                    c( 'outcome_text', 'Outcome Text', [], [ 'type' => 'color', 'layout' => 'inline' ], false, false, [] ),
-                    c( 'name_text',    'Name Text',    [], [ 'type' => 'color', 'layout' => 'inline' ], false, false, [] ),
-                    c( 'meta_text',    'Meta Text',    [], [ 'type' => 'color', 'layout' => 'inline' ], false, false, [] ),
-                    c( 'link',         'Links',        [], [ 'type' => 'color', 'layout' => 'inline' ], false, false, [] ),
-                ],
-                [ 'type' => 'section' ],
-                false,
-                false,
-                [],
-            ),
-            c(
                 'typography',
                 'Typography',
                 [
@@ -219,8 +204,26 @@ class ScosReviewCard extends \Breakdance\Elements\Element {
                     ),
                     getPresetSection(
                         'EssentialElements\\typography_with_effects_and_align',
+                        'Outcome',
+                        'outcome',
+                        [ 'type' => 'popout' ],
+                    ),
+                    getPresetSection(
+                        'EssentialElements\\typography_with_effects_and_align',
+                        'Author',
+                        'author',
+                        [ 'type' => 'popout' ],
+                    ),
+                    getPresetSection(
+                        'EssentialElements\\typography_with_effects_and_align',
                         'Meta',
                         'meta',
+                        [ 'type' => 'popout' ],
+                    ),
+                    getPresetSection(
+                        'EssentialElements\\typography_with_effects_and_align',
+                        'Links',
+                        'links',
                         [ 'type' => 'popout' ],
                     ),
                 ],

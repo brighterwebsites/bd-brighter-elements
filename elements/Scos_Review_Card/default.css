@@ -1,202 +1,159 @@
-/* v2.0 | 2026-06-20 */
-/* SCOS Review Card — flat flex/grid structure, layout via CSS classes + order */
+/* ─── Base card ──────────────────────────────────────────────────────────────
+   Flat flex-column: all children are direct siblings, gap drives spacing.
+   No __content / __footer / __author wrappers.
+───────────────────────────────────────────────────────────────────────────── */
 
-/* ── Wrapper ────────────────────────────────────────────────────────────── */
-
-.breakdance .bde-review-card {
+.bde-review-card {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    position: relative;
-    max-width: 100%;
+    gap: 0.75rem;
 }
 
-/* ── Platform icon ──────────────────────────────────────────────────────── */
+/* ─── Media (project image) ──────────────────────────────────────────────── */
 
-.breakdance .bde-review-card__platform-icon {
-    display: block;
-}
-
-.breakdance .bde-review-card__platform-icon-img {
-    display: block;
-    width: 80px;
-    height: auto;
-}
-
-/* ── Stars ──────────────────────────────────────────────────────────────── */
-
-.breakdance .bde-review-card__stars-inner {
-    display: inline-flex;
-    gap: 2px;
-    align-items: center;
-}
-
-.breakdance .bde-review-card__star {
-    display: inline-flex;
-}
-
-.breakdance .bde-review-card__star-svg {
-    width: 1em;
-    height: 1em;
-    display: block;
-}
-
-.breakdance .bde-review-card__star--filled .bde-review-card__star-svg {
-    fill: #f5a623;
-}
-
-.breakdance .bde-review-card__star--empty .bde-review-card__star-svg {
-    fill: #d8d8d8;
-}
-
-/* ── Quote ──────────────────────────────────────────────────────────────── */
-
-.breakdance .bde-review-card__quote {
-    margin: 0;
-}
-
-.breakdance .bde-review-card__quote-text {
-    margin: 0;
-}
-
-/* ── Outcome ────────────────────────────────────────────────────────────── */
-
-.breakdance .bde-review-card__outcome {
-    margin: 0;
-    font-style: italic;
-}
-
-/* ── Author ─────────────────────────────────────────────────────────────── */
-
-.breakdance .bde-review-card__author {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1em;
-}
-
-.breakdance .bde-review-card__name {
-    font-weight: 700;
-}
-
-.breakdance .bde-review-card__detail {
-    opacity: 0.75;
-    font-size: 0.875em;
-}
-
-/* ── Meta row (platform / date / verify) ────────────────────────────────── */
-
-.breakdance .bde-review-card__meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875em;
-}
-
-.breakdance .bde-review-card__platform,
-.breakdance .bde-review-card__date {
-    opacity: 0.75;
-}
-
-.breakdance .bde-review-card__verify {
-    font-size: 0.875em;
-    text-decoration: underline;
-    opacity: 0.75;
-}
-
-/* ── Project meta ───────────────────────────────────────────────────────── */
-
-.breakdance .bde-review-card__project-link {
-    font-weight: 600;
-    font-size: 0.875em;
-}
-
-.breakdance .bde-review-card__project-name {
-    font-size: 0.875em;
-}
-
-/* ── Project image ──────────────────────────────────────────────────────── */
-
-.breakdance .bde-review-card__media {
-    overflow: hidden;
+.bde-review-card__media {
     width: 100%;
+    overflow: hidden;
 }
 
-.breakdance .bde-review-card__project-img {
+.bde-review-card__project-img {
     display: block;
     width: 100%;
     height: auto;
     object-fit: cover;
 }
 
-/* ── Featured badge ─────────────────────────────────────────────────────── */
+/* ─── Platform icon ──────────────────────────────────────────────────────── */
 
-.breakdance .bde-review-card__featured-badge {
+.bde-review-card__platform-icon {
+    display: flex;
+}
+
+.bde-review-card__platform-icon-img {
+    display: block;
+    width: 40px;
+    height: auto;
+}
+
+/* ─── Stars ──────────────────────────────────────────────────────────────── */
+
+.bde-review-card__stars {
+    display: flex;
+    font-size: 1em;
+}
+
+.bde-review-card__stars-inner {
+    display: flex;
+    gap: 0.2em;
+}
+
+.bde-review-card__star {
+    display: inline-flex;
+    width: 1em;
+    height: 1em;
+}
+
+.bde-review-card__star-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.bde-review-card__star--filled .bde-review-card__star-svg {
+    fill: #f5a623;
+}
+
+.bde-review-card__star--empty .bde-review-card__star-svg {
+    fill: #d9d9d9;
+}
+
+/* ─── Text elements ──────────────────────────────────────────────────────── */
+
+.bde-review-card__quote,
+.bde-review-card__full-text,
+.bde-review-card__outcome,
+.bde-review-card__name,
+.bde-review-card__detail,
+.bde-review-card__platform,
+.bde-review-card__project-name {
+    margin: 0;
+}
+
+.bde-review-card__quote {
+    font-style: italic;
+}
+
+.bde-review-card__outcome {
+    font-style: italic;
+}
+
+.bde-review-card__name {
+    font-weight: 600;
+}
+
+.bde-review-card__date,
+.bde-review-card__verify,
+.bde-review-card__project-link {
+    display: inline;
+}
+
+.bde-review-card__featured-badge {
     display: inline-block;
     font-size: 0.75em;
-    font-weight: 700;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    padding: 0.2em 0.6em;
-    border-radius: 2em;
-    background: currentColor;
 }
 
-/* ── Layout: Stacked (default — column, image at top via order) ─────────── */
+/* ─── Layout: horizontal ─────────────────────────────────────────────────
+   Project image sits in a left column. Everything else stacks in column 2.
+   Uses CSS custom property so element.php can set the image width via inline
+   style if we add that control later; falls back to a sensible default.
+───────────────────────────────────────────────────────────────────────────── */
 
-.breakdance .bde-review-card--layout-stacked .bde-review-card__media {
-    order: -1;
-    border-radius: inherit;
-}
-
-/* ── Layout: Horizontal (image in sidebar via grid) ─────────────────────── */
-
-.breakdance .bde-review-card--layout-horizontal {
+.bde-review-card--layout-horizontal {
     display: grid;
-    grid-template-columns: 200px 1fr;
+    grid-template-columns: var(--brc-image-width, 260px) 1fr;
+    grid-template-rows: auto;
     align-items: start;
-    gap: 1.5rem;
 }
 
-.breakdance .bde-review-card--layout-horizontal .bde-review-card__media {
+.bde-review-card--layout-horizontal .bde-review-card__media {
+    grid-column: 1;
     grid-row: 1 / -1;
-    order: -1;
-    width: 100%;
+    align-self: stretch;
 }
 
-/* ── Layout: Quote (large centred quote, stars below) ───────────────────── */
-
-.breakdance .bde-review-card--layout-quote .bde-review-card__quote {
-    font-size: 1.25em;
-    line-height: 1.5;
-    order: 1;
+.bde-review-card--layout-horizontal .bde-review-card__media .bde-review-card__project-img {
+    height: 100%;
+    object-fit: cover;
 }
 
-.breakdance .bde-review-card--layout-quote .bde-review-card__stars {
-    order: 2;
+.bde-review-card--layout-horizontal > *:not(.bde-review-card__media) {
+    grid-column: 2;
 }
 
-.breakdance .bde-review-card--layout-quote .bde-review-card__outcome {
-    order: 3;
+/* ─── Layout: quote ──────────────────────────────────────────────────────
+   Large centred quote, no media. Stub — style as needed.
+───────────────────────────────────────────────────────────────────────────── */
+
+.bde-review-card--layout-quote {
+    text-align: center;
+    align-items: center;
 }
 
-.breakdance .bde-review-card--layout-quote .bde-review-card__author {
-    order: 4;
+.bde-review-card--layout-quote .bde-review-card__media {
+    display: none;
 }
 
-.breakdance .bde-review-card--layout-quote .bde-review-card__meta {
-    order: 5;
+/* ─── Layout: hero ───────────────────────────────────────────────────────
+   Full-width image at top, content below. Stub — style as needed.
+───────────────────────────────────────────────────────────────────────────── */
+
+.bde-review-card--layout-hero .bde-review-card__media {
+    aspect-ratio: 16 / 7;
 }
 
-/* ── Layout: Hero (full-width image at top) ─────────────────────────────── */
-
-.breakdance .bde-review-card--layout-hero .bde-review-card__media {
-    order: -1;
-    aspect-ratio: 16 / 9;
-}
-
-.breakdance .bde-review-card--layout-hero .bde-review-card__project-img {
-    width: 100%;
+.bde-review-card--layout-hero .bde-review-card__media .bde-review-card__project-img {
     height: 100%;
     object-fit: cover;
 }
