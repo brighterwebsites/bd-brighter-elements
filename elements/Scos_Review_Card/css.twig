@@ -1,14 +1,13 @@
 %%SELECTOR%% {
     {{ macros.spacing_margin_y(design.spacing) }}
-}
-
-%%SELECTOR%% .bde-review-card {
     {{ macros.spacing_padding_all(design.container.padding) }}
     {{ macros.borders(design.container.borders) }}
     {% if design.container.gap.style is defined and design.container.gap.style %}gap: {{ design.container.gap.style }};{% endif %}
 }
 
-{{ macros.fancyBackgroundCss('%%SELECTOR%% .bde-review-card', design.container.background, breakpoint, false, true) }}
+
+{{ macros.fancyBackgroundCss('%%SELECTOR%%', design.background, breakpoint, false, true) }}
+
 
 {% if design.stars.color_filled %}
 %%SELECTOR%% .bde-review-card__star--filled .bde-review-card__star-svg {
@@ -35,22 +34,63 @@
 }
 {% endif %}
 
-{% if design.typography.quote %}
-{{ macros.typography('%%SELECTOR%% .bde-review-card__quote', design.typography.quote, breakpoint) }}
+{% if design.typography.review_text %}
+%%SELECTOR%% .bde-review-card__quote {
+{{ macros.typography(design.typography.review_text, globalSettings) }}
+}
 {% endif %}
+
 
 {% if design.typography.outcome %}
-{{ macros.typography('%%SELECTOR%% .bde-review-card__outcome', design.typography.outcome, breakpoint) }}
+%%SELECTOR%% .bde-review-card__outcome {
+ {{ macros.typography(design.typography.outcome, globalSettings) }}
+}
 {% endif %}
 
-{% if design.typography.author %}
-{{ macros.typography('%%SELECTOR%% .bde-review-card__name, %%SELECTOR%% .bde-review-card__detail', design.typography.author, breakpoint) }}
+{% if design.typography.customer_name %}
+%%SELECTOR%% .bde-review-card__name {
+{{ macros.typography(design.typography.customer_name, globalSettings) }}
+}
 {% endif %}
 
-{% if design.typography.meta %}
-{{ macros.typography('%%SELECTOR%% .bde-review-card__platform, %%SELECTOR%% .bde-review-card__date', design.typography.meta, breakpoint) }}
+{% if design.typography.customer_detail %}
+%%SELECTOR%% .bde-review-card__detail {
+{{ macros.typography(design.typography.customer_detail, globalSettings) }}
+}
 {% endif %}
 
-{% if design.typography.links %}
-{{ macros.typography('%%SELECTOR%% .bde-review-card__verify, %%SELECTOR%% .bde-review-card__project-link', design.typography.links, breakpoint) }}
+{% if design.typography.date %}
+%%SELECTOR%% .bde-review-card__date {
+{{ macros.typography(design.typography.date, globalSettings) }}
+}
+{% endif %}
+
+{% if design.typography.platform %}
+%%SELECTOR%% .bde-review-card__platform {
+{{ macros.typography(design.typography.platform, globalSettings) }}
+}
+{% endif %}
+
+{% if design.typography.verify_link %}
+    %%SELECTOR%% .bde-review-card__verify {
+      {{ macros.typography(design.typography.verify_link, globalSettings) }}
+    }
+
+    %%SELECTOR%% .bde-review-card__verify:hover {
+      {{ macros.typographyWithHoverableColorAndEffects(design.typography.verify_link) }}
+    }
+    
+
+
+{% endif %}
+
+{% if design.typography.project_text %}
+    %%SELECTOR%% .bde-review-card__project-link {
+      {{ macros.typography(design.typography.project_text, globalSettings) }}
+    }
+
+    %%SELECTOR%% .bde-review-card__project-link:hover {
+      {{ macros.typographyWithHoverableColorAndEffects(design.typography.project_text) }}
+    }
+    
 {% endif %}

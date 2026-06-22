@@ -102,70 +102,6 @@ class SectionSimple extends \Breakdance\Elements\Element
       "background",
        ['type' => 'popout']
      ), c(
-        "text_colors",
-        "Text Colors",
-        [c(
-        "headings",
-        "Headings",
-        [],
-        ['type' => 'color', 'layout' => 'inline'],
-        false,
-        false,
-        [],
-        
-      ), c(
-        "text",
-        "Text",
-        [],
-        ['type' => 'color', 'layout' => 'inline'],
-        false,
-        false,
-        [],
-        
-      ), c(
-        "link",
-        "Link",
-        [],
-        ['type' => 'color', 'layout' => 'inline'],
-        false,
-        true,
-        [],
-        
-      ), c(
-        "brand",
-        "Brand",
-        [],
-        ['type' => 'color', 'layout' => 'inline'],
-        false,
-        false,
-        [],
-        
-      )],
-        ['type' => 'section', 'condition' => [[['path' => 'design.text_colors', 'operand' => 'is set', 'value' => '']]]],
-        false,
-        false,
-        [],
-        
-      ), c(
-        "buttons",
-        "Buttons",
-        [getPresetSection(
-      "EssentialElements\\AtomV1CustomButtonDesign",
-      "Primary",
-      "primary",
-       ['type' => 'popout']
-     ), getPresetSection(
-      "EssentialElements\\AtomV1CustomButtonDesign",
-      "Secondary",
-      "secondary",
-       ['type' => 'popout']
-     )],
-        ['type' => 'section'],
-        false,
-        false,
-        [],
-        
-      ), c(
         "size",
         "Size",
         [c(
@@ -250,20 +186,6 @@ class SectionSimple extends \Breakdance\Elements\Element
         [],
         
       )],
-        ['type' => 'section'],
-        false,
-        false,
-        [],
-        
-      ), c(
-        "dividers",
-        "Dividers",
-        [getPresetSection(
-      "EssentialElements\\Shape",
-      "Shape Dividers",
-      "shape_dividers_section",
-       ['type' => 'accordion']
-     )],
         ['type' => 'section'],
         false,
         false,

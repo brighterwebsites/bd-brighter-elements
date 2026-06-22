@@ -1,438 +1,507 @@
 <?php
-// v2.0 | 2026-06-22
-//
-// SCOS Review Card — preconfigured review card for bw_reviews CPT.
-//
-// Modes:
-//   loop      — drop inside a Breakdance loop querying bw_reviews; uses get_the_ID()
-//   specific  — pick a review by post ID; drop anywhere on the page
-//   connected — drop on a project single template; renders every bw_reviews post
-//               whose bw_related_project meta equals the current project ID
-//
-// Layout presets: stacked | horizontal | quote | hero
-// All rendering delegated to [bw_review_card] → Review_Card_Renderer (site-essentials).
 
 namespace BreakdanceCustomElements;
 
 use function Breakdance\Elements\c;
 use function Breakdance\Elements\PresetSections\getPresetSection;
-use BrighterElements\Review_Picker_Options;
+
 
 \Breakdance\ElementStudio\registerElementForEditing(
-    'BreakdanceCustomElements\\ScosReviewCard',
-    \Breakdance\Util\getdirectoryPathRelativeToPluginFolder( __DIR__ )
+    "BreakdanceCustomElements\\ScosReviewCard",
+    \Breakdance\Util\getdirectoryPathRelativeToPluginFolder(__DIR__)
 );
 
-class ScosReviewCard extends \Breakdance\Elements\Element {
-
-    static function uiIcon() {
+class ScosReviewCard extends \Breakdance\Elements\Element
+{
+    static function uiIcon()
+    {
         return 'StarIcon';
     }
 
-    static function tag() {
+    static function tag()
+    {
         return 'div';
     }
 
-    static function tagOptions() {
+    static function tagOptions()
+    {
         return [];
     }
 
-    static function tagControlPath() {
+    static function tagControlPath()
+    {
         return false;
     }
 
-    static function name() {
+    static function name()
+    {
         return 'SCOS Review Card';
     }
 
-    static function className() {
+    static function className()
+    {
         return 'bde-scos-review-card-wrapper';
     }
 
-    static function category() {
+    static function category()
+    {
         return 'other';
     }
 
-    static function badge() {
-        return [ 'backgroundColor' => 'var(--black)', 'textColor' => 'var(--white)', 'label' => 'SCOS' ];
+    static function badge()
+    {
+        return ['backgroundColor' => 'var(--black)', 'textColor' => 'var(--white)', 'label' => 'SCOS'];
     }
 
-    static function slug() {
+    static function slug()
+    {
         return __CLASS__;
     }
 
-    static function template() {
-        return file_get_contents( __DIR__ . '/html.twig' );
+    static function template()
+    {
+        return file_get_contents(__DIR__ . '/html.twig');
     }
 
-    static function defaultCss() {
-        return file_get_contents( __DIR__ . '/default.css' );
+    static function defaultCss()
+    {
+        return file_get_contents(__DIR__ . '/default.css');
     }
 
-    static function defaultProperties() {
-        return [
-            'content' => [
-                'source' => [
-                    'mode' => 'loop',
-                ],
-                'display' => [
-                    'layout' => 'stacked',
-                ],
-                'fields' => [
-                    'show_rating'    => true,
-                    'show_excerpt'   => true,
-                    'show_full_text' => false,
-                    'show_outcome'   => true,
-                    'show_name'      => true,
-                    'show_detail'    => true,
-                    'show_date'      => true,
-                    'show_platform'  => true,
-                    'show_verify'    => true,
-                    'show_featured'       => false,
-                    'show_platform_icon'  => true,
-                ],
-                'project' => [
-                    'show_image' => true,
-                    'show_name'  => true,
-                    'show_link'  => true,
-                ],
-            ],
-        ];
+    static function defaultProperties()
+    {
+        return ['content' => ['source' => ['mode' => 'loop'], 'display' => ['layout' => 'stacked'], 'fields' => ['show_rating' => true, 'show_excerpt' => true, 'show_full_text' => false, 'show_outcome' => true, 'show_name' => true, 'show_detail' => true, 'show_date' => true, 'show_platform' => true, 'show_verify' => true, 'show_featured' => false, 'show_platform_icon' => true], 'project' => ['show_image' => true, 'show_name' => true, 'show_link' => true]]];
     }
 
-    static function defaultChildren() {
+    static function defaultChildren()
+    {
         return false;
     }
 
-    static function cssTemplate() {
-        return file_get_contents( __DIR__ . '/css.twig' );
+    static function cssTemplate()
+    {
+        $template = file_get_contents(__DIR__ . '/css.twig');
+        return $template;
     }
 
-    // =========================================================================
-    // DESIGN CONTROLS
-    // =========================================================================
-
-    static function designControls() {
-        return [
-            c(
-                'container',
-                'Container',
-                [
-                    c(
-                        'gap',
-                        'Inner Gap',
-                        [],
-                        [ 'type' => 'unit', 'layout' => 'inline', 'unitOptions' => [ 'types' => [ 'px', 'rem', 'em' ], 'defaultType' => 'rem' ] ],
-                        true,
-                        false,
-                        [],
-                    ),
-                    getPresetSection( 'EssentialElements\\spacing_padding_all', 'Padding', 'padding', [ 'type' => 'popout' ] ),
-                    getPresetSection( 'EssentialElements\\LessFancyBackground', 'Background', 'background', [ 'type' => 'popout' ] ),
-                    getPresetSection( 'EssentialElements\\borders', 'Borders', 'borders', [ 'type' => 'popout' ] ),
-                ],
-                [ 'type' => 'section' ],
-                false,
-                false,
-                [],
-            ),
-            c(
-                'stars',
-                'Stars',
-                [
-                    c(
-                        'size',
-                        'Star Size',
-                        [],
-                        [ 'type' => 'unit', 'layout' => 'inline', 'unitOptions' => [ 'types' => [ 'px', 'rem', 'em' ], 'defaultType' => 'em' ] ],
-                        true,
-                        false,
-                        [],
-                    ),
-                    c(
-                        'color_filled',
-                        'Filled Star',
-                        [],
-                        [ 'type' => 'color', 'layout' => 'inline' ],
-                        false,
-                        false,
-                        [],
-                    ),
-                    c(
-                        'color_empty',
-                        'Empty Star',
-                        [],
-                        [ 'type' => 'color', 'layout' => 'inline' ],
-                        false,
-                        false,
-                        [],
-                    ),
-                ],
-                [ 'type' => 'section' ],
-                false,
-                false,
-                [],
-            ),
-            c(
-                'platform_icon',
-                'Platform Icon',
-                [
-                    c(
-                        'size',
-                        'Width',
-                        [],
-                        [ 'type' => 'unit', 'layout' => 'inline', 'unitOptions' => [ 'types' => [ 'px', 'rem', 'em' ], 'defaultType' => 'px' ] ],
-                        true,
-                        false,
-                        [],
-                    ),
-                ],
-                [ 'type' => 'section' ],
-                false,
-                false,
-                [],
-            ),
-            c(
-                'typography',
-                'Typography',
-                [
-                    getPresetSection(
-                        'EssentialElements\\typography_with_effects_and_align',
-                        'Quote',
-                        'quote',
-                        [ 'type' => 'popout' ],
-                    ),
-                    getPresetSection(
-                        'EssentialElements\\typography_with_effects_and_align',
-                        'Outcome',
-                        'outcome',
-                        [ 'type' => 'popout' ],
-                    ),
-                    getPresetSection(
-                        'EssentialElements\\typography_with_effects_and_align',
-                        'Author',
-                        'author',
-                        [ 'type' => 'popout' ],
-                    ),
-                    getPresetSection(
-                        'EssentialElements\\typography_with_effects_and_align',
-                        'Meta',
-                        'meta',
-                        [ 'type' => 'popout' ],
-                    ),
-                    getPresetSection(
-                        'EssentialElements\\typography_with_effects_and_align',
-                        'Links',
-                        'links',
-                        [ 'type' => 'popout' ],
-                    ),
-                ],
-                [ 'type' => 'section' ],
-                false,
-                false,
-                [],
-            ),
-            getPresetSection( 'EssentialElements\\spacing_margin_y', 'Spacing', 'spacing', [ 'type' => 'popout' ] ),
-        ];
+    static function designControls()
+    {
+        return [c(
+        "container",
+        "Container",
+        [c(
+        "gap",
+        "Inner Gap",
+        [],
+        ['type' => 'unit', 'layout' => 'inline', 'unitOptions' => ['types' => ['px', 'rem', 'em'], 'defaultType' => 'rem']],
+        true,
+        false,
+        [],
+        
+      ), getPresetSection(
+      "EssentialElements\\spacing_padding_all",
+      "Padding",
+      "padding",
+       ['type' => 'popout']
+     ), getPresetSection(
+      "EssentialElements\\borders",
+      "Borders",
+      "borders",
+       ['type' => 'popout']
+     )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+        
+      ), getPresetSection(
+      "EssentialElements\\LessFancyBackground",
+      "Background",
+      "background",
+       ['type' => 'popout']
+     ), c(
+        "stars",
+        "Stars",
+        [c(
+        "size",
+        "Star Size",
+        [],
+        ['type' => 'unit', 'layout' => 'inline', 'unitOptions' => ['types' => ['px', 'rem', 'em'], 'defaultType' => 'px']],
+        true,
+        false,
+        [],
+        
+      ), c(
+        "color_filled",
+        "Filled Star",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "color_empty",
+        "Empty Star",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+        
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "platform_icon",
+        "Platform Icon",
+        [c(
+        "size",
+        "Width",
+        [],
+        ['type' => 'unit', 'layout' => 'inline', 'unitOptions' => ['types' => ['px', 'rem', 'em'], 'defaultType' => 'px']],
+        true,
+        false,
+        [],
+        
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "typography",
+        "Typography",
+        [getPresetSection(
+      "EssentialElements\\typography_with_effects_and_align",
+      "Review Text",
+      "review_text",
+       ['type' => 'popout']
+     ), getPresetSection(
+      "EssentialElements\\typography_with_effects_and_align",
+      "Outcome",
+      "outcome",
+       ['type' => 'popout']
+     ), getPresetSection(
+      "EssentialElements\\typography",
+      "Customer Name",
+      "customer_name",
+       ['type' => 'popout']
+     ), getPresetSection(
+      "EssentialElements\\typography",
+      "Customer Detail",
+      "customer_detail",
+       ['type' => 'popout']
+     ), getPresetSection(
+      "EssentialElements\\typography",
+      "Date",
+      "date",
+       ['type' => 'popout']
+     ), getPresetSection(
+      "EssentialElements\\typography",
+      "Platform",
+      "platform",
+       ['type' => 'popout']
+     ), getPresetSection(
+      "EssentialElements\\typography_with_align_with_hoverable_color",
+      "Verify Link",
+      "verify_link",
+       ['type' => 'popout']
+     ), getPresetSection(
+      "EssentialElements\\typography_with_align_with_hoverable_color",
+      "Project Text",
+      "project_text",
+       ['type' => 'popout']
+     )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+        
+      ), getPresetSection(
+      "EssentialElements\\spacing_margin_y",
+      "Spacing",
+      "spacing",
+       ['type' => 'popout']
+     )];
     }
 
-    // =========================================================================
-    // CONTENT CONTROLS
-    // =========================================================================
-
-    static function contentControls() {
-        return [
-            c(
-                'source',
-                'Data Source',
-                [
-                    c(
-                        'mode',
-                        'Mode',
-                        [],
-                        [
-                            'type'        => 'dropdown',
-                            'layout'      => 'vertical',
-                            'description' => 'Post loop: drop inside a Breakdance loop querying bw_reviews. Specific: display one review anywhere. Connected: drop on a project single template to show every review linked to that project.',
-                            'items'       => [
-                                [ 'text' => 'Post loop (dynamic)',           'value' => 'loop' ],
-                                [ 'text' => 'Specific review',               'value' => 'specific' ],
-                                [ 'text' => 'Connected to current project',  'value' => 'connected' ],
-                            ],
-                        ],
-                        false,
-                        false,
-                        [],
-                    ),
-                    c(
-                        'review_id',
-                        'Review',
-                        [],
-                        [
-                            'type'        => 'dropdown',
-                            'layout'      => 'vertical',
-                            'items'       => Review_Picker_Options::dropdown_items(),
-                            'description' => 'Choose a published review. List refreshes when you reload the Breakdance builder.',
-                            'condition'   => [ [ [ 'path' => '%%CURRENTPATH%%.mode', 'operand' => 'equals', 'value' => 'specific' ] ] ],
-                        ],
-                        false,
-                        false,
-                        [],
-                    ),
-                ],
-                [ 'type' => 'section', 'layout' => 'vertical' ],
-                false,
-                false,
-                [],
-            ),
-            c(
-                'display',
-                'Display',
-                [
-                    c(
-                        'layout',
-                        'Layout',
-                        [],
-                        [
-                            'type'        => 'dropdown',
-                            'layout'      => 'vertical',
-                            'description' => 'Stacked: column card. Horizontal: project image in sidebar. Quote: large centred quote. Hero: project image full-width at top.',
-                            'items'       => [
-                                [ 'text' => 'Stacked',    'value' => 'stacked' ],
-                                [ 'text' => 'Horizontal', 'value' => 'horizontal' ],
-                                [ 'text' => 'Quote',      'value' => 'quote' ],
-                                [ 'text' => 'Hero',       'value' => 'hero' ],
-                            ],
-                        ],
-                        false,
-                        false,
-                        [],
-                    ),
-                ],
-                [ 'type' => 'section', 'layout' => 'vertical' ],
-                false,
-                false,
-                [],
-            ),
-            c(
-                'fields',
-                'Review Fields',
-                [
-                    c( 'show_rating',    'Rating (stars)',    [], [ 'type' => 'toggle', 'layout' => 'inline' ], false, false, [] ),
-                    c( 'show_excerpt',   'Review excerpt',   [], [ 'type' => 'toggle', 'layout' => 'inline' ], false, false, [] ),
-                    c( 'show_full_text', 'Full review text', [], [ 'type' => 'toggle', 'layout' => 'inline', 'description' => 'Only shown when excerpt is off.' ], false, false, [] ),
-                    c( 'show_outcome',   'Success outcome',  [], [ 'type' => 'toggle', 'layout' => 'inline' ], false, false, [] ),
-                    c( 'show_name',      'Customer name',    [], [ 'type' => 'toggle', 'layout' => 'inline' ], false, false, [] ),
-                    c( 'show_detail',    'Customer detail',  [], [ 'type' => 'toggle', 'layout' => 'inline' ], false, false, [] ),
-                    c( 'show_date',      'Date',             [], [ 'type' => 'toggle', 'layout' => 'inline' ], false, false, [] ),
-                    c( 'show_platform',  'Platform',         [], [ 'type' => 'toggle', 'layout' => 'inline' ], false, false, [] ),
-                    c( 'show_verify',    'Verify link',      [], [ 'type' => 'toggle', 'layout' => 'inline' ], false, false, [] ),
-                    c( 'show_featured',      'Featured badge',    [], [ 'type' => 'toggle', 'layout' => 'inline' ], false, false, [] ),
-                    c( 'show_platform_icon', 'Platform icon',     [], [ 'type' => 'toggle', 'layout' => 'inline', 'description' => 'Logo image set on the platform taxonomy term.' ], false, false, [] ),
-                ],
-                [ 'type' => 'section', 'layout' => 'vertical' ],
-                false,
-                false,
-                [],
-            ),
-            c(
-                'project',
-                'Related Project',
-                [
-                    c( 'show_image', 'Project image',  [], [ 'type' => 'toggle', 'layout' => 'inline', 'description' => 'Shown only when a project is linked to the review.' ], false, false, [] ),
-                    c( 'show_name',  'Project name',   [], [ 'type' => 'toggle', 'layout' => 'inline' ], false, false, [] ),
-                    c( 'show_link',  'Link to project', [], [ 'type' => 'toggle', 'layout' => 'inline' ], false, false, [] ),
-                ],
-                [ 'type' => 'section', 'layout' => 'vertical' ],
-                false,
-                false,
-                [],
-            ),
-        ];
+    static function contentControls()
+    {
+        return [c(
+        "source",
+        "Data Source",
+        [c(
+        "mode",
+        "Mode",
+        [],
+        ['type' => 'dropdown', 'layout' => 'vertical', 'description' => 'Post loop: drop inside a Breakdance loop querying bw_reviews. Specific: display one review anywhere. Connected: drop on a project single template to show every review linked to that project.', 'items' => [['text' => 'Post loop (dynamic)', 'value' => 'loop'], ['text' => 'Specific review', 'value' => 'specific'], ['text' => 'Connected to current project', 'value' => 'connected']]],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "review_id",
+        "Review",
+        [],
+        ['type' => 'dropdown', 'layout' => 'vertical', 'items' => [['text' => 'Amber (589)', 'value' => '589'], ['text' => 'Anita Vasey (573)', 'value' => '573'], ['text' => 'Claire Duband (584)', 'value' => '584'], ['text' => 'David Horwood (592)', 'value' => '592'], ['text' => 'Gardenia Inc. (574)', 'value' => '574'], ['text' => 'Gavin Mooney (587)', 'value' => '587'], ['text' => 'hermajestys (576)', 'value' => '576'], ['text' => 'JPC Jacko (585)', 'value' => '585'], ['text' => 'Kara Meyer (582)', 'value' => '582'], ['text' => 'Keran Mewett (586)', 'value' => '586'], ['text' => 'Lucas Cowland (578)', 'value' => '578'], ['text' => 'Margaret Yu (572)', 'value' => '572'], ['text' => 'Maryann Grant (579)', 'value' => '579'], ['text' => 'May Goh (571)', 'value' => '571'], ['text' => 'michandtris (577)', 'value' => '577'], ['text' => 'Michelle Tenenberg (590)', 'value' => '590'], ['text' => 'Natalie Powell (575)', 'value' => '575'], ['text' => 'Nicole Drever (580)', 'value' => '580'], ['text' => 'Rick Stephens (581)', 'value' => '581'], ['text' => 'sashi thapa (593)', 'value' => '593'], ['text' => 'Stephen Day (591)', 'value' => '591'], ['text' => 'Sumitra Phoenix (588)', 'value' => '588'], ['text' => 'Tamsin Santos (570)', 'value' => '570'], ['text' => 'Tomas Runciman (583)', 'value' => '583']], 'description' => 'Choose a published review. List refreshes when you reload the Breakdance builder.', 'condition' => [[['path' => '%%CURRENTPATH%%.mode', 'operand' => 'equals', 'value' => 'specific']]]],
+        false,
+        false,
+        [],
+        
+      )],
+        ['type' => 'section', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "display",
+        "Display",
+        [c(
+        "layout",
+        "Layout",
+        [],
+        ['type' => 'dropdown', 'layout' => 'vertical', 'description' => 'Stacked: column card. Horizontal: project image in sidebar. Quote: large centred quote. Hero: project image full-width at top.', 'items' => [['text' => 'Stacked', 'value' => 'stacked'], ['text' => 'Horizontal', 'value' => 'horizontal'], ['text' => 'Quote', 'value' => 'quote'], ['text' => 'Hero', 'value' => 'hero']]],
+        false,
+        false,
+        [],
+        
+      )],
+        ['type' => 'section', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "fields",
+        "Review Fields",
+        [c(
+        "show_rating",
+        "Rating (stars)",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "show_excerpt",
+        "Review excerpt",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "show_full_text",
+        "Full review text",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline', 'description' => 'Only shown when excerpt is off.'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "show_outcome",
+        "Success outcome",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "show_name",
+        "Customer name",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "show_detail",
+        "Customer detail",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "show_date",
+        "Date",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "show_platform",
+        "Platform",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "show_verify",
+        "Verify link",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "show_featured",
+        "Featured badge",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "show_platform_icon",
+        "Platform icon",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline', 'description' => 'Logo image set on the platform taxonomy term.'],
+        false,
+        false,
+        [],
+        
+      )],
+        ['type' => 'section', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "project",
+        "Related Project",
+        [c(
+        "show_image",
+        "Project image",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline', 'description' => 'Shown only when a project is linked to the review.'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "show_name",
+        "Project name",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "show_link",
+        "Link to project",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+        
+      )],
+        ['type' => 'section', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+        
+      )];
     }
 
-    static function settingsControls() {
+    static function settingsControls()
+    {
         return [];
     }
 
-    static function dependencies() {
+    static function dependencies()
+    {
         return false;
     }
 
-    static function settings() {
+    static function settings()
+    {
         return false;
     }
 
-    static function addPanelRules() {
+    static function addPanelRules()
+    {
         return false;
     }
 
-    static public function actions() {
+    static public function actions()
+    {
         return false;
     }
 
-    static function nestingRule() {
-        return [ 'type' => 'final' ];
+    static function nestingRule()
+    {
+        return ['type' => 'final'];
     }
 
-    static function spacingBars() {
-        return [
-            [ 'location' => 'outside-top',    'cssProperty' => 'margin-top',    'affectedPropertyPath' => 'design.spacing.margin_top.%%BREAKPOINT%%' ],
-            [ 'location' => 'outside-bottom', 'cssProperty' => 'margin-bottom', 'affectedPropertyPath' => 'design.spacing.margin_bottom.%%BREAKPOINT%%' ],
-        ];
+    static function spacingBars()
+    {
+        return [['location' => 'outside-top', 'cssProperty' => 'margin-top', 'affectedPropertyPath' => 'design.spacing.margin_top.%%BREAKPOINT%%'], ['location' => 'outside-bottom', 'cssProperty' => 'margin-bottom', 'affectedPropertyPath' => 'design.spacing.margin_bottom.%%BREAKPOINT%%']];
     }
 
-    static function attributes() {
+    static function attributes()
+    {
         return false;
     }
 
-    static function experimental() {
+    static function experimental()
+    {
         return false;
     }
 
-    static function availableIn() {
-        return [ 'breakdance' ];
+    static function availableIn()
+    {
+        return ['breakdance'];
     }
 
-    static function order() {
+
+    static function order()
+    {
         return 20;
     }
 
-    static function dynamicPropertyPaths() {
+    static function dynamicPropertyPaths()
+    {
         return false;
     }
 
-    static function additionalClasses() {
+    static function additionalClasses()
+    {
         return false;
     }
 
-    static function projectManagement() {
-        return [ 'looksGood' => 'yes', 'optionsGood' => 'yes', 'optionsWork' => 'yes' ];
+    static function projectManagement()
+    {
+        return ['looksGood' => 'yes', 'optionsGood' => 'yes', 'optionsWork' => 'yes'];
     }
 
-    static function propertyPathsToWhitelistInFlatProps() {
-        return false;
+    static function propertyPathsToWhitelistInFlatProps()
+    {
+        return ['design.container.background.image', 'design.container.background.overlay.image', 'design.container.background.image_settings.unset_image_at', 'design.container.background.image_settings.size', 'design.container.background.image_settings.height', 'design.container.background.image_settings.repeat', 'design.container.background.image_settings.position', 'design.container.background.image_settings.left', 'design.container.background.image_settings.top', 'design.container.background.image_settings.attachment', 'design.container.background.image_settings.custom_position', 'design.container.background.image_settings.width', 'design.container.background.overlay.image_settings.custom_position', 'design.container.background.image_size', 'design.container.background.overlay.image_size', 'design.container.background.overlay.type', 'design.container.background.design.layout.horizontal.vertical_at', 'design.container.background.image_settings', 'design.container.background.type', 'design.background.image', 'design.background.overlay.image', 'design.background.image_settings.unset_image_at', 'design.background.image_settings.size', 'design.background.image_settings.height', 'design.background.image_settings.repeat', 'design.background.image_settings.position', 'design.background.image_settings.left', 'design.background.image_settings.top', 'design.background.image_settings.attachment', 'design.background.image_settings.custom_position', 'design.background.image_settings.width', 'design.background.overlay.image_settings.custom_position', 'design.background.image_size', 'design.background.overlay.image_size', 'design.background.overlay.type', 'design.background.image_settings'];
     }
 
-    static function propertyPathsToSsrElementWhenValueChanges() {
-        return [
-            'content.source.mode',
-            'content.source.review_id',
-            'content.display.layout',
-            'content.fields.show_rating',
-            'content.fields.show_excerpt',
-            'content.fields.show_full_text',
-            'content.fields.show_outcome',
-            'content.fields.show_name',
-            'content.fields.show_detail',
-            'content.fields.show_date',
-            'content.fields.show_platform',
-            'content.fields.show_verify',
-            'content.fields.show_featured',
-            'content.fields.show_platform_icon',
-            'content.project.show_image',
-            'content.project.show_name',
-            'content.project.show_link',
-        ];
+    static function propertyPathsToSsrElementWhenValueChanges()
+    {
+        return ['content.source.mode', 'content.source.review_id', 'content.display.layout', 'content.fields.show_rating', 'content.fields.show_excerpt', 'content.fields.show_full_text', 'content.fields.show_outcome', 'content.fields.show_name', 'content.fields.show_detail', 'content.fields.show_date', 'content.fields.show_platform', 'content.fields.show_verify', 'content.fields.show_featured', 'content.fields.show_platform_icon', 'content.project.show_image', 'content.project.show_name', 'content.project.show_link'];
     }
 }
