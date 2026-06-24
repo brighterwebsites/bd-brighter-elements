@@ -1,4 +1,5 @@
 <?php
+// v1.0 | 2026-06-25
 
 namespace BreakdanceCustomElements;
 
@@ -248,7 +249,7 @@ class ScosReviewCard extends \Breakdance\Elements\Element
         "review_id",
         "Review",
         [],
-        ['type' => 'dropdown', 'layout' => 'vertical', 'items' => [['text' => 'Amber (589)', 'value' => '589'], ['text' => 'Anita Vasey (573)', 'value' => '573'], ['text' => 'Claire Duband (584)', 'value' => '584'], ['text' => 'David Horwood (592)', 'value' => '592'], ['text' => 'Gardenia Inc. (574)', 'value' => '574'], ['text' => 'Gavin Mooney (587)', 'value' => '587'], ['text' => 'hermajestys (576)', 'value' => '576'], ['text' => 'JPC Jacko (585)', 'value' => '585'], ['text' => 'Kara Meyer (582)', 'value' => '582'], ['text' => 'Keran Mewett (586)', 'value' => '586'], ['text' => 'Lucas Cowland (578)', 'value' => '578'], ['text' => 'Margaret Yu (572)', 'value' => '572'], ['text' => 'Maryann Grant (579)', 'value' => '579'], ['text' => 'May Goh (571)', 'value' => '571'], ['text' => 'michandtris (577)', 'value' => '577'], ['text' => 'Michelle Tenenberg (590)', 'value' => '590'], ['text' => 'Natalie Powell (575)', 'value' => '575'], ['text' => 'Nicole Drever (580)', 'value' => '580'], ['text' => 'Rick Stephens (581)', 'value' => '581'], ['text' => 'sashi thapa (593)', 'value' => '593'], ['text' => 'Stephen Day (591)', 'value' => '591'], ['text' => 'Sumitra Phoenix (588)', 'value' => '588'], ['text' => 'Tamsin Santos (570)', 'value' => '570'], ['text' => 'Tomas Runciman (583)', 'value' => '583']], 'description' => 'Choose a published review. List refreshes when you reload the Breakdance builder.', 'condition' => [[['path' => '%%CURRENTPATH%%.mode', 'operand' => 'equals', 'value' => 'specific']]]],
+        ['type' => 'dropdown', 'layout' => 'vertical', 'items' => \BrighterElements\Review_Picker_Options::dropdown_items(), 'description' => 'Choose a published review. List refreshes when you reload the Breakdance builder.', 'condition' => [[['path' => '%%CURRENTPATH%%.mode', 'operand' => 'equals', 'value' => 'specific']]]],
         false,
         false,
         [],
