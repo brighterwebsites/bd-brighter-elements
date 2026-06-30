@@ -1,4 +1,4 @@
-%%SELECTOR%% {
+%%SELECTOR%%  {
   width: {{ design.size.width.style }};
   {{ macros.spacing_margin_y(design.spacing) }}
 }
@@ -17,17 +17,16 @@
   {{ macros.typography(design.typography, globalSettings) }}
 {% endif %}
 
-{% if design.links.color %}
+{% if design.typography %}
+  %%SELECTOR%% .bw-breadcrumbs > li,
   %%SELECTOR%% .bw-breadcrumbs li a {
-    color: {{ design.links.color }};
+    {{ macros.typography(design.typography, globalSettings) }}
+  }
+ %%SELECTOR%% .bw-breadcrumbs li a:hover {
+          {{ macros.typographyWithHoverableColorAndEffects(design.typography) }}
   }
 {% endif %}
 
-{% if design.links.color_hover %}
-  %%SELECTOR%% .bw-breadcrumbs li a:hover {
-    color: {{ design.links.color_hover }};
-  }
-{% endif %}
 
 {% if design.list.marker_color %}
   %%SELECTOR%% .bw-breadcrumbs li::marker {

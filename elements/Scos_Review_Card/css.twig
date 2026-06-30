@@ -2,7 +2,25 @@
     {{ macros.spacing_margin_y(design.spacing) }}
     {{ macros.spacing_padding_all(design.container.padding) }}
     {{ macros.borders(design.container.borders) }}
-    {% if design.container.gap.style is defined and design.container.gap.style %}gap: {{ design.container.gap.style }};{% endif %}
+   
+}
+
+%%SELECTOR%% {
+  width: {{ design.container.width.style }};
+  min-height: {{ design.container.min_height.style }};
+  {{ macros.backgroundColor(design.container.background) }}
+  {{ macros.spacing_padding_all(design.container.padding) }}
+  {{ macros.borders(design.container.borders) }}
+  {{ macros.spacing_margin_y(design.spacing) }}
+  {{ macros.simpleLayout(design.layout, breakpoint) }}
+
+ 
+
+}
+
+%%SELECTOR%% .bde-review-card {
+{{ macros.simpleLayout(design.layout, breakpoint) }}
+
 }
 
 

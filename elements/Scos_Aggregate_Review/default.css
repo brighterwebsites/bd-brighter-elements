@@ -75,9 +75,10 @@
 }
 
 .breakdance .bde-aggregate-review__top {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+display: flex;
+    gap: 05px;
+    justify-content: center;
+    width: 100%;
 }
 
 .breakdance .bde-aggregate-review__business {
