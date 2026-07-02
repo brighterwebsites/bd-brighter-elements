@@ -1,5 +1,5 @@
 <?php
-// v0.3.3 | 2026-06-01
+// v0.3.4 | 2026-07-02
 
 /**
  * Plugin Name: Brighter BD Elements
@@ -10,7 +10,7 @@
  * License: GPLv2
  * Text Domain: breakdance
  * Domain Path: /languages/
- * Version: 0.3.3
+ * Version: 0.3.4
  */
 
 namespace BreakdanceCustomElements;
