@@ -27,22 +27,27 @@
 }
 {% endif %}
 
-{% if design.text.typography %}
-{{ macros.typography('%%SELECTOR%%', design.text.typography, breakpoint) }}
-{% endif %}
 
-{% if design.text.color %}
+{% if design.text.business_name %}
 %%SELECTOR%% .bde-aggregate-review__score,
 %%SELECTOR%% .bde-aggregate-review__from,
 %%SELECTOR%% .bde-aggregate-review__count,
 %%SELECTOR%% .bde-aggregate-review__label,
 %%SELECTOR%% .bde-aggregate-review__business {
-    color: {{ design.text.color }};
+{{ macros.typography(design.text.business_name, globalSettings) }}
 }
+
+
 {% endif %}
 
-{% if design.text.link_color %}
-%%SELECTOR%% .bde-aggregate-review__link {
-    color: {{ design.text.link_color }};
-}
+{% if design.text.review_text %}
+    %%SELECTOR%% .bde-aggregate-review__link {
+      {{ macros.typography(design.text.review_text, globalSettings) }}
+width: 100%;
+    }
+
+    %%SELECTOR%% .bde-aggregate-review__link:hover {
+      {{ macros.typographyWithHoverableColorAndEffects(design.text.review_text) }}
+    }
+    
 {% endif %}

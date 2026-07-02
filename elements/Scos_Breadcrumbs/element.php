@@ -1,10 +1,10 @@
 <?php
-// v1.0 | 2026-05-18
 
 namespace BreakdanceCustomElements;
 
 use function Breakdance\Elements\c;
 use function Breakdance\Elements\PresetSections\getPresetSection;
+
 
 \Breakdance\ElementStudio\registerElementForEditing(
     "BreakdanceCustomElements\\ScosBreadcrumbs",
@@ -70,23 +70,7 @@ class ScosBreadcrumbs extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        return [
-            'design' => [
-                'theme' => ['preset' => 'dark'],
-                'size' => [
-                    'width' => [
-                        'breakpoint_base' => [
-                            'number' => 100,
-                            'unit' => '%',
-                            'style' => '100%',
-                        ],
-                    ],
-                ],
-                'list' => [
-                    'list_style' => 'square',
-                ],
-            ],
-        ];
+        return ['design' => ['theme' => ['preset' => 'dark'], 'size' => ['width' => ['breakpoint_base' => ['number' => 100, 'unit' => '%', 'style' => '100%']]], 'list' => ['list_style' => 'square']]];
     }
 
     static function defaultChildren()
@@ -96,144 +80,113 @@ class ScosBreadcrumbs extends \Breakdance\Elements\Element
 
     static function cssTemplate()
     {
-        return file_get_contents(__DIR__ . '/css.twig');
+        $template = file_get_contents(__DIR__ . '/css.twig');
+        return $template;
     }
 
     static function designControls()
     {
-        return [
-            c(
-                'theme',
-                'Theme',
-                [
-                    c(
-                        'preset',
-                        'Preset',
-                        [],
-                        [
-                            'type' => 'dropdown',
-                            'layout' => 'inline',
-                            'items' => [
-                                ['text' => 'Dark', 'value' => 'dark'],
-                                ['text' => 'Light', 'value' => 'light'],
-                                ['text' => 'Custom', 'value' => 'custom'],
-                            ],
-                        ],
-                        false,
-                        false,
-                        [],
-                    ),
-                ],
-                ['type' => 'section', 'layout' => 'vertical'],
-                false,
-                false,
-                [],
-            ),
-            c(
-                'size',
-                'Size',
-                [
-                    c(
-                        'width',
-                        'Width',
-                        [],
-                        [
-                            'type' => 'unit',
-                            'layout' => 'inline',
-                            'rangeOptions' => ['min' => 0, 'max' => 1200, 'step' => 1],
-                            'unitOptions' => ['types' => ['%', 'px', 'vw'], 'defaultType' => '%'],
-                        ],
-                        true,
-                        false,
-                        [],
-                    ),
-                ],
-                ['type' => 'section'],
-                false,
-                false,
-                [],
-            ),
-            getPresetSection(
-                'EssentialElements\\typography_with_effects_and_align',
-                'Typography',
-                'typography',
-                [
-                    'type' => 'popout',
-                    'condition' => [[['path' => 'design.theme.preset', 'operand' => 'equals', 'value' => 'custom']]],
-                ],
-            ),
-            c(
-                'links',
-                'Links',
-                [
-                    c(
-                        'color',
-                        'Color',
-                        [],
-                        ['type' => 'color', 'layout' => 'inline'],
-                        false,
-                        false,
-                        [],
-                    ),
-                    c(
-                        'color_hover',
-                        'Hover Color',
-                        [],
-                        ['type' => 'color', 'layout' => 'inline'],
-                        false,
-                        true,
-                        [],
-                    ),
-                ],
-                ['type' => 'section'],
-                false,
-                false,
-                [],
-            ),
-            c(
-                'list',
-                'List',
-                [
-                    c(
-                        'marker_color',
-                        'Marker Color',
-                        [],
-                        ['type' => 'color', 'layout' => 'inline'],
-                        false,
-                        false,
-                        [],
-                    ),
-                    c(
-                        'list_style',
-                        'List Style',
-                        [],
-                        [
-                            'type' => 'dropdown',
-                            'layout' => 'inline',
-                            'items' => [
-                                ['text' => 'Square', 'value' => 'square'],
-                                ['text' => 'Disc', 'value' => 'disc'],
-                                ['text' => 'Circle', 'value' => 'circle'],
-                                ['text' => 'None', 'value' => 'none'],
-                            ],
-                        ],
-                        false,
-                        false,
-                        [],
-                    ),
-                ],
-                ['type' => 'section'],
-                false,
-                false,
-                [],
-            ),
-            getPresetSection(
-                'EssentialElements\\spacing_margin_y',
-                'Spacing',
-                'spacing',
-                ['type' => 'popout'],
-            ),
-        ];
+        return [c(
+        "theme",
+        "Theme",
+        [c(
+        "preset",
+        "Preset",
+        [],
+        ['type' => 'dropdown', 'layout' => 'inline', 'items' => [['text' => 'Dark', 'value' => 'dark'], ['text' => 'Light', 'value' => 'light'], ['text' => 'Custom', 'value' => 'custom']]],
+        false,
+        false,
+        [],
+        
+      )],
+        ['type' => 'section', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "size",
+        "Size",
+        [c(
+        "width",
+        "Width",
+        [],
+        ['type' => 'unit', 'layout' => 'inline', 'rangeOptions' => ['min' => 0, 'max' => 1200, 'step' => 1], 'unitOptions' => ['types' => ['%', 'px', 'vw', 'auto', 'custom', 'calc'], 'defaultType' => 'auto']],
+        true,
+        false,
+        [],
+        
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+        
+      ), getPresetSection(
+      "EssentialElements\\typography_with_hoverable_color",
+      "Typography",
+      "typography",
+       ['type' => 'popout']
+     ), c(
+        "links",
+        "Links",
+        [c(
+        "color",
+        "Color",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "color_hover",
+        "Hover Color",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        true,
+        [],
+        
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "list",
+        "List",
+        [c(
+        "marker_color",
+        "Marker Color",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "list_style",
+        "List Style",
+        [],
+        ['type' => 'dropdown', 'layout' => 'inline', 'items' => [['text' => 'Square', 'value' => 'square'], ['text' => 'Disc', 'value' => 'disc'], ['text' => 'Circle', 'value' => 'circle'], ['text' => 'None', 'value' => 'none']]],
+        false,
+        false,
+        [],
+        
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+        
+      ), getPresetSection(
+      "EssentialElements\\spacing_margin_y",
+      "Spacing",
+      "spacing",
+       ['type' => 'popout']
+     )];
     }
 
     static function contentControls()
@@ -273,18 +226,7 @@ class ScosBreadcrumbs extends \Breakdance\Elements\Element
 
     static function spacingBars()
     {
-        return [
-            [
-                'location' => 'outside-top',
-                'cssProperty' => 'margin-top',
-                'affectedPropertyPath' => 'design.spacing.margin_top.%%BREAKPOINT%%',
-            ],
-            [
-                'location' => 'outside-bottom',
-                'cssProperty' => 'margin-bottom',
-                'affectedPropertyPath' => 'design.spacing.margin_bottom.%%BREAKPOINT%%',
-            ],
-        ];
+        return [['location' => 'outside-top', 'cssProperty' => 'margin-top', 'affectedPropertyPath' => 'design.spacing.margin_top.%%BREAKPOINT%%'], ['location' => 'outside-bottom', 'cssProperty' => 'margin-bottom', 'affectedPropertyPath' => 'design.spacing.margin_bottom.%%BREAKPOINT%%']];
     }
 
     static function attributes()
@@ -302,6 +244,7 @@ class ScosBreadcrumbs extends \Breakdance\Elements\Element
         return ['breakdance'];
     }
 
+
     static function order()
     {
         return 10;
@@ -314,20 +257,7 @@ class ScosBreadcrumbs extends \Breakdance\Elements\Element
 
     static function additionalClasses()
     {
-        return [
-            [
-                'name' => 'bde-scos-breadcrumbs--theme-dark',
-                'template' => "{{ design.theme.preset == 'dark' }}",
-            ],
-            [
-                'name' => 'bde-scos-breadcrumbs--theme-light',
-                'template' => "{{ design.theme.preset == 'light' }}",
-            ],
-            [
-                'name' => 'bde-scos-breadcrumbs--theme-custom',
-                'template' => "{{ design.theme.preset == 'custom' }}",
-            ],
-        ];
+        return [['name' => 'bde-scos-breadcrumbs--theme-dark', 'template' => '{{ design.theme.preset == \'dark\' }}'], ['name' => 'bde-scos-breadcrumbs--theme-light', 'template' => '{{ design.theme.preset == \'light\' }}'], ['name' => 'bde-scos-breadcrumbs--theme-custom', 'template' => '{{ design.theme.preset == \'custom\' }}']];
     }
 
     static function projectManagement()

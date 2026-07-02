@@ -1,5 +1,4 @@
 <?php
-// v1.0 | 2026-06-25
 
 namespace BreakdanceCustomElements;
 
@@ -87,19 +86,15 @@ class ScosReviewCard extends \Breakdance\Elements\Element
 
     static function designControls()
     {
-        return [c(
+        return [getPresetSection(
+      "EssentialElements\\simpleLayout",
+      "Layout",
+      "layout",
+       ['type' => 'popout']
+     ), c(
         "container",
         "Container",
-        [c(
-        "gap",
-        "Inner Gap",
-        [],
-        ['type' => 'unit', 'layout' => 'inline', 'unitOptions' => ['types' => ['px', 'rem', 'em'], 'defaultType' => 'rem']],
-        true,
-        false,
-        [],
-        
-      ), getPresetSection(
+        [getPresetSection(
       "EssentialElements\\spacing_padding_all",
       "Padding",
       "padding",
@@ -109,7 +104,25 @@ class ScosReviewCard extends \Breakdance\Elements\Element
       "Borders",
       "borders",
        ['type' => 'popout']
-     )],
+     ), c(
+        "width",
+        "Width",
+        [],
+        ['type' => 'unit', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "min_height",
+        "Min Height",
+        [],
+        ['type' => 'unit', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+        
+      )],
         ['type' => 'section'],
         false,
         false,
@@ -249,7 +262,7 @@ class ScosReviewCard extends \Breakdance\Elements\Element
         "review_id",
         "Review",
         [],
-        ['type' => 'dropdown', 'layout' => 'vertical', 'items' => \BrighterElements\Review_Picker_Options::dropdown_items(), 'description' => 'Choose a published review. List refreshes when you reload the Breakdance builder.', 'condition' => [[['path' => '%%CURRENTPATH%%.mode', 'operand' => 'equals', 'value' => 'specific']]]],
+        ['type' => 'dropdown', 'layout' => 'vertical', 'items' => [['text' => 'Andrew (29561)', 'value' => '29561'], ['text' => 'C Hughes (29554)', 'value' => '29554'], ['text' => 'Cath V (29568)', 'value' => '29568'], ['text' => 'Dallas Carr (29564)', 'value' => '29564'], ['text' => 'Edward phillips (29557)', 'value' => '29557'], ['text' => 'Ellie-Rae Lomax (29553)', 'value' => '29553'], ['text' => 'Helaman Setu (29560)', 'value' => '29560'], ['text' => 'Helen (29555)', 'value' => '29555'], ['text' => 'Kaiden Grennan (29570)', 'value' => '29570'], ['text' => 'Lauren Williams (29562)', 'value' => '29562'], ['text' => 'Leish ParsBail (29558)', 'value' => '29558'], ['text' => 'Lillie Kiwi Kiwi (29563)', 'value' => '29563'], ['text' => 'Lucy Wharrier (29559)', 'value' => '29559'], ['text' => 'Michael (29566)', 'value' => '29566'], ['text' => 'Michael (29571)', 'value' => '29571'], ['text' => 'Morbias (29569)', 'value' => '29569'], ['text' => 'Myra Henderson (29565)', 'value' => '29565'], ['text' => 'Rob Underdown (29556)', 'value' => '29556'], ['text' => 'Sammy Makasini (29552)', 'value' => '29552'], ['text' => 'Steve (29567)', 'value' => '29567'], ['text' => 'Wendy Nunn (29573)', 'value' => '29573'], ['text' => 'William Liehr (29572)', 'value' => '29572']], 'description' => 'Choose a published review. List refreshes when you reload the Breakdance builder.', 'condition' => [[['path' => '%%CURRENTPATH%%.mode', 'operand' => 'equals', 'value' => 'specific']]]],
         false,
         false,
         [],
@@ -498,7 +511,7 @@ class ScosReviewCard extends \Breakdance\Elements\Element
 
     static function propertyPathsToWhitelistInFlatProps()
     {
-        return ['design.container.background.image', 'design.container.background.overlay.image', 'design.container.background.image_settings.unset_image_at', 'design.container.background.image_settings.size', 'design.container.background.image_settings.height', 'design.container.background.image_settings.repeat', 'design.container.background.image_settings.position', 'design.container.background.image_settings.left', 'design.container.background.image_settings.top', 'design.container.background.image_settings.attachment', 'design.container.background.image_settings.custom_position', 'design.container.background.image_settings.width', 'design.container.background.overlay.image_settings.custom_position', 'design.container.background.image_size', 'design.container.background.overlay.image_size', 'design.container.background.overlay.type', 'design.container.background.design.layout.horizontal.vertical_at', 'design.container.background.image_settings', 'design.container.background.type', 'design.background.image', 'design.background.overlay.image', 'design.background.image_settings.unset_image_at', 'design.background.image_settings.size', 'design.background.image_settings.height', 'design.background.image_settings.repeat', 'design.background.image_settings.position', 'design.background.image_settings.left', 'design.background.image_settings.top', 'design.background.image_settings.attachment', 'design.background.image_settings.custom_position', 'design.background.image_settings.width', 'design.background.overlay.image_settings.custom_position', 'design.background.image_size', 'design.background.overlay.image_size', 'design.background.overlay.type', 'design.background.image_settings'];
+        return ['design.container.background.image', 'design.container.background.overlay.image', 'design.container.background.image_settings.unset_image_at', 'design.container.background.image_settings.size', 'design.container.background.image_settings.height', 'design.container.background.image_settings.repeat', 'design.container.background.image_settings.position', 'design.container.background.image_settings.left', 'design.container.background.image_settings.top', 'design.container.background.image_settings.attachment', 'design.container.background.image_settings.custom_position', 'design.container.background.image_settings.width', 'design.container.background.overlay.image_settings.custom_position', 'design.container.background.image_size', 'design.container.background.overlay.image_size', 'design.container.background.overlay.type', 'design.container.background.design.layout.horizontal.vertical_at', 'design.container.background.image_settings', 'design.container.background.type', 'design.background.image', 'design.background.overlay.image', 'design.background.image_settings.unset_image_at', 'design.background.image_settings.size', 'design.background.image_settings.height', 'design.background.image_settings.repeat', 'design.background.image_settings.position', 'design.background.image_settings.left', 'design.background.image_settings.top', 'design.background.image_settings.attachment', 'design.background.image_settings.custom_position', 'design.background.image_settings.width', 'design.background.overlay.image_settings.custom_position', 'design.background.image_size', 'design.background.overlay.image_size', 'design.background.overlay.type', 'design.background.image_settings', 'design.layout.layout', 'design.layout.h_vertical_at', 'design.layout.h_alignment_when_vertical', 'design.layout.a_display', 'design.layout.horizontal.vertical_at'];
     }
 
     static function propertyPathsToSsrElementWhenValueChanges()
