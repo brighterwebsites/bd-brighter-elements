@@ -1,0 +1,41 @@
+.bde-hero-gallery-div > .bde-hero-gallery-overlay {
+position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4); /* Example: 40% dark tint */
+    z-index: 10; /* Higher than the images */
+    pointer-events: none; /* Allows users to click through it if needed */
+}
+
+.bde-hero-gallery-div img {
+  opacity:0;
+  z-index: 1;
+ 
+}
+.bde-hero-gallery-div img:first-child {
+  position: relative;
+  opacity:1;
+  height: 100vh;
+    object-fit: cover;
+    background-size: cover;
+}
+.bde-hero-gallery-div img:not(:first-child) {
+  position: absolute;
+  top:0;
+  left:0;
+  height: 100vh;
+    object-fit: cover;
+    background-size: cover;
+}
+
+.bde-hero-gallery-overlay {
+    padding: 0 var(--section-padding-h) var(--space-18);
+    inset: 0;
+    z-index: 2;
+    background: var(--overlay-hero);
+    position: absolute;
+  width: 100%;
+  height: 100%;
+}
