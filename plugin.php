@@ -4,13 +4,13 @@
 /**
  * Plugin Name: Brighter BD Elements
  * Plugin URI: https://brighterwebsites.com.au/
- * Description: Custom Breakdance elements for Brighter Websites (SCOS, tables, definitions).
+ * Description: Custom Breakdance elements.
  * Author: Brighter Websites
  * Author URI: https://brighterwebsites.com.au/
  * License: GPLv2
  * Text Domain: breakdance
  * Domain Path: /languages/
- * Version: 0.3.4
+ * Version: 1.0
  */
 
 namespace BreakdanceCustomElements;
