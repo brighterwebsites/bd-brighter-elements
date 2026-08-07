@@ -1,7 +1,16 @@
 <?php
+// v1.0 | 2026-08-07
+//
+// The "Specific review" dropdown must build its items from Review_Picker_Options
+// at runtime. Element Studio bakes evaluated dropdown items into this file when an
+// element is re-saved from the builder — this regressed once already in 0729a59,
+// reverting the fix from bded031. If the items array below ever becomes a literal
+// list of post IDs again, restore the Review_Picker_Options::dropdown_items() call:
+// a baked list is a snapshot of whichever site the Element Studio save was made on.
 
 namespace BreakdanceCustomElements;
 
+use BrighterElements\Review_Picker_Options;
 use function Breakdance\Elements\c;
 use function Breakdance\Elements\PresetSections\getPresetSection;
 
@@ -262,7 +271,7 @@ class ScosReviewCard extends \Breakdance\Elements\Element
         "review_id",
         "Review",
         [],
-        ['type' => 'dropdown', 'layout' => 'vertical', 'items' => [['text' => 'Andrew (29561)', 'value' => '29561'], ['text' => 'C Hughes (29554)', 'value' => '29554'], ['text' => 'Cath V (29568)', 'value' => '29568'], ['text' => 'Dallas Carr (29564)', 'value' => '29564'], ['text' => 'Edward phillips (29557)', 'value' => '29557'], ['text' => 'Ellie-Rae Lomax (29553)', 'value' => '29553'], ['text' => 'Helaman Setu (29560)', 'value' => '29560'], ['text' => 'Helen (29555)', 'value' => '29555'], ['text' => 'Kaiden Grennan (29570)', 'value' => '29570'], ['text' => 'Lauren Williams (29562)', 'value' => '29562'], ['text' => 'Leish ParsBail (29558)', 'value' => '29558'], ['text' => 'Lillie Kiwi Kiwi (29563)', 'value' => '29563'], ['text' => 'Lucy Wharrier (29559)', 'value' => '29559'], ['text' => 'Michael (29566)', 'value' => '29566'], ['text' => 'Michael (29571)', 'value' => '29571'], ['text' => 'Morbias (29569)', 'value' => '29569'], ['text' => 'Myra Henderson (29565)', 'value' => '29565'], ['text' => 'Rob Underdown (29556)', 'value' => '29556'], ['text' => 'Sammy Makasini (29552)', 'value' => '29552'], ['text' => 'Steve (29567)', 'value' => '29567'], ['text' => 'Wendy Nunn (29573)', 'value' => '29573'], ['text' => 'William Liehr (29572)', 'value' => '29572']], 'description' => 'Choose a published review. List refreshes when you reload the Breakdance builder.', 'condition' => [[['path' => '%%CURRENTPATH%%.mode', 'operand' => 'equals', 'value' => 'specific']]]],
+        ['type' => 'dropdown', 'layout' => 'vertical', 'items' => Review_Picker_Options::dropdown_items(), 'description' => 'Choose a published review. List refreshes when you reload the Breakdance builder.', 'condition' => [[['path' => '%%CURRENTPATH%%.mode', 'operand' => 'equals', 'value' => 'specific']]]],
         false,
         false,
         [],
