@@ -17,6 +17,7 @@ elements/test.md
 schemadance-free-latest/
 Thumbs.db
 .DS_Store
+.vscode/
 
 # BDE Element Studio dev notes (local skill-builder capture — never commit)
 bde-studio-skill-builder-notes.md
