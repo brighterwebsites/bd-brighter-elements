@@ -13,6 +13,11 @@ elements/Stats_Grid/
 elements/Text_Table_Header/
 elements/test.md
 
+# Client-specific elements — kept locally, not shipped from this plugin
+elements/Gallery/
+elements/Hero_Image_Gallery/
+elements/Scrolling_Marquess_/
+
 # Local reference / OS
 schemadance-free-latest/
 Thumbs.db
