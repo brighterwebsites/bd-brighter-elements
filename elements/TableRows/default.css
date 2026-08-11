@@ -1,7 +1,22 @@
-.breakdance .bde-table__table {
-  align-items: flex-start;
-  text-align: left;
+table.bde-table__table {
   width: 100%;
-  position: relative;
-  background-size: cover;
+  border-collapse: collapse;
+  overflow: hidden;
+  margin: 16px 0;
 }
+
+.bde-table__table,
+.bde-table__text,
+.bde-table__cell {
+  text-align: left;
+  vertical-align: top;
+}
+
+td.bde-table__cell:last-child td,
+td.bde-table__text:last-child td {
+  border-bottom: none;
+}
+
+
+
+

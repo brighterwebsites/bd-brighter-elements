@@ -1,4 +1,5 @@
 <?php
+// v1.0 | 2026-08-11
 
 namespace BreakdanceCustomElements;
 
@@ -20,7 +21,7 @@ class Tablerows extends \Breakdance\Elements\Element
 
     static function tag()
     {
-        return 'null';
+        return 'table';
     }
 
     static function tagOptions()
@@ -70,12 +71,12 @@ class Tablerows extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        return false;
+        return ['content' => ['the_table_tags' => ['table_outer_tags' => 'table'], 'settings' => ['table_behaviour' => 'standard']]];
     }
 
     static function defaultChildren()
     {
-        return false;
+        return [['slug' => 'BreakdanceCustomElements\TableText'], ['slug' => 'BreakdanceCustomElements\TableText'], ['slug' => 'BreakdanceCustomElements\TableCell']];
     }
 
     static function cssTemplate()
@@ -87,63 +88,90 @@ class Tablerows extends \Breakdance\Elements\Element
     static function designControls()
     {
         return [getPresetSection(
-      "EssentialElements\\simpleLayout",
-      "Layout",
-      "layout",
-       ['condition' => [[['path' => 'design.layout', 'operand' => 'is set', 'value' => '']]], 'type' => 'popout']
-     ), getPresetSection(
-      "EssentialElements\\LayoutV2",
-      "Layout",
-      "layout_v2",
-       ['condition' => [[['path' => 'design.layout', 'operand' => 'is not set', 'value' => '']]], 'type' => 'popout']
-     ), getPresetSection(
       "EssentialElements\\LessFancyBackground",
       "Background",
       "background",
-       ['type' => 'popout']
+       ['condition' => [[['path' => 'content.the_table_tags.table_outer_tags', 'operand' => 'equals', 'value' => 'table']]], 'type' => 'popout']
      ), c(
-        "container",
-        "Container",
-        [c(
-        "width",
-        "Width",
-        [],
-        ['type' => 'unit', 'layout' => 'inline'],
-        true,
+        "text",
+        "Text",
+        [getPresetSection(
+      "EssentialElements\\typography",
+      "Headings",
+      "headings",
+       ['type' => 'popout']
+     ), getPresetSection(
+      "EssentialElements\\typography",
+      "Cell Text",
+      "cell_text",
+       ['type' => 'popout']
+     )],
+        ['type' => 'section', 'condition' => [[['path' => '', 'operand' => 'equals', 'value' => '']]]],
+        false,
         false,
         [],
         
       ), c(
-        "min_height",
-        "Min Height",
+        "table_styles",
+        "Table Styles",
+        [getPresetSection(
+      "EssentialElements\\background",
+      "Header BG",
+      "header_bg",
+       ['type' => 'popout']
+     ), c(
+        "even_rows_bg",
+        "Even Rows BG",
         [],
-        ['type' => 'unit', 'layout' => 'inline'],
-        true,
+        ['type' => 'color', 'layout' => 'inline'],
         false,
+        true,
+        [],
+        
+      ), c(
+        "odd_rows_bg",
+        "Odd Rows BG",
+        [],
+        ['type' => 'color', 'layout' => 'inline'],
+        false,
+        true,
         [],
         
       ), getPresetSection(
       "EssentialElements\\spacing_padding_all",
-      "Padding",
-      "padding",
+      "Padding (All)",
+      "spacing_padding_all",
        ['type' => 'popout']
-     ), getPresetSection(
-      "EssentialElements\\borders",
-      "Borders",
-      "borders",
-       ['type' => 'popout']
-     )],
-        ['type' => 'section'],
+     ), c(
+        "header_align_text",
+        "Header Align Text",
+        [],
+        ['type' => 'dropdown', 'layout' => 'inline', 'items' => [['value' => 'Top', 'text' => 'Top'], ['text' => 'Center', 'value' => 'Center'], ['text' => 'Bottom', 'value' => 'Bottom']]],
         false,
         false,
         [],
         
       ), c(
-        "text_colors",
-        "Text Colors",
-        [c(
-        "headings",
-        "Headings",
+        "cell_align_text",
+        "Cell Align Text",
+        [],
+        ['type' => 'dropdown', 'layout' => 'inline', 'items' => [['value' => 'center', 'text' => 'Center'], ['text' => 'Top', 'value' => 'top'], ['text' => 'bottom', 'value' => 'bottom']]],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "border_width",
+        "Border Width",
+        [],
+        ['type' => 'unit', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "border_color",
+        "Border Color",
         [],
         ['type' => 'color', 'layout' => 'inline'],
         false,
@@ -151,34 +179,16 @@ class Tablerows extends \Breakdance\Elements\Element
         [],
         
       ), c(
-        "text",
-        "Text",
+        "border_radius",
+        "Border Radius",
         [],
-        ['type' => 'color', 'layout' => 'inline'],
-        false,
-        false,
-        [],
-        
-      ), c(
-        "link",
-        "Link",
-        [],
-        ['type' => 'color', 'layout' => 'inline'],
-        false,
-        true,
-        [],
-        
-      ), c(
-        "brand",
-        "Brand",
-        [],
-        ['type' => 'color', 'layout' => 'inline'],
+        ['type' => 'unit', 'layout' => 'inline'],
         false,
         false,
         [],
         
       )],
-        ['type' => 'section', 'condition' => [[['path' => 'design.text_colors', 'operand' => 'is set', 'value' => '']]]],
+        ['type' => 'section', 'condition' => [[['path' => 'content.the_table_tags.table_outer_tags', 'operand' => 'equals', 'value' => 'table']]]],
         false,
         false,
         [],
@@ -211,6 +221,24 @@ class Tablerows extends \Breakdance\Elements\Element
         false,
         [],
         
+      ), c(
+        "settings",
+        "Settings",
+        [c(
+        "table_behaviour",
+        "Table Behaviour",
+        [],
+        ['type' => 'dropdown', 'layout' => 'vertical', 'items' => [['text' => 'Standard Table', 'value' => 'standard'], ['value' => 'collapse-row-labels', 'text' => 'ROW COLLAPSE WITH LABELS'], ['text' => 'ROW COLLAPSE NO LABELS', 'value' => 'collapse-row'], ['text' => 'COLUMN COLLAPSE CARDS', 'value' => 'collapse-col']]],
+        false,
+        false,
+        [],
+        
+      )],
+        ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'content.the_table_tags.table_outer_tags', 'operand' => 'equals', 'value' => 'table']]]],
+        false,
+        false,
+        [],
+        
       )];
     }
 
@@ -221,12 +249,46 @@ class Tablerows extends \Breakdance\Elements\Element
 
     static function dependencies()
     {
-        return false;
+        return ['0' =>  ['title' => 'JS_TableControl','inlineScripts' => ['document.addEventListener(\'DOMContentLoaded\', function () {
+
+  const BREAKPOINT = 680;
+
+
+  // ============================================================
+  // UTILITY: get table element from a figure.wp-block-table
+  // ============================================================
+  function getTable(el) {
+    return el.tagName === \'TABLE\' ? el : el.querySelector(\'table\');
+  }
+
+
+  // ============================================================
+  // 1. ROW COLLAPSE WITH LABELS
+  // Pure CSS job — JS just stamps data-label on each td.
+  // Runs once, no teardown needed (labels are harmless on desktop).
+  // ============================================================
+document.querySelectorAll(
+  \'.bde-table__table.bw-collapse-row-labels\'
+).forEach(function (wrapper) {
+    const table = getTable(wrapper);
+    if (!table) return;
+
+const headers = Array.from(table.querySelectorAll(\'thead th, thead td\'))
+  .map(th => th.textContent.trim());
+    table.querySelectorAll(\'tbody tr\').forEach(function (tr) {
+      tr.querySelectorAll(\'td\').forEach(function (td, i) {
+        if (headers[i]) td.setAttribute(\'data-label\', headers[i]);
+      });
+    });
+  });
+
+
+'],],];
     }
 
     static function settings()
     {
-        return ['disableRootHtmlTag' => true];
+        return ['disableRootHtmlTag' => false];
     }
 
     static function addPanelRules()
@@ -241,7 +303,7 @@ class Tablerows extends \Breakdance\Elements\Element
 
     static function nestingRule()
     {
-        return ['type' => 'container', 'inlineEditableBlockPath' => 'content.table_tags.tags'];
+        return ['type' => 'container'];
     }
 
     static function spacingBars()
@@ -277,7 +339,7 @@ class Tablerows extends \Breakdance\Elements\Element
 
     static function additionalClasses()
     {
-        return false;
+        return [['name' => 'bw-collapse-row-labels', 'template' => '{{ content.settings.table_behaviour == \'collapse-row-labels\' }}']];
     }
 
     static function projectManagement()
@@ -287,7 +349,7 @@ class Tablerows extends \Breakdance\Elements\Element
 
     static function propertyPathsToWhitelistInFlatProps()
     {
-        return ['design.background.type', 'design.layout.horizontal.vertical_at', 'design.background.image', 'design.background.overlay.image', 'design.background.image_settings.unset_image_at', 'design.background.image_settings.size', 'design.background.image_settings.height', 'design.background.image_settings.repeat', 'design.background.image_settings.position', 'design.background.image_settings.left', 'design.background.image_settings.top', 'design.background.image_settings.attachment', 'design.background.image_settings.custom_position', 'design.background.image_settings.width', 'design.background.overlay.image_settings.custom_position', 'design.background.image_size', 'design.background.overlay.image_size', 'design.background.overlay.type', 'design.background.image_settings', 'design.layout_v2.layout', 'design.layout_v2.h_vertical_at', 'design.layout_v2.h_alignment_when_vertical', 'design.layout_v2.a_display'];
+        return ['design.background.type', 'design.layout.horizontal.vertical_at', 'design.layout_v2.layout', 'design.layout_v2.h_vertical_at', 'design.layout_v2.h_alignment_when_vertical', 'design.layout_v2.a_display', 'design.background.image', 'design.background.overlay.image', 'design.background.image_settings.unset_image_at', 'design.background.image_settings.size', 'design.background.image_settings.height', 'design.background.image_settings.repeat', 'design.background.image_settings.position', 'design.background.image_settings.left', 'design.background.image_settings.top', 'design.background.image_settings.attachment', 'design.background.image_settings.custom_position', 'design.background.image_settings.width', 'design.background.overlay.image_settings.custom_position', 'design.background.image_size', 'design.background.overlay.image_size', 'design.background.overlay.type', 'design.background.image_settings'];
     }
 
     static function propertyPathsToSsrElementWhenValueChanges()

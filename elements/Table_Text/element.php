@@ -1,4 +1,5 @@
 <?php
+// v1.0 | 2026-08-11
 
 namespace BreakdanceCustomElements;
 
@@ -70,7 +71,7 @@ class TableText extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        return ['content' => ['content' => ['text' => '17mm black form ply (lower) + 4mm heavy-duty galvanised mesh (upper)', 'data_label' => 'Configuration'], 'tag' => ['text_tag' => 'td']], 'design' => ['typography' => ['typography' => ['custom' => ['customTypography' => ['fontSize' => ['breakpoint_base' => ['number' => 12, 'unit' => 'px', 'style' => '12px']]]]]]]];
+        return ['content' => ['content' => ['text' => 'Cell text', 'data_label' => ''], 'tag' => ['text_tag' => 'td']]];
     }
 
     static function defaultChildren()
@@ -179,7 +180,7 @@ class TableText extends \Breakdance\Elements\Element
 
     static function settings()
     {
-        return ['disableRootHtmlTag' => true];
+        return ['disableRootHtmlTag' => false];
     }
 
     static function addPanelRules()
@@ -194,7 +195,7 @@ class TableText extends \Breakdance\Elements\Element
 
     static function nestingRule()
     {
-        return ['type' => 'final'];
+        return ['type' => 'final', 'restrictedToBeADescendantOf' => ['BreakdanceCustomElements\Tablerows']];
     }
 
     static function spacingBars()
@@ -204,7 +205,7 @@ class TableText extends \Breakdance\Elements\Element
 
     static function attributes()
     {
-        return [['template' => 'content.content.text', 'name' => 'data-content-editable-property-path']];
+        return [['template' => 'content.content.text', 'name' => 'data-content-editable-property-path'], ['name' => 'data-label', 'template' => '{{ content.content.data_label }}']];
     }
 
     static function experimental()
@@ -230,7 +231,7 @@ class TableText extends \Breakdance\Elements\Element
 
     static function additionalClasses()
     {
-        return [['name' => 'test', 'template' => 'yes']];
+        return false;
     }
 
     static function projectManagement()

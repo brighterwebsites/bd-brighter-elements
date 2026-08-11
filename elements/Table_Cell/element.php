@@ -1,4 +1,5 @@
 <?php
+// v1.0 | 2026-08-11
 
 namespace BreakdanceCustomElements;
 
@@ -20,7 +21,7 @@ class TableCell extends \Breakdance\Elements\Element
 
     static function tag()
     {
-        return 'null';
+        return 'td';
     }
 
     static function tagOptions()
@@ -97,13 +98,13 @@ class TableCell extends \Breakdance\Elements\Element
         true,
         false,
         [],
-
+        
       )],
         ['type' => 'section'],
         false,
         false,
         [],
-
+        
       ), getPresetSection(
       "EssentialElements\\spacing_padding_all",
       "Padding",
@@ -145,7 +146,7 @@ class TableCell extends \Breakdance\Elements\Element
         false,
         false,
         [],
-
+        
       ), c(
         "data_label",
         "Data Label",
@@ -154,7 +155,7 @@ class TableCell extends \Breakdance\Elements\Element
         false,
         false,
         [],
-
+        
       ), c(
         "colspan",
         "Colspan",
@@ -163,7 +164,7 @@ class TableCell extends \Breakdance\Elements\Element
         false,
         false,
         [],
-
+        
       ), c(
         "rowspan",
         "Rowspan",
@@ -172,13 +173,13 @@ class TableCell extends \Breakdance\Elements\Element
         false,
         false,
         [],
-
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
-
+        
       )];
     }
 
@@ -194,7 +195,7 @@ class TableCell extends \Breakdance\Elements\Element
 
     static function settings()
     {
-        return ['disableRootHtmlTag' => true];
+        return ['disableRootHtmlTag' => false];
     }
 
     static function addPanelRules()
@@ -209,7 +210,7 @@ class TableCell extends \Breakdance\Elements\Element
 
     static function nestingRule()
     {
-        return ['type' => 'container'];
+        return ['type' => 'container', 'restrictedToBeADescendantOf' => ['BreakdanceCustomElements\Tablerows']];
     }
 
     static function spacingBars()
@@ -219,7 +220,7 @@ class TableCell extends \Breakdance\Elements\Element
 
     static function attributes()
     {
-        return [['name' => 'data-bde-lazy-bg', 'template' => '{{ design.background.lazy_load ? \'waiting\' }}']];
+        return [['name' => 'data-bde-lazy-bg', 'template' => '{{ design.background.lazy_load ? \'waiting\' }}'], ['name' => 'data-label', 'template' => '{{ content.tag.data_label }}'], ['name' => 'colspan', 'template' => '{{ content.tag.colspan }}'], ['name' => 'rowspan', 'template' => '{{ content.tag.rowspan }}']];
     }
 
     static function experimental()
@@ -231,6 +232,7 @@ class TableCell extends \Breakdance\Elements\Element
     {
         return ['breakdance'];
     }
+
 
     static function order()
     {
