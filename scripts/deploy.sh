@@ -138,8 +138,10 @@ echo "==> Extracting archive into staging..."
 git archive --worktree-attributes "${REF}" | ssh "${SSH_OPTS[@]}" "${SSH_TARGET}" "tar -xf - -C '${STAGE_DIR}'"
 
 # Positive proof the payload arrived intact before anything live is touched.
+# A size check alone passes a 1-byte truncated file, so require the WordPress
+# plugin header and the elements directory the plugin cannot work without.
 echo "==> Verifying staged payload..."
-remote "test -s '${STAGE_DIR}/plugin.php'"
+remote "grep -q 'Plugin Name:' '${STAGE_DIR}/plugin.php' && test -d '${STAGE_DIR}/elements'"
 
 # Orphan-safe swap: the staged tree fully replaces the old one, so files deleted
 # from the repo (renamed elements, old form-actions) do not survive as orphans
