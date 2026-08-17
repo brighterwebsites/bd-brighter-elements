@@ -30,3 +30,12 @@ bde-studio-skill-builder-notes.md
 # Deploy tooling stays in repo but never ships to WordPress (see .gitattributes export-ignore)
 # Deploy secrets (copy from scripts/deploy.env.example)
 scripts/deploy.env
+
+# Form elements, macros, presets and the CPT submission action — not used on any
+# site. Kept locally for reference, never shipped (see plugin.php).
+form-actions/
+elements/FormDesignOptions/
+macros/FormContainer.twig
+macros/form.twig
+macros/conditional-form-input-attributes.twig
+presets/form-container.php
