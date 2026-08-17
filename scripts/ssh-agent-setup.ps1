@@ -2,7 +2,8 @@
 # Enter your KEY PASSPHRASE when prompted — same as PuTTY, NOT your server login password.
 
 $ErrorActionPreference = "Stop"
-$key = "$env:USERPROFILE\.ssh\eddsa-key-20260519"
+# Set BD_DEPLOY_SSH_KEY to override; otherwise edit the fallback below.
+$key = if ($env:BD_DEPLOY_SSH_KEY) { $env:BD_DEPLOY_SSH_KEY } else { "$env:USERPROFILE\.ssh\id_ed25519" }
 
 if (-not (Test-Path $key)) {
     Write-Error "Key not found: $key"
@@ -19,4 +20,4 @@ ssh-add $key
 Write-Host ""
 ssh-add -l
 Write-Host ""
-Write-Host "Test: ssh bweb2-bw `"echo ok`""
+Write-Host "Test: ssh <your-ssh-host-alias> `"echo ok`""

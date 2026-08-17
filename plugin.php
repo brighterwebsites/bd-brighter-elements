@@ -21,22 +21,11 @@ require_once __DIR__ . '/includes/class-faq-picker-options.php';
 require_once __DIR__ . '/includes/class-review-picker-options.php';
 require_once __DIR__ . '/includes/class-platform-picker-options.php';
 
-// CPT Form Submission action + admin settings
-add_action('init', function () {
-    if (!function_exists('\Breakdance\Forms\Actions\registerAction')) {
-        return;
-    }
-    require_once __DIR__ . '/form-actions/CptSubmissionAction.php';
-    \Breakdance\Forms\Actions\registerAction(new \BrighterElements\FormActions\CptSubmissionAction());
-});
-
-add_action('init', function () {
-    if (!is_admin()) {
-        return;
-    }
-    require_once __DIR__ . '/form-actions/CptSubmissionAdmin.php';
-    (new \BrighterElements\FormActions\CptSubmissionAdmin())->init();
-});
+// The CPT Form Submission action and its admin settings page were removed from
+// this plugin — they are untracked local-only files (see .gitignore). Their
+// require_once calls lived here; leaving them would fatal once the files are
+// absent from a deploy. The stored option `brighter_cpt_submission_configs`
+// is left in the database as a harmless orphan.
 
 add_filter('breakdance_element_categories', function (array $categories) {
     $categories['site_essentials'] = 'Site Essentials';
