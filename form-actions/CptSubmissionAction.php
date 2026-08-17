@@ -43,9 +43,22 @@ class CptSubmissionAction extends \Breakdance\Forms\Actions\Action {
                 continue;
             }
             $value = $submitted[$form_field];
+
+            // post_status reaches wp_insert_post from an unauthenticated submitter
+            // whenever an admin maps it. Constrain it to a known-safe set rather
+            // than passing an arbitrary string through.
+            if ($wp_field === 'post_status') {
+                $status = is_scalar($value) ? sanitize_key((string) $value) : '';
+                $post_data[$wp_field] = in_array($status, ['publish', 'draft', 'pending', 'private'], true)
+                    ? $status
+                    : 'draft';
+                continue;
+            }
+
+            $scalar = is_scalar($value) ? (string) $value : '';
             $post_data[$wp_field] = ($wp_field === 'post_content')
-                ? wp_kses_post($value)
-                : sanitize_text_field($value);
+                ? wp_kses_post($scalar)
+                : sanitize_text_field($scalar);
         }
 
         $post_id = wp_insert_post($post_data, true);
@@ -64,16 +77,56 @@ class CptSubmissionAction extends \Breakdance\Forms\Actions\Action {
                 continue;
             }
 
-            $value = $submitted[$form_field];
+            // Submitted values are unauthenticated input. They were previously
+            // written to post meta verbatim, leaving any escaping entirely to
+            // whatever theme or template later renders them.
+            $value    = $this->sanitizeValue($submitted[$form_field]);
+            $meta_key = sanitize_text_field($meta_key);
 
             if ($is_acf && function_exists('update_field')) {
                 update_field($meta_key, $value, $post_id);
             } else {
-                update_post_meta($post_id, sanitize_text_field($meta_key), $value);
+                update_post_meta($post_id, $meta_key, $value);
             }
         }
 
         return ['type' => 'success', 'message' => 'Post created successfully (ID: ' . $post_id . ')'];
+    }
+
+    /**
+     * Sanitise a submitted value before it is stored as post meta.
+     *
+     * Strings go through wp_kses_post — the same filter this action already
+     * applies to post_content — so ordinary formatting survives while script
+     * tags and event-handler attributes do not. Arrays are walked recursively
+     * with a depth cap, since a crafted submission can nest arbitrarily.
+     *
+     * @param mixed $value
+     * @return mixed
+     */
+    private function sanitizeValue($value, int $depth = 0) {
+        if (is_array($value)) {
+            if ($depth >= 8) {
+                return [];
+            }
+            $clean = [];
+            foreach ($value as $key => $item) {
+                $clean_key = is_string($key) ? sanitize_text_field($key) : $key;
+                $clean[$clean_key] = $this->sanitizeValue($item, $depth + 1);
+            }
+            return $clean;
+        }
+
+        if (is_bool($value) || is_int($value) || is_float($value) || $value === null) {
+            return $value;
+        }
+
+        if (is_scalar($value)) {
+            return wp_kses_post((string) $value);
+        }
+
+        // Objects and resources are not expected from a form submission.
+        return '';
     }
 
     private function extractFieldValues($form, $extra): array {
