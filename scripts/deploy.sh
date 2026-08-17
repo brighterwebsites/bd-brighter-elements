@@ -82,6 +82,30 @@ fi
 
 echo "==> Deploying tracked files (git archive) — excludes .git, export-ignore paths (see .gitattributes)..."
 
+# Safety guard: refuse to touch anything that is not clearly a WP plugin folder.
+# Runs BEFORE any mkdir, so a misconfigured REMOTE_PLUGIN_PATH cannot create a
+# phantom directory tree and then deploy into it.
+case "${REMOTE_PLUGIN_PATH}" in
+  */wp-content/plugins/?*) : ;;
+  *)
+    echo "Refusing to deploy to '${REMOTE_PLUGIN_PATH}' — path is not a directory under wp-content/plugins/." >&2
+    echo "Set REMOTE_PLUGIN_PATH to the full plugin directory in deploy.env." >&2
+    exit 1
+    ;;
+esac
+
+REMOTE_PARENT="$(dirname "${REMOTE_PLUGIN_PATH}")"
+
+if [[ "${DRY_RUN}" == "1" ]]; then
+  echo "[dry-run] plan:"
+  [[ "${REMOTE_BACKUP}" == "1" ]] && echo "[dry-run]   cp -a '${REMOTE_PLUGIN_PATH}' '${REMOTE_PLUGIN_PATH}.bak-<stamp>'"
+  echo "[dry-run]   STAGE=\$(mktemp -d '${REMOTE_PARENT}/.bd-deploy-XXXXXXXX')"
+  echo "[dry-run]   git archive --worktree-attributes '${REF}' | ssh ... 'tar -xf - -C \$STAGE'"
+  echo "[dry-run]   verify \$STAGE/plugin.php exists and \$STAGE is non-empty"
+  echo "[dry-run]   mv '${REMOTE_PLUGIN_PATH}' <retired>  &&  mv \$STAGE '${REMOTE_PLUGIN_PATH}'"
+  exit 0
+fi
+
 if [[ "${REMOTE_BACKUP}" == "1" ]]; then
   STAMP="$(date +%Y%m%d-%H%M%S)"
   BACKUP_PATH="${REMOTE_PLUGIN_PATH}.bak-${STAMP}"
@@ -89,39 +113,49 @@ if [[ "${REMOTE_BACKUP}" == "1" ]]; then
   remote "if [ -d '${REMOTE_PLUGIN_PATH}' ]; then cp -a '${REMOTE_PLUGIN_PATH}' '${BACKUP_PATH}'; fi"
 fi
 
-echo "==> Ensuring remote plugin directory exists..."
-remote "mkdir -p '${REMOTE_PLUGIN_PATH}'"
+# Stage into a fresh mktemp -d beside the target, then swap. A dropped connection
+# or a failed extraction now leaves the live plugin directory untouched, instead
+# of wiping it first and losing the plugin if the transfer never completes.
+# mktemp -d creates a fresh 0700 directory or fails — never reuses a path an
+# attacker pre-created, which a predictable name plus `mkdir -p` would.
+echo "==> Creating remote staging directory..."
+STAGE_DIR="$(ssh "${SSH_OPTS[@]}" "${SSH_TARGET}" \
+  "mkdir -p '${REMOTE_PARENT}' && mktemp -d '${REMOTE_PARENT}/.bd-deploy-XXXXXXXX'")"
 
-# Safety guard: refuse to wipe anything that is not clearly a WP plugin folder.
-# Prevents a misconfigured REMOTE_PLUGIN_PATH from rm -rf'ing something important.
-case "${REMOTE_PLUGIN_PATH}" in
-  */wp-content/plugins/*) : ;;
-  *)
-    echo "Refusing to clean '${REMOTE_PLUGIN_PATH}' — path is not under wp-content/plugins/." >&2
-    echo "Set REMOTE_PLUGIN_PATH to the full plugin directory in deploy.env." >&2
-    exit 1
-    ;;
-esac
-
-# Orphan-safe deploy: tar -xf only overlays files, it never deletes files removed
-# from the repo (renamed/deleted elements, old form-actions, etc.). Those orphans
-# caused duplicate-class fatals. Wipe the plugin dir contents, then extract fresh.
-CLEAN_CMD="rm -rf '${REMOTE_PLUGIN_PATH}'/* '${REMOTE_PLUGIN_PATH}'/.[!.]* '${REMOTE_PLUGIN_PATH}'/..?* 2>/dev/null || true"
-
-# Extract archive on server. git archive honours .gitattributes export-ignore
-# (scripts/, .cursor/ are excluded), so a full wipe loses nothing server-side.
-ARCHIVE_CMD="git -C '${REPO_ROOT}' archive --worktree-attributes '${REF}' | ssh ${SSH_OPTS[*]} '${SSH_TARGET}' \"tar -xf - -C '${REMOTE_PLUGIN_PATH}'\""
-
-if [[ "${DRY_RUN}" == "1" ]]; then
-  echo "[dry-run] ssh ... '${SSH_TARGET}' \"${CLEAN_CMD}\""
-  echo "[dry-run] ${ARCHIVE_CMD}"
-  exit 0
+if [[ -z "${STAGE_DIR}" ]]; then
+  echo "Failed to create remote staging directory under ${REMOTE_PARENT}" >&2
+  exit 1
 fi
+echo "    ${STAGE_DIR}"
 
-echo "==> Cleaning remote plugin directory (removing orphaned files)..."
-remote "${CLEAN_CMD}"
+# Any failure from here on must not leave staging litter on the server.
+cleanup_stage() {
+  ssh "${SSH_OPTS[@]}" "${SSH_TARGET}" "rm -rf -- '${STAGE_DIR}'" >/dev/null 2>&1 || true
+}
+trap cleanup_stage EXIT
 
-git archive --worktree-attributes "${REF}" | ssh "${SSH_OPTS[@]}" "${SSH_TARGET}" "tar -xf - -C '${REMOTE_PLUGIN_PATH}'"
+echo "==> Extracting archive into staging..."
+git archive --worktree-attributes "${REF}" | ssh "${SSH_OPTS[@]}" "${SSH_TARGET}" "tar -xf - -C '${STAGE_DIR}'"
+
+# Positive proof the payload arrived intact before anything live is touched.
+echo "==> Verifying staged payload..."
+remote "test -s '${STAGE_DIR}/plugin.php'"
+
+# Orphan-safe swap: the staged tree fully replaces the old one, so files deleted
+# from the repo (renamed elements, old form-actions) do not survive as orphans
+# and cause duplicate-class fatals.
+echo "==> Swapping staged tree into place..."
+RETIRED="${REMOTE_PLUGIN_PATH}.retired-$(date +%Y%m%d-%H%M%S)-$$"
+remote "set -e
+        if [ -e '${REMOTE_PLUGIN_PATH}' ]; then mv -- '${REMOTE_PLUGIN_PATH}' '${RETIRED}'; fi
+        if mv -- '${STAGE_DIR}' '${REMOTE_PLUGIN_PATH}'; then
+          rm -rf -- '${RETIRED}'
+        else
+          if [ -e '${RETIRED}' ]; then mv -- '${RETIRED}' '${REMOTE_PLUGIN_PATH}'; fi
+          exit 1
+        fi"
+
+trap - EXIT
 
 echo "==> Done. Plugin deployed to ${REMOTE_PLUGIN_PATH}"
 echo "    Tip: reload Breakdance → Settings if elements do not appear."
