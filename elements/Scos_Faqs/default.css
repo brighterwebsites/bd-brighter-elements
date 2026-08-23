@@ -1,3 +1,15 @@
+/**
+ * SCOS FAQs — structural defaults only.
+ *
+ * Everything the editor can change (padding, borders, colours, gap, transition
+ * duration) is emitted by css.twig against %%SELECTOR%%, which loads after this
+ * file. Keep this file to layout and accordion mechanics so the two do not
+ * fight over the same declarations.
+ *
+ * Box model: the ITEM owns the padding. The question button and answer content
+ * are flush inside it, so the two never have to be kept in sync.
+ */
+
 .breakdance .bde-scos-faqs {
   display: flex;
   text-align: left;
@@ -7,25 +19,11 @@
   padding: 0;
   width: 100%;
   max-width: 100%;
-  --faqBorderColor: #000;
-  --faqBorderWidth: 2px;
-  --faqItemHorizontalPadding: 16px;
-  --faqItemVerticalPadding: 16px;
 }
 
 .breakdance .bde-scos-faqs .bde-faq__item {
   border-style: solid;
-  border-color: var(--faqBorderColor);
-  border-width: var(--faqBorderWidth);
-}
-
-.breakdance .bde-scos-faqs .bde-faq__item:not(:first-child) {
-  margin-top: calc(var(--faqBorderWidth) * -1);
-}
-
-.breakdance .bde-scos-faqs .bde-faq__answer-content {
-  padding: var(--faqItemVerticalPadding) var(--faqItemHorizontalPadding);
-  padding-top: 0px;
+  padding: 20px;
 }
 
 .breakdance .bde-scos-faqs .bde-faq__title-tag {
@@ -67,7 +65,6 @@
   -webkit-font-smoothing: inherit;
   -moz-osx-font-smoothing: inherit;
   -webkit-appearance: none;
-  padding: var(--faqItemVerticalPadding) var(--faqItemHorizontalPadding);
   display: inline-flex;
   flex-direction: row;
   align-items: center;
@@ -76,13 +73,15 @@
   color: inherit;
 }
 
-.breakdance .bde-scos-faqs .bde-faq__item.is-collapsing .bde-faq__answer {
+/* Accordion mechanics. Only accordion panels carry role="region"; plain-format
+   answers must never be hidden by the collapsed state. */
+.breakdance .bde-scos-faqs .bde-faq__item.is-collapsing .bde-faq__answer[role="region"] {
   height: 0;
   overflow: hidden;
-  transition: height var(--bde-transition-duration) ease;
+  transition: height var(--bde-transition-duration, 0.3s) ease;
 }
 
-.breakdance .bde-scos-faqs .bde-faq__item:not(.is-active, .is-collapsing) .bde-faq__answer {
+.breakdance .bde-scos-faqs .bde-faq__item:not(.is-active, .is-collapsing) .bde-faq__answer[role="region"] {
   display: none;
 }
 
@@ -100,9 +99,8 @@
   display: none;
 }
 
-/* Plain format — no accordion, heading acts as label */
+/* Plain format — no accordion, the heading itself is the label. */
 .breakdance .bde-scos-faqs .bde-faq__title-tag.bde-faq__question {
-  padding: var(--faqItemVerticalPadding) var(--faqItemHorizontalPadding);
   display: block;
   cursor: default;
 }
