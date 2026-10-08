@@ -157,7 +157,7 @@ class DescriptionText extends \Breakdance\Elements\Element
 
     static function addPanelRules()
     {
-        return false;
+        return ['alwaysHide' => true];
     }
 
     static public function actions()

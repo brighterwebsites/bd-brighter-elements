@@ -351,7 +351,7 @@ return true;
 
     static function addPanelRules()
     {
-        return false;
+        return ['alwaysHide' => true];
     }
 
     static public function actions()

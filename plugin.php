@@ -1,5 +1,5 @@
 <?php
-// v0.3.4 | 2026-07-02
+// v0.3.5 | 2026-10-04
 
 /**
  * Plugin Name: Brighter BD Elements
