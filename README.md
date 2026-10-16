@@ -1,5 +1,13 @@
-# Brighter Websites Custom  Breakdance Elements - for SCOS MU 
+# Brighter BD Elements
 
+Custom [Breakdance](https://breakdance.com/) elements by [Brighter Websites](https://brighterwebsites.com.au/).
+The `Scos_*` elements render content from the SCOS / Site Essentials MU plugin (FAQs, reviews, TL;DR, breadcrumbs);
+the rest are general-purpose layout and content elements.
+
+## Requirements
+
+- WordPress with Breakdance
+- SCOS / Site Essentials MU plugin for the `Scos_*` elements (they show a builder placeholder without it)
 
 ## Element status
 
@@ -19,3 +27,11 @@ static function addPanelRules()
 ```
 
 Don't delete a hidden element's folder until no live site uses it. Removing it breaks any page that still contains it.
+
+## Structure
+
+- `plugin.php` registers the element, macro and preset save locations with Breakdance Element Studio
+- `elements/<Name>/` one element per folder (`element.php`, `html.twig`, `css.twig`, `default.css`, optional `ssr.php`)
+- `includes/` dropdown option providers used by element controls
+
+Licence: GPLv2.

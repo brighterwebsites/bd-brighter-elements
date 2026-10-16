@@ -1,0 +1,58 @@
+# Fails a PR into master that changes shipped code without a version bump + changelog entry.
+# Shipped code = plugin.php, elements/, includes/ (what deploy-wp puts on sites).
+name: version-check
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  version-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check version bump and changelog
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+
+          header_version() { sed -n -E 's/^[[:space:]]*\*[[:space:]]*Version:[[:space:]]*([0-9][0-9.]*).*/\1/p' | head -1 ; }
+          const_version()  { sed -n -E "s/.*const BDE_VERSION = '([0-9][0-9.]*)'.*/\1/p" | head -1 ; }
+
+          head_header=$(header_version < plugin.php)
+          head_const=$(const_version < plugin.php)
+
+          if [ "$head_header" != "$head_const" ]; then
+            echo "::error file=plugin.php::Version header ($head_header) and BDE_VERSION ($head_const) differ."
+            exit 1
+          fi
+
+          changed=$(git diff --name-only "$BASE"...HEAD -- plugin.php elements includes)
+          if [ -z "$changed" ]; then
+            echo "No shipped files changed; no bump required."
+            exit 0
+          fi
+          echo "Shipped files changed:"; echo "$changed"
+
+          base_header=$(git show "$BASE:plugin.php" | header_version)
+          if [ "$head_header" = "$base_header" ]; then
+            echo "::error file=plugin.php::Shipped files changed but Version is still $head_header. Bump plugin.php Version + BDE_VERSION."
+            exit 1
+          fi
+
+          newest=$(printf '%s\n%s\n' "$base_header" "$head_header" | sort -V | tail -1)
+          if [ "$newest" != "$head_header" ]; then
+            echo "::error file=plugin.php::Version went backwards ($base_header -> $head_header)."
+            exit 1
+          fi
+
+          if ! grep -qE "^## ${head_header//./\\.}( |$)" docs/CHANGELOG.md; then
+            echo "::error file=docs/CHANGELOG.md::No '## $head_header' entry in docs/CHANGELOG.md."
+            exit 1
+          fi
+
+          echo "OK: $base_header -> $head_header with changelog entry."
