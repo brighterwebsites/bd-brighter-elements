@@ -1,6 +1,4 @@
 <?php
-// v0.3.5 | 2026-10-04
-
 /**
  * Plugin Name: Brighter BD Elements
  * Plugin URI: https://brighterwebsites.com.au/
@@ -10,10 +8,15 @@
  * License: GPLv2
  * Text Domain: breakdance
  * Domain Path: /languages/
- * Version: 1.0
+ * Version: 1.1.0
  */
 
 namespace BreakdanceCustomElements;
+
+// Release version. Must match the Version header above; CI fails the PR if not.
+// Bump both on every PR into master that touches plugin.php, elements/ or includes/
+// (see docs/CHANGELOG.md).
+const BDE_VERSION = '1.1.0';
 
 use function Breakdance\Util\getDirectoryPathRelativeToPluginFolder;
 
