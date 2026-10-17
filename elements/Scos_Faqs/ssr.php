@@ -1,18 +1,28 @@
 <?php
+// v2.2 | 2026-10-17
 /**
  * Server-side render for SCOS FAQs.
  *
- * Calls FAQ_Module::get_by_ids() / get_ids_by_topic() directly and renders
+ * Calls FAQ_Module::get_by_ids() / get_ids_by_topic() directly, or
+ * BrighterElements\Faq_Providers::resolve() in provider mode, and renders
  * bde-faq__* HTML compatible with the BreakdanceFaq JS accordion and the
  * Frequently_Asked_Questions element CSS system.
  *
+ * After rendering (front end only, schema toggle on) it fires
+ *   do_action( 'scos_faq_ids_rendered', int[] $ids, array $context )
+ * so SCOS can emit FAQ schema for elements in templates and on archives.
+ *
  * Property paths (must mirror element.php section nesting):
- *   content.faq_source.mode
+ *   content.faq_source.mode            selector | topic | provider
  *   content.faq_source.selected_faqs[].id
  *   content.faq_source.topic_slug
+ *   content.faq_source.provider_id
+ *   content.faq_source.provider_args   query-string args for the provider
+ *   content.faq_source.limit           0 = no limit
  *   content.display.format
  *   content.display.first_item_opened
  *   content.display.schema_enabled
+ *   content.display.hide_if_empty
  *   design.typography.title_tag  (heading tag for question; default h3)
  *   design.item.icon.icon.svgCode
  *   design.item.icon.active_icon.svgCode
@@ -55,9 +65,36 @@ if ( isset( $design['typography']['title_tag'] ) && in_array( $design['typograph
 	$heading_level = $design['typography']['title_tag'];
 }
 
-// Resolve FAQ IDs from selector or topic mode.
+$is_builder    = defined( 'BREAKDANCE_BUILDER' ) && BREAKDANCE_BUILDER;
+$hide_if_empty = ! empty( $display['hide_if_empty'] );
+$context       = \BrighterElements\Faq_Providers::context_from_request();
+
+// Empty result: builder always gets a message; front end gets nothing when hide_if_empty is on.
+$render_empty = static function ( string $message ) use ( $is_builder, $hide_if_empty ): void {
+	if ( $hide_if_empty && ! $is_builder ) {
+		return;
+	}
+	echo '<p class="bde-scos-faqs__placeholder">' . esc_html( $message ) . '</p>';
+};
+
+// Resolve FAQ IDs from selector, topic or provider mode.
 $faq_ids = [];
-if ( 'topic' === $mode ) {
+if ( 'provider' === $mode ) {
+	$provider_id = isset( $source['provider_id'] ) ? (string) $source['provider_id'] : '';
+	$args        = \BrighterElements\Faq_Providers::parse_args( isset( $source['provider_args'] ) ? (string) $source['provider_args'] : '' );
+	$limit       = isset( $source['limit'] ) && is_numeric( $source['limit'] ) ? max( 0, (int) $source['limit'] ) : 0;
+	if ( '' !== $provider_id ) {
+		$faq_ids = \BrighterElements\Faq_Providers::resolve( $provider_id, $context, $args, $limit );
+	}
+	if ( empty( $faq_ids ) ) {
+		$render_empty(
+			'' === $provider_id
+				? __( 'Choose a query provider.', 'site-essentials' )
+				: __( 'No FAQs resolved for this context. In the builder, provider FAQs only resolve when previewing a real post or term.', 'site-essentials' )
+		);
+		return;
+	}
+} elseif ( 'topic' === $mode ) {
 	$topic_slug = isset( $source['topic_slug'] ) ? sanitize_title( (string) $source['topic_slug'] ) : '';
 	if ( '' !== $topic_slug ) {
 		$faq_ids = FAQ_Module::get_ids_by_topic( $topic_slug );
@@ -77,14 +114,14 @@ if ( 'topic' === $mode ) {
 }
 
 if ( empty( $faq_ids ) ) {
-	echo '<p>' . esc_html__( 'No FAQs selected.', 'site-essentials' ) . '</p>';
+	$render_empty( __( 'No FAQs selected.', 'site-essentials' ) );
 	return;
 }
 
 $faqs = FAQ_Module::get_by_ids( array_values( $faq_ids ) );
 
 if ( empty( $faqs ) ) {
-	echo '<p>' . esc_html__( 'No FAQs found.', 'site-essentials' ) . '</p>';
+	$render_empty( __( 'No FAQs found.', 'site-essentials' ) );
 	return;
 }
 
@@ -182,4 +219,13 @@ foreach ( $faqs as $index => $faq ) {
 	}
 
 	echo '</div>';
+}
+
+// Hand the rendered FAQs to SCOS for schema. The head graph only walks the
+// queried post's own _breakdance_data, so elements in templates and on
+// archives rely on this. SCOS dedupes against what the head graph emitted.
+// schema_enabled defaults to on (defaultProperties), so a missing key counts as on.
+$schema_enabled = ! array_key_exists( 'schema_enabled', $display ) || ! empty( $display['schema_enabled'] );
+if ( $schema_enabled && ! $is_builder ) {
+	do_action( 'scos_faq_ids_rendered', array_map( static fn( $faq ) => (int) $faq->ID, $faqs ), $context );
 }
