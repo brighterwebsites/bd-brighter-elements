@@ -3,6 +3,10 @@
 Newest at the top. One line per meaningful change; link commits/PRs.
 
 ## 2026-10-17
+- 1.2.0 BDE side on `feature/scos-faqs-query-providers`: Faq_Providers registry + built-in related-terms provider,
+  Scos_Faqs provider mode / hide-if-empty / `scos_faq_ids_rendered`. Lint clean (PHP 8.3); provider logic tested with
+  stubbed WP functions (union order, parents, limit, draft filtering, term context, custom provider). Not run in WP yet.
+- PR #12 (1.1.0) merged.
 - Added CLAUDE.md, docs/TODO.md, docs/decisions.md, docs/work-log.md; expanded README. Board card created.
 - 1.1.0 prepared on branch `release/1.1.0`: `BDE_VERSION`, `Version: 1.1.0`, docs/CHANGELOG.md, CI version-check
   (simulated locally: pass on bump; fail on no bump, header/const mismatch, missing changelog entry).
