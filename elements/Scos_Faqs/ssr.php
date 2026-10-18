@@ -1,5 +1,5 @@
 <?php
-// v2.2 | 2026-10-17
+// v2.3 | 2026-10-18
 /**
  * Server-side render for SCOS FAQs.
  *
@@ -8,7 +8,7 @@
  * bde-faq__* HTML compatible with the BreakdanceFaq JS accordion and the
  * Frequently_Asked_Questions element CSS system.
  *
- * After rendering (front end only, schema toggle on) it fires
+ * After rendering (real page views only, schema toggle on) it fires
  *   do_action( 'scos_faq_ids_rendered', int[] $ids, array $context )
  * so SCOS can emit FAQ schema for elements in templates and on archives.
  *
@@ -37,7 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! class_exists( 'SiteEssentials\\Modules\\CustomPosts\\FAQ\\FAQ_Module' ) ) {
-	if ( defined( 'BREAKDANCE_BUILDER' ) && BREAKDANCE_BUILDER ) {
+	if ( \BrighterElements\Builder_Context::is_builder() ) {
 		echo '<div class="bde-scos-faqs__placeholder">'
 			. esc_html__( 'Site Essentials FAQ module is not active.', 'site-essentials' )
 			. '</div>';
@@ -65,16 +65,20 @@ if ( isset( $design['typography']['title_tag'] ) && in_array( $design['typograph
 	$heading_level = $design['typography']['title_tag'];
 }
 
-$is_builder    = defined( 'BREAKDANCE_BUILDER' ) && BREAKDANCE_BUILDER;
+$is_builder    = \BrighterElements\Builder_Context::is_builder();
+$is_front_end  = \BrighterElements\Builder_Context::is_front_end();
 $hide_if_empty = ! empty( $display['hide_if_empty'] );
 $context       = \BrighterElements\Faq_Providers::context_from_request();
 
-// Empty result: builder always gets a message; front end gets nothing when hide_if_empty is on.
-$render_empty = static function ( string $message ) use ( $is_builder, $hide_if_empty ): void {
-	if ( $hide_if_empty && ! $is_builder ) {
-		return;
+// Empty result: the builder gets the authoring hint. Page views get a neutral line
+// unless hide_if_empty is on. Other requests (non-SSR AJAX, REST, cron) get nothing,
+// because stray output breaks Breakdance's AJAX handler.
+$render_empty = static function ( string $message ) use ( $is_builder, $is_front_end, $hide_if_empty ): void {
+	if ( $is_builder ) {
+		echo '<p class="bde-scos-faqs__placeholder">' . esc_html( $message ) . '</p>';
+	} elseif ( $is_front_end && ! $hide_if_empty ) {
+		echo '<p class="bde-scos-faqs__placeholder">' . esc_html__( 'No FAQs found.', 'site-essentials' ) . '</p>';
 	}
-	echo '<p class="bde-scos-faqs__placeholder">' . esc_html( $message ) . '</p>';
 };
 
 // Resolve FAQ IDs from selector, topic or provider mode.
@@ -226,6 +230,6 @@ foreach ( $faqs as $index => $faq ) {
 // archives rely on this. SCOS dedupes against what the head graph emitted.
 // schema_enabled defaults to on (defaultProperties), so a missing key counts as on.
 $schema_enabled = ! array_key_exists( 'schema_enabled', $display ) || ! empty( $display['schema_enabled'] );
-if ( $schema_enabled && ! $is_builder ) {
+if ( $schema_enabled && $is_front_end ) {
 	do_action( 'scos_faq_ids_rendered', array_map( static fn( $faq ) => (int) $faq->ID, $faqs ), $context );
 }

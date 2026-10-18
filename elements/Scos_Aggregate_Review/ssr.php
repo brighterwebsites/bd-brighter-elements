@@ -1,6 +1,7 @@
 <?php
 /**
  * Server-side render: SCOS Aggregate Review
+ * v1.1 | 2026-10-18 (builder detection via Builder_Context)
  *
  * Renders via Aggregate_Review_Renderer::echo_card() — emitted straight into
  * Breakdance's SSR capture buffer, exactly like the working FAQ element. The
@@ -17,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! class_exists( 'SiteEssentials\\Modules\\CustomPosts\\Aggregate_Review_Renderer' ) ) {
-    if ( defined( 'BREAKDANCE_BUILDER' ) && BREAKDANCE_BUILDER ) {
+    if ( \BrighterElements\Builder_Context::is_builder() ) {
         echo '<div class="bde-scos-aggregate-review__placeholder">'
             . esc_html__( 'Site Essentials Reviews module is not active.', 'site-essentials' )
             . '</div>';

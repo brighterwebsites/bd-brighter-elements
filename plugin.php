@@ -8,7 +8,7 @@
  * License: GPLv2
  * Text Domain: breakdance
  * Domain Path: /languages/
- * Version: 1.2.0
+ * Version: 1.2.1
  */
 
 namespace BreakdanceCustomElements;
@@ -16,7 +16,7 @@ namespace BreakdanceCustomElements;
 // Release version. Must match the Version header above; CI fails the PR if not.
 // Bump both on every PR into master that touches plugin.php, elements/ or includes/
 // (see docs/CHANGELOG.md).
-const BDE_VERSION = '1.2.0';
+const BDE_VERSION = '1.2.1';
 
 use function Breakdance\Util\getDirectoryPathRelativeToPluginFolder;
 
@@ -24,6 +24,7 @@ require_once __DIR__ . '/includes/class-faq-picker-options.php';
 require_once __DIR__ . '/includes/class-review-picker-options.php';
 require_once __DIR__ . '/includes/class-platform-picker-options.php';
 require_once __DIR__ . '/includes/class-faq-providers.php';
+require_once __DIR__ . '/includes/class-builder-context.php';
 
 // The CPT Form Submission action and its admin settings page were removed from
 // this plugin — they are untracked local-only files (see .gitignore). Their
