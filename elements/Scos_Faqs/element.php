@@ -1,13 +1,22 @@
 <?php
-// v2.1 | 2026-06-04
+// v2.2 | 2026-10-17
 //
 // SCOS FAQs — Breakdance element that renders FAQs from the Site Essentials
 // FAQ submodule using the bde-faq__* HTML structure and BreakdanceFaq JS,
 // matching the design system of the Frequently Asked Questions element.
 //
-// Two source modes:
+// Three source modes:
 //   - selector: editor picks specific FAQs from a dropdown repeater.
 //   - topic:    editor enters a scos_topic slug; every FAQ tagged with it renders.
+//   - provider: a registered query provider (BrighterElements\Faq_Providers,
+//               filter `bde_scos_faq_providers`) resolves FAQs from the current
+//               post / term. For templates and archives.
+//
+// v2.2 changes:
+//   - Added provider mode (provider_id, provider_args, limit)
+//   - Added display.hide_if_empty (all modes)
+//   - ssr.php fires `scos_faq_ids_rendered` so SCOS can emit FAQ schema for
+//     templates and archives (the head graph only sees the post's own BD data)
 //
 // v2.0 changes:
 //   - Replaced shortcode delegation with direct FAQ_Module calls in ssr.php
@@ -26,6 +35,7 @@
 namespace BreakdanceCustomElements;
 
 use BrighterElements\Faq_Picker_Options;
+use BrighterElements\Faq_Providers;
 use function Breakdance\Elements\c;
 use function Breakdance\Elements\PresetSections\getPresetSection;
 
@@ -96,12 +106,15 @@ class ScosFaqs extends \Breakdance\Elements\Element
         return [
             'content' => [
                 'faq_source' => [
-                    'mode' => 'selector',
+                    'mode'        => 'selector',
+                    'provider_id' => 'bde_related_terms',
+                    'limit'       => 5,
                 ],
                 'display' => [
                     'format'             => 'accordion',
                     'first_item_opened'  => false,
                     'schema_enabled'     => true,
+                    'hide_if_empty'      => false,
                 ],
             ],
             'design' => [
@@ -440,6 +453,7 @@ class ScosFaqs extends \Breakdance\Elements\Element
                             'items'  => [
                                 ['text' => 'Selected FAQs', 'value' => 'selector'],
                                 ['text' => 'By Topic',      'value' => 'topic'],
+                                ['text' => 'Query Provider', 'value' => 'provider'],
                             ],
                         ],
                         false,
@@ -483,6 +497,50 @@ class ScosFaqs extends \Breakdance\Elements\Element
                             'layout'      => 'vertical',
                             'description' => 'scos_topic slug, e.g. pricing. Renders every published FAQ assigned to this topic.',
                             'condition'   => [[['path' => '%%CURRENTPATH%%.mode', 'operand' => 'equals', 'value' => 'topic']]],
+                        ],
+                        false,
+                        false,
+                        [],
+                    ),
+                    c(
+                        'provider_id',
+                        'Provider',
+                        [],
+                        [
+                            'type'        => 'dropdown',
+                            'layout'      => 'vertical',
+                            'items'       => Faq_Providers::dropdown_items(),
+                            'description' => 'Resolves FAQs from the current post or term on the front end. Plugins add providers via the bde_scos_faq_providers filter.',
+                            'condition'   => [[['path' => '%%CURRENTPATH%%.mode', 'operand' => 'equals', 'value' => 'provider']]],
+                        ],
+                        false,
+                        false,
+                        [],
+                    ),
+                    c(
+                        'provider_args',
+                        'Provider args',
+                        [],
+                        [
+                            'type'        => 'text',
+                            'layout'      => 'vertical',
+                            'description' => 'Query-string format. Related terms: taxonomies=pa_stable-model,product_cat&field=related_faqs (most specific first; add &parents=1 to include parent terms).',
+                            'condition'   => [[['path' => '%%CURRENTPATH%%.mode', 'operand' => 'equals', 'value' => 'provider']]],
+                        ],
+                        false,
+                        false,
+                        [],
+                    ),
+                    c(
+                        'limit',
+                        'Max FAQs',
+                        [],
+                        [
+                            'type'          => 'number',
+                            'layout'        => 'inline',
+                            'numberOptions' => ['min' => 0, 'max' => 50],
+                            'description'   => '0 = no limit.',
+                            'condition'     => [[['path' => '%%CURRENTPATH%%.mode', 'operand' => 'equals', 'value' => 'provider']]],
                         ],
                         false,
                         false,
@@ -535,6 +593,19 @@ class ScosFaqs extends \Breakdance\Elements\Element
                             'type'        => 'toggle',
                             'layout'      => 'inline',
                             'description' => 'When on, this element\'s FAQs are merged into the page\'s unified FAQPage JSON-LD.',
+                        ],
+                        false,
+                        false,
+                        [],
+                    ),
+                    c(
+                        'hide_if_empty',
+                        'Hide if no FAQs',
+                        [],
+                        [
+                            'type'        => 'toggle',
+                            'layout'      => 'inline',
+                            'description' => 'Render nothing on the front end when no FAQs resolve (the builder still shows a placeholder).',
                         ],
                         false,
                         false,
@@ -692,9 +763,13 @@ class ScosFaqs extends \Breakdance\Elements\Element
             'content.faq_source.mode',
             'content.faq_source.selected_faqs',
             'content.faq_source.topic_slug',
+            'content.faq_source.provider_id',
+            'content.faq_source.provider_args',
+            'content.faq_source.limit',
             'content.display.format',
             'content.display.first_item_opened',
             'content.display.schema_enabled',
+            'content.display.hide_if_empty',
             'design.typography.title_tag',
             'design.item.icon.icon',
             'design.item.icon.active_icon',

@@ -26,7 +26,7 @@ SSR elements must degrade quietly: if the SCOS piece is missing, render a placeh
 
 | Element | Depends on |
 |---|---|
-| `Scos_Faqs` | `SiteEssentials\Modules\CustomPosts\FAQ\FAQ_Module` (direct calls) + `Faq_Picker_Options` |
+| `Scos_Faqs` | `SiteEssentials\Modules\CustomPosts\FAQ\FAQ_Module` (direct calls) + `Faq_Picker_Options` + `Faq_Providers` (provider mode). Fires `scos_faq_ids_rendered` for SCOS schema. |
 | `Scos_Aggregate_Review` | `SiteEssentials\Modules\CustomPosts\Aggregate_Review_Renderer` + `Platform_Picker_Options` |
 | `Scos_Review_Card` | `[bw_review_card]` shortcode (Reviews CPT submodule) + `Review_Picker_Options` |
 | `Scos_Tldr` | `[tldr]` shortcode |
@@ -37,8 +37,12 @@ SSR elements must degrade quietly: if the SCOS piece is missing, render a placeh
 Changing a SCOS class, shortcode or function name breaks these elements. Check this table from the SCOS side too.
 
 **FAQ schema is not generated here.** SCOS `FAQ_Schema_Graph` walks the *queried post's own* `_breakdance_data`
-for `ScosFaqs` nodes. So an element placed in a Breakdance **template**, or on an **archive**, emits no FAQPage
-today. The fix (render-time collection) is planned for 1.2.0; see `docs/TODO.md`.
+for `ScosFaqs` nodes, so an element in a Breakdance **template**, or on an **archive**, gets no FAQPage from the
+head graph. Since 1.2.0, `ssr.php` fires `scos_faq_ids_rendered` with the IDs it rendered. The SCOS footer listener
+that turns that into schema is pending (see `docs/TODO.md`).
+
+**FAQ query providers** (`includes/class-faq-providers.php`): register with the `bde_scos_faq_providers` filter on
+`init` or earlier. A callback is `( array $context, array $args ): int[]`. `resolve()` does validation, dedupe and the limit.
 
 ## Gitignored, local-only
 

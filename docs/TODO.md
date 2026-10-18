@@ -7,30 +7,23 @@ Newest at the top within each section. Move done items to `work-log.md`.
 Driver: GS product single + product_cat / pa_* archive templates need FAQs picked per term (about 10 sets
 across 40+ products), with FAQ schema. Test on guerillasteelstables.com.au (`--only`) before rolling wider.
 
-- [ ] `includes/class-faq-providers.php` (`BrighterElements\Faq_Providers`): registry built from
-      `apply_filters( 'bde_scos_faq_providers', [] )`. Each entry is `id => [ 'label', 'callback' ]`, where the
-      callback is `( array $context, array $args ): int[]`. Expose `options()` for the dropdown and
-      `resolve( $id, $context, $args )`, reusable by REST/WP-CLI/MCP.
-- [ ] Context = the queried object: `[ 'type' => 'post'|'term', 'object' => WP_Post|WP_Term ]`. Build it from
-      `get_queried_object()`, falling back to the loop post inside post loops.
-- [ ] Built-in provider `bde_related_terms` ("Related FAQs from current terms"). Args: `taxonomies`
-      (ordered, most specific first, e.g. `pa_stable-model,product_cat`) and `field` (term meta / ACF
-      relationship name, e.g. `related_faqs`).
-      - Single post: **union** of FAQs from the post's terms, most specific taxonomy first, deduped, capped at the limit.
-      - Term archive: that term's FAQs.
-      - Read via `get_term_meta` so ACF isn't a hard dependency. Handle ACF storing IDs as an array or a serialized string.
-- [ ] `element.php`: mode `provider`, plus controls `provider_id` (dropdown), `provider_args` (text), `limit`
-      (number) and `hide_if_empty` (toggle). Update the property-path list in the `ssr.php` header.
-- [ ] `ssr.php`: resolve provider IDs. Respect `hide_if_empty`: render nothing on the front end, a placeholder in the builder.
-- [ ] Hand the rendered IDs to SCOS for schema (only when `schema_enabled`), via
-      `do_action( 'scos_faq_ids_rendered', $ids, $context )`. Fire it for **all** modes, not just provider.
-- [ ] **SCOS side (wp-scos project):** `FAQ_Schema_Graph` listens for `scos_faq_ids_rendered`, collects
-      the IDs and prints the FAQPage as its own JSON-LD block in `wp_footer`. Skip post IDs the head
-      graph already emitted (dedupe, so pages that work today don't get two FAQPages). Archives included.
-      Ship SCOS first or together; BDE degrades gracefully if no listener exists.
-- [ ] gs-conversion-tools: register the ACF `related_faqs` relationship field on `product_cat` + `pa_stable-model`
-      (post type `faq`, max ~5). No custom provider needed unless the matching rules change.
-- [ ] Update this repo's CLAUDE.md dependency table and the SCOS schema note when it ships.
+BDE side done on branch `feature/scos-faqs-query-providers` (see CHANGELOG 1.2.0). Remaining:
+
+- [ ] **SCOS side (wp-scos project):** `FAQ_Schema_Graph` listens for
+      `scos_faq_ids_rendered( int[] $ids, array $context )` and prints the collected FAQs as one FAQPage
+      JSON-LD block in `wp_footer`.
+      - Only accept a context that is the **queried object**, or `none`. Ignore loop-post contexts, so an
+        archive post loop doesn't merge every product's FAQs into the archive's FAQPage.
+      - Skip IDs the head graph already emitted, so pages that work today don't get a duplicate FAQPage.
+      - `@id` = current URL + `#faq` (archives included); reuse `FAQ_Module::get_schema_answer()`.
+      - Ship SCOS before or together with BDE 1.2.0. BDE degrades gracefully if no listener exists.
+- [ ] **gs-conversion-tools:** register the ACF `related_faqs` relationship field (post type `faq`, max ~5,
+      return format ID) on `product_cat` + `pa_stable-model`. Then fill in the ~10 FAQ sets.
+- [ ] **GS template setup:** Scos_Faqs → Query Provider → "Related FAQs from current terms", args
+      `taxonomies=pa_stable-model,product_cat&field=related_faqs`, Max 5, Hide if no FAQs on.
+- [ ] **Test on GS (`--only`):** a product with both terms, a product with only a category, a pa_stable-model
+      archive, a product_cat archive. Check rendered order and limit, the empty case and the builder placeholder;
+      after SCOS ships, run Rich Results Test on one product + one archive.
 
 ## Open
 

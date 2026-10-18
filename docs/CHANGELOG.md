@@ -8,6 +8,17 @@ The release number is the `Version:` header in `plugin.php` (mirrored in `BDE_VE
 Every PR into master that touches `plugin.php`, `elements/` or `includes/` bumps the version and adds an entry
 here under a `## <version> — <date>` heading. CI (`.github/workflows/version-check.yml`) enforces both.
 
+## 1.2.0 — 2026-10-17
+- Scos_Faqs: new **Query Provider** source mode. Controls: Provider (dropdown), Provider args (query string), Max FAQs.
+  Providers come from `BrighterElements\Faq_Providers` and the `bde_scos_faq_providers` filter. Final IDs pass
+  through `bde_scos_faq_provider_ids`.
+- Built-in provider `bde_related_terms`: FAQs from a term field (e.g. ACF relationship `related_faqs`) across
+  ordered taxonomies. Union, most specific first, deduped, published only, capped. Optional `parents=1`.
+  Context = loop post, otherwise the queried post or term.
+- Scos_Faqs: **Hide if no FAQs** toggle (all modes). The front end renders nothing; the builder keeps a placeholder.
+- Scos_Faqs: fires `do_action( 'scos_faq_ids_rendered', $ids, $context )` after a front-end render with schema on.
+  FAQ schema for templates and archives needs the matching SCOS listener; without it the FAQs still display.
+
 ## 1.1.0 — 2026-10-17
 - Versioning made consistent: single release number in `plugin.php` + `BDE_VERSION` constant, this changelog,
   and a CI check. The old `// v0.3.4` comment in `plugin.php` is gone.
