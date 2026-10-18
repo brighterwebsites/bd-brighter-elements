@@ -8,6 +8,14 @@ The release number is the `Version:` header in `plugin.php` (mirrored in `BDE_VE
 Every PR into master that touches `plugin.php`, `elements/` or `includes/` bumps the version and adds an entry
 here under a `## <version> — <date>` heading. CI (`.github/workflows/version-check.yml`) enforces both.
 
+## 1.2.1 — 2026-10-18
+- Fix: builder detection. The SSR elements checked a `BREAKDANCE_BUILDER` constant that Breakdance never defines,
+  so builder-only placeholders never showed in the builder. New `BrighterElements\Builder_Context` uses Breakdance's
+  `isRequestFromBuilderSsr()` / `isRequestFromBuilderIframe()`. Applies to Scos_Faqs, Scos_Review_Card, Scos_Aggregate_Review.
+- Scos_Faqs: visitors no longer see the builder hint ("In the builder, provider FAQs only resolve…") when Hide if no FAQs
+  is off; they get "No FAQs found." Non-SSR AJAX, REST and cron renders print nothing, which fixes Breakdance's
+  "Unexpected output during AJAX request" error. `scos_faq_ids_rendered` fires on real page views only.
+
 ## 1.2.0 — 2026-10-17
 - Scos_Faqs: new **Query Provider** source mode. Controls: Provider (dropdown), Provider args (query string), Max FAQs.
   Providers come from `BrighterElements\Faq_Providers` and the `bde_scos_faq_providers` filter. Final IDs pass

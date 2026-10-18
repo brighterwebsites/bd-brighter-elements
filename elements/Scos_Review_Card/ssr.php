@@ -1,6 +1,7 @@
 <?php
 /**
  * Server-side render: SCOS Review Card
+ * v3.1 | 2026-10-18 (builder detection via Builder_Context)
  * v3.0 | 2026-06-20
  *
  * Restored to the working do_shortcode pattern from the pre-connected-mode
@@ -19,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! shortcode_exists( 'bw_review_card' ) ) {
-	if ( defined( 'BREAKDANCE_BUILDER' ) && BREAKDANCE_BUILDER ) {
+	if ( \BrighterElements\Builder_Context::is_builder() ) {
 		echo '<div class="bde-scos-review-card__placeholder">'
 			. esc_html__( '[bw_review_card] shortcode not found. Ensure Site Essentials Reviews CPT submodule is active.', 'site-essentials' )
 			. '</div>';
@@ -41,7 +42,7 @@ $layout = isset( $content['display']['layout'] )
 
 // Connected mode not implemented — will be a separate element.
 if ( 'connected' === $mode ) {
-	if ( defined( 'BREAKDANCE_BUILDER' ) && BREAKDANCE_BUILDER ) {
+	if ( \BrighterElements\Builder_Context::is_builder() ) {
 		echo '<div class="bde-scos-review-card__placeholder">'
 			. esc_html__( 'Connected mode is not available — use Specific or Loop mode.', 'site-essentials' )
 			. '</div>';
@@ -51,7 +52,7 @@ if ( 'connected' === $mode ) {
 
 if ( 'specific' === $mode ) {
 	if ( ! $review_id ) {
-		if ( defined( 'BREAKDANCE_BUILDER' ) && BREAKDANCE_BUILDER ) {
+		if ( \BrighterElements\Builder_Context::is_builder() ) {
 			echo '<div class="bde-scos-review-card__placeholder">'
 				. esc_html__( 'Select a review in the element sidebar.', 'site-essentials' )
 				. '</div>';

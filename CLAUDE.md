@@ -22,7 +22,9 @@ Placeholders only (see commit 26a99f7).
 ## Elements and their SCOS dependencies
 
 SSR elements must degrade quietly: if the SCOS piece is missing, render a placeholder in the builder
-(`BREAKDANCE_BUILDER`) and nothing on the front end. Follow the pattern in `elements/Scos_Faqs/ssr.php`.
+(`BrighterElements\Builder_Context::is_builder()`) and nothing on the front end. Never echo during other AJAX
+requests (`Builder_Context::is_front_end()` is false there): Breakdance's AJAX handler rejects stray output.
+There is **no** `BREAKDANCE_BUILDER` constant. Follow the pattern in `elements/Scos_Faqs/ssr.php`.
 
 | Element | Depends on |
 |---|---|
@@ -38,8 +40,8 @@ Changing a SCOS class, shortcode or function name breaks these elements. Check t
 
 **FAQ schema is not generated here.** SCOS `FAQ_Schema_Graph` walks the *queried post's own* `_breakdance_data`
 for `ScosFaqs` nodes, so an element in a Breakdance **template**, or on an **archive**, gets no FAQPage from the
-head graph. Since 1.2.0, `ssr.php` fires `scos_faq_ids_rendered` with the IDs it rendered. The SCOS footer listener
-that turns that into schema is pending (see `docs/TODO.md`).
+head graph. Since 1.2.0, `ssr.php` fires `scos_faq_ids_rendered` with the IDs it rendered. SCOS `FAQ_Schema_Graph` collects them and
+prints a separate footer FAQPage (`<script id="scos-faq-graph">`, `@id` = URL + `#faq`). Open SCOS follow-ups in `docs/TODO.md`.
 
 **FAQ query providers** (`includes/class-faq-providers.php`): register with the `bde_scos_faq_providers` filter on
 `init` or earlier. A callback is `( array $context, array $args ): int[]`. `resolve()` does validation, dedupe and the limit.

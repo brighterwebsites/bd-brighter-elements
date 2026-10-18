@@ -9,14 +9,26 @@ across 40+ products), with FAQ schema. Test on guerillasteelstables.com.au (`--o
 
 BDE side done on branch `feature/scos-faqs-query-providers` (see CHANGELOG 1.2.0). Remaining:
 
-- [ ] **SCOS side (wp-scos project):** `FAQ_Schema_Graph` listens for
-      `scos_faq_ids_rendered( int[] $ids, array $context )` and prints the collected FAQs as one FAQPage
-      JSON-LD block in `wp_footer`.
-      - Only accept a context that is the **queried object**, or `none`. Ignore loop-post contexts, so an
-        archive post loop doesn't merge every product's FAQs into the archive's FAQPage.
-      - Skip IDs the head graph already emitted, so pages that work today don't get a duplicate FAQPage.
-      - `@id` = current URL + `#faq` (archives included); reuse `FAQ_Module::get_schema_answer()`.
-      - Ship SCOS before or together with BDE 1.2.0. BDE degrades gracefully if no listener exists.
+- [x] SCOS listener shipped (SCOS 260a53a, deployed to GS 2026-10-18). Footer `scos-faq-graph` FAQPage verified on
+      product singles, product_cat archives and the shop page.
+- [ ] **SCOS follow-ups (wp-scos project), found 2026-10-18 on a product_cat archive:**
+      1. **Link the footer FAQPage to the page.** `FAQ_Schema_Graph::print_footer_graph` (~line 296) outputs only
+         `@type`, `@id`, `mainEntity`. Add `url` and `isPartOf: {"@id": <WebPage @id>}` so it joins the head
+         graph by `@id`. Don't merge it into the head `<script>` with output buffering: the head prints at
+         `wp_head` before the template renders, and buffering fights LiteSpeed.
+      2. **WebPage `@id` / `url` keep the query string.** `brighter-core/includes/scos-schema-output.php` ~line 611
+         uses `home_url($_SERVER['REQUEST_URI'])`, so `?utm_…` / `?nocache=` end up in the `@id`. Use the canonical
+         URL (same helper as `FAQ_Schema_Graph::current_url()`, which already strips it), otherwise fix 1's
+         `isPartOf` won't match.
+      3. **CollectionPage is wrong on taxonomy archives** (same file ~line 655-697):
+         - `@id`/`url` = `get_post_type_archive_link()`, so a product_cat archive claims the shop URL
+           (`/<shop>/#collection`). Use `get_term_link()` on term archives.
+         - `mainEntity` = latest 5 posts of the post type, not posts in the term, and always typed `BlogPosting`
+           (wrong for products). Query the queried term; type by post type (`Product` → skip or `ListItem`/`ItemList`).
+         - The page ends up with both WebPage and CollectionPage for one URL. Consider typing the WebPage node
+           as `CollectionPage` on archives instead of a second node.
+      4. Minor: a second, separate BreadcrumbList block is printed in the body (likely a breadcrumb element's own
+         schema) alongside the head graph's `#breadcrumb`. Check which one to keep.
 - [ ] **gs-conversion-tools:** register the ACF `related_faqs` relationship field (post type `faq`, max ~5,
       return format ID) on `product_cat` + `pa_stable-model`. Then fill in the ~10 FAQ sets.
 - [ ] **GS template setup:** Scos_Faqs → Query Provider → "Related FAQs from current terms", args
