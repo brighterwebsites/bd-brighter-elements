@@ -29,16 +29,21 @@ BDE side done on branch `feature/scos-faqs-query-providers` (see CHANGELOG 1.2.0
            as `CollectionPage` on archives instead of a second node.
       4. Minor: a second, separate BreadcrumbList block is printed in the body (likely a breadcrumb element's own
          schema) alongside the head graph's `#breadcrumb`. Check which one to keep.
-- [ ] **gs-conversion-tools:** register the ACF `related_faqs` relationship field (post type `faq`, max ~5,
+- [x] **gs-conversion-tools:** (done 2026-10-18, Vanessa) register the ACF `related_faqs` relationship field (post type `faq`, max ~5,
       return format ID) on `product_cat` + `pa_stable-model`. Then fill in the ~10 FAQ sets.
-- [ ] **GS template setup:** Scos_Faqs → Query Provider → "Related FAQs from current terms", args
+- [x] **GS template setup** (2026-10-18): 1260 "Product Archive - all" now serves every product archive
+      (828 "Specific Product Archive" trashed); 688 single product. Scos_Faqs → Query Provider → "Related FAQs from current terms", args
       `taxonomies=pa_stable-model,product_cat&field=related_faqs`, Max 5, Hide if no FAQs on.
-- [ ] **Test on GS (`--only`):** a product with both terms, a product with only a category, a pa_stable-model
+- [ ] **Test on GS (`--only`):** partly done 2026-10-18/19 on 1.2.1: product_cat + pa_stable-model archives render FAQs
+      + footer FAQPage, no visitor hint, builder AJAX error gone. Still to do: Rich Results Test on one product + one archive
+      (best after SCOS follow-up 1). Original scope: a product with both terms, a product with only a category, a pa_stable-model
       archive, a product_cat archive. Check rendered order and limit, the empty case and the builder placeholder;
       after SCOS ships, run Rich Results Test on one product + one archive.
 
 ## Open
 
+- [ ] **Roll 1.2.1 out to the other enabled sites** (brighterwebsites, 100up, coastalnativesupply, paalgrant,
+      cubewebservices). Deferred by Vanessa 2026-10-19. Dry-run each; brighterwebsites/100up predate 029a99e.
 - [ ] **Deploy payload ships `docs/` and `scripts/`.** `bd-brighter-elements.conf` has `EXCLUDE="README.md"` only.
       Proposed: `EXCLUDE="README.md docs scripts"`. Owner: servers project (edit `servers/deploy/components/`, push to hosts).
 - [ ] **Retire `scripts/` deploy tooling.** `deploy.sh`, `deploy.ps1`, `deploy-plink.ps1`, `install-deploy-alias.ps1`,

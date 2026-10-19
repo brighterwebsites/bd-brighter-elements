@@ -2,6 +2,23 @@
 
 Newest at the top. One line per meaningful change; link commits/PRs.
 
+## 2026-10-19
+- 1.2.1 (PR #14, bb24db8) deployed to guerillasteelstables from master. Builder AJAX error confirmed gone. Rollout to other sites deferred.
+
+## 2026-10-18
+- PR #13 (1.2.0) merged; master 6640b4e + SCOS 260a53a (footer FAQ listener) deployed to guerillasteelstables only.
+  Verified provider union order, term archives, footer `scos-faq-graph` FAQPage.
+- Found + fixed: `BREAKDANCE_BUILDER` doesn't exist → builder hint shown to visitors, builder AJAX error. New
+  `Builder_Context`, release 1.2.1 (PR #14, CI green), branch tested on GS.
+- Found (SCOS, not fixed): footer FAQPage not linked to WebPage, WebPage `@id` keeps query string, CollectionPage
+  wrong on term archives, duplicate BreadcrumbList. Written up in TODO.
+
+| date | client/site | deliverable | qty | value est. (non-AI hrs) | billable |
+|---|---|---|---|---|---|
+| 2026-10-17 | internal (BDE) | Versioning + CI version check + project docs (1.1.0) | 1 | 3 | internal |
+| 2026-10-17/18 | guerillasteelstables | Per-term FAQs on product/archive templates with FAQ schema (BDE 1.2.0/1.2.1 + SCOS listener), deployed and verified | 1 | 10 | unbilled |
+| 2026-10-18 | internal (SCOS) | Schema audit of archive output, 4 SCOS defects written up | 1 | 1.5 | internal |
+
 ## 2026-10-17
 - 1.2.0 BDE side on `feature/scos-faqs-query-providers`: Faq_Providers registry + built-in related-terms provider,
   Scos_Faqs provider mode / hide-if-empty / `scos_faq_ids_rendered`. Lint clean (PHP 8.3); provider logic tested with

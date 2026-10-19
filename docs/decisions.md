@@ -39,3 +39,14 @@ Need: FAQs on product single + term archive templates, picked per term (product_
   graph only walks the queried post's own `_breakdance_data`, so templates and archives get nothing. Re-resolving
   Breakdance templates in `wp_head` was rejected as fragile and dependent on Breakdance internals. This accepts a
   second JSON-LD block (valid for Google), which is an exception to SCOS's "one graph" rule for this case.
+
+## 2026-10-18 — Builder detection via Breakdance helpers (`Builder_Context`), not `BREAKDANCE_BUILDER`
+Context: SSR elements checked `defined('BREAKDANCE_BUILDER')`. Breakdance never defines it, so builder placeholders
+showed to visitors, and empty-state text was echoed during Breakdance AJAX renders ("Unexpected output during AJAX request").
+Decision: `BrighterElements\Builder_Context::is_builder()` (`\Breakdance\isRequestFromBuilderSsr()` /
+`isRequestFromBuilderIframe()`) and `is_front_end()` (not builder, AJAX, REST or cron). Placeholders only in the builder;
+neutral text or nothing on page views; never output in other requests. Shipped in 1.2.1.
+
+## 2026-10-18 — Footer FAQPage stays a separate block; link it by `@id` (recommendation to SCOS)
+Merging render-time FAQs into the head `bw-schema-graph` needs output buffering, which is fragile with LiteSpeed.
+Instead the footer FAQPage should carry `url` + `isPartOf` → WebPage `@id`. SCOS owns the change (TODO, SCOS follow-ups).
