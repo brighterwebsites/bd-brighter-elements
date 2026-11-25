@@ -8,7 +8,7 @@
  * License: GPLv2
  * Text Domain: breakdance
  * Domain Path: /languages/
- * Version: 1.3.0
+ * Version: 1.3.1
  */
 
 namespace BreakdanceCustomElements;
@@ -16,7 +16,7 @@ namespace BreakdanceCustomElements;
 // Release version. Must match the Version header above; CI fails the PR if not.
 // Bump both on every PR into master that touches plugin.php, elements/ or includes/
 // (see docs/CHANGELOG.md).
-const BDE_VERSION = '1.3.0';
+const BDE_VERSION = '1.3.1';
 
 use function Breakdance\Util\getDirectoryPathRelativeToPluginFolder;
 
