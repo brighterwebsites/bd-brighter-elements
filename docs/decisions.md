@@ -50,3 +50,14 @@ neutral text or nothing on page views; never output in other requests. Shipped i
 ## 2026-10-18 — Footer FAQPage stays a separate block; link it by `@id` (recommendation to SCOS)
 Merging render-time FAQs into the head `bw-schema-graph` needs output buffering, which is fragile with LiteSpeed.
 Instead the footer FAQPage should carry `url` + `isPartOf` → WebPage `@id`. SCOS owns the change (TODO, SCOS follow-ups).
+
+## 2026-11-25 — Bw_copy_text pulled from Brighter, visible_text dropped (1.3.0)
+Context: element built in Element Studio on brighterwebsites.com.au. `visible_text` duplicated `copy_text` (html.twig only renders `copy_text`).
+Decision: repo copy = live copy minus `visible_text`. Class kept as `bw-copy` (not `bde-<element>__*`) and folder `bw_copy_text` lowercase,
+so Brighter's existing selectors keep working. Styling stays minimal; per-site styling via Breakdance selectors.
+Later idea: drive the ::before/::after labels via `content: var(--bw-copy-label)` (custom property must hold a quoted string) or `attr(data-label)`.
+
+## 2026-11-25 — Armstrong, Ballarat Lawn Care, Daylesford enabled for deploy-wp
+Armstrong's copy matched repo history (nothing site-only). BLC and Daylesford had no BDE installed: fresh install, then
+`wp plugin activate` (deploy-wp copies files but doesn't activate). servers commit e8e9c79; only bd-brighter-elements.conf pushed to hosts
+because host1's scos.conf differs from the servers repo.
