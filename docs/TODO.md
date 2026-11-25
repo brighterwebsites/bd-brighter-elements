@@ -43,9 +43,9 @@ BDE side done on branch `feature/scos-faqs-query-providers` (see CHANGELOG 1.2.0
 ## Open
 
 - [ ] **Deploy 1.3.1** (bw-copy ::before margin; PR #16 merged 2026-11-25) to GS, Armstrong, Daylesford, BLC on their live boxes (added 2026-11-25).
-- [ ] **Deploy master to 100up.** Diffed 2026-11-25: Scos_* files are older repo versions, master changes additive only, nothing site-only. SSH connection issue resolved 2026-11-26, unblocked. Ready; decider Vanessa (added 2026-11-25).
+- [ ] **Deploy master to 100up.** Now live on melv1 (moved from host1 2026-11-26 AEDT; melv1's .conf already lists 100up). Diffed 2026-11-25 against host1's copy, same data as melv1, so the diff holds: Scos_* files are older repo versions, master changes additive only, nothing site-only. Deploy on melv1 only: `ssh <melv1 alias> 'deploy-wp bd-brighter-elements master --only 100up.com.au --dry-run'`. Do NOT deploy on host1, that copy is a frozen rollback. Ready; decider Vanessa (added 2026-11-25).
 - [ ] **brighterwebsites.com.au:** unmanaged, ~1.1 copy + Element Studio bw_copy_text + stray `elements/bw_copy_text/element.php.bak-20261125-024939` in the web root. Audit vs master, then deploy (rsync --delete removes the .bak) (added 2026-11-25).
-- [ ] **CNS, paalgrant, cubewebservices** still ~1.1 (6f55487). Dry-run + deploy when wanted (added 2026-11-25).
+- [ ] **CNS, paalgrant, cubewebservices** (melv1) still ~1.1 (6f55487). Dry-run + deploy when wanted (added 2026-11-25).
 - [ ] **Roll 1.2.1 out to the other enabled sites** (brighterwebsites, 100up, coastalnativesupply, paalgrant,
       cubewebservices). Deferred by Vanessa 2026-10-19. Dry-run each; brighterwebsites/100up predate 029a99e.
 - [ ] **Deploy payload ships `docs/` and `scripts/`.** `bd-brighter-elements.conf` has `EXCLUDE="README.md"` only.
