@@ -33,7 +33,7 @@ There is **no** `BREAKDANCE_BUILDER` constant. Follow the pattern in `elements/S
 | `Scos_Review_Card` | `[bw_review_card]` shortcode (Reviews CPT submodule) + `Review_Picker_Options` |
 | `Scos_Tldr` | `[tldr]` shortcode |
 | `Scos_Breadcrumbs` | `bw_render_breadcrumbs()` |
-| `Accordion_Content_Extended`, `Table*`, `Text_Extended` | None (pure Breakdance) |
+| `Accordion_Content_Extended`, `Table*`, `Text_Extended`, `bw_copy_text` | None (pure Breakdance; `bw_copy_text` has an inline click-to-copy script) |
 | `Definition`, `Definitions_Box`, `Description_Text`, `Extended_Wrapper`, `Section_Simple`, `Summary` | None. **Hidden** from the Add panel (`alwaysHide`), kept registered for existing pages. Don't delete until no live site uses them. |
 
 Changing a SCOS class, shortcode or function name breaks these elements. Check this table from the SCOS side too.

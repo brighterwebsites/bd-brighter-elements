@@ -8,6 +8,13 @@ The release number is the `Version:` header in `plugin.php` (mirrored in `BDE_VE
 Every PR into master that touches `plugin.php`, `elements/` or `includes/` bumps the version and adds an entry
 here under a `## <version> — <date>` heading. CI (`.github/workflows/version-check.yml`) enforces both.
 
+## 1.3.0 — 2026-11-25
+- New element **Bw_copy_text** (`elements/bw_copy_text/`, class `Bwcopytext`): click-to-copy text. Built in Element Studio
+  on brighterwebsites.com.au and pulled into the repo. One control, `content.text.copy_text`; the element renders it and
+  copies its text on click or Enter/Space (`role="button"`, `tabindex="0"`). `::before` shows "Click to Copy!", `::after`
+  shows "Copied!" for 1.8s via `.is-copied`. Default CSS is the minimum; style it with Breakdance selectors.
+- Removed the unused `visible_text` control from the Element Studio draft before release (the template never rendered it).
+
 ## 1.2.1 — 2026-10-18
 - Fix: builder detection. The SSR elements checked a `BREAKDANCE_BUILDER` constant that Breakdance never defines,
   so builder-only placeholders never showed in the builder. New `BrighterElements\Builder_Context` uses Breakdance's

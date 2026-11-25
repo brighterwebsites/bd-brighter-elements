@@ -1,0 +1,34 @@
+.bw-copy {
+  cursor: copy;
+  position: relative;
+}
+.bw-copy::before {
+  content: "Click to Copy!";
+  background: #111;
+  color: #fff;
+  font-size: 0.8rem;
+  padding: 0.25em 0.6em;
+  border-radius: 4px;
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.bw-copy::after {
+  content: "Copied!";
+  position: absolute;
+  top: -2.2em;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #111;
+  color: #fff;
+  font-size: 0.8rem;
+  padding: 0.25em 0.6em;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.bw-copy.is-copied::after {
+  opacity: 1;
+}
