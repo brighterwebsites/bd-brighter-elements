@@ -42,7 +42,9 @@ BDE side done on branch `feature/scos-faqs-query-providers` (see CHANGELOG 1.2.0
 
 ## Open
 
-- [ ] **Deploy 1.3.1 to BLC** (host4). GS, Armstrong, Daylesford done 2026-11-26 on melv1 (88223f0, active, 200).
+- [x] **Deploy 1.3.1** to 100up, GS, Armstrong, Daylesford (melv1) and BLC (host4), 2026-11-26/27. All active, 200.
+- [ ] **horseshoebendnursery, oneteamqld** (host4) have BDE 1.0 installed but are not in the .conf. Audit vs master, then enable (added 2026-11-27).
+- [ ] **host4 .conf still lists coastalnativesupply + paalgrant**: those are stale pre-move copies (live on melv1). Servers project to remove them from host4's SITES (added 2026-11-27).
 - [x] **Deploy master to 100up** on melv1: 1.3.1 (88223f0) deployed 2026-11-26, active, homepage 200. Do NOT deploy on host1, frozen rollback.
 - [ ] **brighterwebsites.com.au:** unmanaged, ~1.1 copy + Element Studio bw_copy_text + stray `elements/bw_copy_text/element.php.bak-20261125-024939` in the web root. Audit vs master, then deploy (rsync --delete removes the .bak) (added 2026-11-25).
 - [ ] **CNS, paalgrant, cubewebservices** (melv1) still ~1.1 (6f55487). Dry-run + deploy when wanted (added 2026-11-25).
