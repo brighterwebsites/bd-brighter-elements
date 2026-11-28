@@ -2,6 +2,14 @@
 
 Newest at the top. One line per meaningful change; link commits/PRs.
 
+## 2026-11-25
+| date | client/site | deliverable | qty | value est. (non-AI hrs) | billable |
+|---|---|---|---|---|---|
+| 2026-11-25 | Brighter (BDE) | Bw_copy_text click-to-copy element productised into the plugin, 1.3.0 + 1.3.1 margin fix (PR #15, #16) | 1 | 1.5 | internal |
+| 2026-11-25 | guerillasteelstables, armstrongautodetailing | BDE upgraded to 1.3.0 (Armstrong audited first) | 2 | 1 | hosting-plan |
+| 2026-11-25 | ballaratlawncare, daylesfordgardener | BDE 1.3.0 installed + activated, enabled in deploy-wp | 2 | 1 | hosting-plan |
+| 2026-11-25 | 100up | BDE copy diffed vs master (Scos_* focus), ready to deploy | 1 | 0.5 | hosting-plan |
+
 ## 2026-10-19
 - 1.2.1 (PR #14, bb24db8) deployed to guerillasteelstables from master. Builder AJAX error confirmed gone. Rollout to other sites deferred.
 
