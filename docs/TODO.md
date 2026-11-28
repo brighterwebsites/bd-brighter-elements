@@ -47,7 +47,7 @@ BDE side done on branch `feature/scos-faqs-query-providers` (see CHANGELOG 1.2.0
 - [ ] **host4 .conf still lists coastalnativesupply + paalgrant**: those are stale pre-move copies (live on melv1). Servers project to remove them from host4's SITES (added 2026-11-27).
 - [x] **Deploy master to 100up** on melv1: 1.3.1 (88223f0) deployed 2026-11-26, active, homepage 200. Do NOT deploy on host1, frozen rollback.
 - [ ] **brighterwebsites.com.au:** unmanaged, ~1.1 copy + Element Studio bw_copy_text + stray `elements/bw_copy_text/element.php.bak-20261125-024939` in the web root. Audit vs master, then deploy (rsync --delete removes the .bak) (added 2026-11-25).
-- [ ] **CNS, paalgrant, cubewebservices** (melv1) still ~1.1 (6f55487). Dry-run + deploy when wanted (added 2026-11-25).
+- [ ] **CNS, paalgrant, cubewebservices** (melv1): audited 2026-11-28. All three are byte-identical to 6f55487 (1.0), no site-only files, no Element Studio edits. 6f55487..master is additive (no slug/property renames). SCOS deps present (cubewebservices has no `[bw_review_card]` but uses no BDE elements). Uses: paalgrant SectionSimple x33 (hidden, still registered), Scos_* on CNS + paalgrant. Safe to dry-run + deploy; decider Vanessa.
 - [ ] **Roll 1.2.1 out to the other enabled sites** (brighterwebsites, 100up, coastalnativesupply, paalgrant,
       cubewebservices). Deferred by Vanessa 2026-10-19. Dry-run each; brighterwebsites/100up predate 029a99e.
 - [ ] **Deploy payload ships `docs/` and `scripts/`.** `bd-brighter-elements.conf` has `EXCLUDE="README.md"` only.
